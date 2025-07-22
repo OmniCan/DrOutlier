@@ -1,0 +1,64 @@
+{
+    "status": "success",
+    "data": {
+        "notes": {
+            "current_page": 1,
+            "data": [
+                {
+                    "id": 169,
+                    "category": 134,
+                    "title": "Dose Limits for Different Parts of the Body",
+                    "content": "<hr />\r\n<table cellspacing=\"0\" style=\"border-collapse:collapse\">\r\n\t<tbody>\r\n\t\t<tr>\r\n\t\t\t<td style=\"background-color:#70ad47; border-bottom:1px solid #70ad47; border-left:1px solid #70ad47; border-right:none; border-top:1px solid #70ad47; vertical-align:top\">\r\n\t\t\t<p><strong>Part of the Body</strong></p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:#70ad47; border-bottom:1px solid #70ad47; border-left:none; border-right:none; border-top:1px solid #70ad47; vertical-align:top\">\r\n\t\t\t<p><strong>Occupational Exposure</strong></p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:#70ad47; border-bottom:1px solid #70ad47; border-left:none; border-right:1px solid #70ad47; border-top:1px solid #70ad47; vertical-align:top\">\r\n\t\t\t<p><strong>Public Exposure</strong></p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td style=\"background-color:#e2efd9; border-bottom:1px solid #a8d08d; border-left:1px solid #a8d08d; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p><strong>Whole Body (Effective Dose)</strong></p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:#e2efd9; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p>20 mSv/year averaged over 5 consecutive years; 30 mSv in any single year</p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:#e2efd9; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p>1 mSv/year</p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td style=\"background-color:white; border-bottom:1px solid #a8d08d; border-left:1px solid #a8d08d; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p><strong>Lens of Eyes (Equivalent Dose)</strong></p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:white; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p>150 mSv/year</p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:white; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p>15 mSv/year</p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td style=\"background-color:#e2efd9; border-bottom:1px solid #a8d08d; border-left:1px solid #a8d08d; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p><strong>Skin (Equivalent Dose)</strong></p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:#e2efd9; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p>500 mSv/year</p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:#e2efd9; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p>50 mSv/year</p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td style=\"background-color:white; border-bottom:1px solid #a8d08d; border-left:1px solid #a8d08d; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p><strong>Extremities (Hands and Feet) (Equivalent Dose)</strong></p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:white; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p>500 mSv/year</p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:white; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p>-</p>\r\n\t\t\t</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td style=\"background-color:#e2efd9; border-bottom:1px solid #a8d08d; border-left:1px solid #a8d08d; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p><strong>Pregnant Radiation Workers (After declaration of pregnancy)</strong></p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:#e2efd9; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">\r\n\t\t\t<p>1 mSv on the embryo/fetus</p>\r\n\t\t\t</td>\r\n\t\t\t<td style=\"background-color:#e2efd9; border-bottom:1px solid #a8d08d; border-left:none; border-right:1px solid #a8d08d; border-top:none; vertical-align:top\">&nbsp;</td>\r\n\t\t</tr>\r\n\t</tbody>\r\n</table>\r\n\r\n<p>&nbsp;</p>",
+                    "user_id": null,
+                    "created_at": "2024-08-12T14:27:15.000000Z",
+                    "updated_at": "2024-08-12T14:27:15.000000Z"
+                },
+                {
+                    "id": 235,
+                    "category": 134,
+                    "title": "dfsf",
+                    "content": "<p>asdasd</p>",
+                    "user_id": null,
+                    "created_at": "2024-09-26T07:13:12.000000Z",
+                    "updated_at": "2024-09-26T07:13:12.000000Z"
+                },
+                {
+                    "id": 236,
+                    "category": 134,
+                    "title": "sadasd",
+                    "content": "<p>sadasd</p>",
+                    "user_id": null,
+                    "created_at": "2024-09-26T07:13:19.000000Z",
+                    "updated_at": "2024-09-26T07:13:19.000000Z"
+                }
+            ],
+            "first_page_url": "https://lab2.invoidea.in/outlier/api/note/category-notes?page=1",
+            "from": 1,
+            "last_page": 1,
+            "last_page_url": "https://lab2.invoidea.in/outlier/api/note/category-notes?page=1",
+            "links": [
+                {
+                    "url": null,
+                    "label": "&laquo; Previous",
+                    "active": false
+                },
+                {
+                    "url": "https://lab2.invoidea.in/outlier/api/note/category-notes?page=1",
+                    "label": "1",
+                    "active": true
+                },
+                {
+                    "url": null,
+                    "label": "Next &raquo;",
+                    "active": false
+                }
+            ],
+            "next_page_url": null,
+            "path": "https://lab2.invoidea.in/outlier/api/note/category-notes",
+            "per_page": 20,
+            "prev_page_url": null,
+            "to": 3,
+            "total": 3
+        }
+    }
+}
