@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 const ProviderWrapper = ({ children }) => {
   // const GOOGLE_CLIENT_ID = '1:608770434427:web:133e76bf411498880509de'
-  const GOOGLE_CLIENT_ID = '90424675581-0d8lrekuq379coa2fpb9vhudttvs6k09.apps.googleusercontent.com'
+  const GOOGLE_CLIENT_ID = '702468795931-lhpkas4tj0ipau7nj15pna3c8s6etnt2.apps.googleusercontent.com'
 
   return (
 
