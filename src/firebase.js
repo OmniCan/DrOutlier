@@ -7,13 +7,13 @@ import { getAuth } from "firebase/auth";
 // Your web app's Firebase configuration
 
 const firebaseConfig = {
-    apiKey: "AIzaSyB1VbT-ol84foPtZ3BKeXqGVqfzzbyYBjE",
-    authDomain: "test-db1a0.firebaseapp.com",
-    projectId: "test-db1a0",
-    storageBucket: "test-db1a0.firebasestorage.app",
-    messagingSenderId: "468666640276",
-    appId: "1:468666640276:web:e6e80af9b1307a7206d181",
-    measurementId: "G-X8VY7GQ9DT"
+    apiKey: "AIzaSyDTPhJY6Bgmu0JlqVrROTkw8UPluKPyACo",
+    authDomain: "droutlier-2025.firebaseapp.com",
+    projectId: "droutlier-2025",
+    storageBucket: "droutlier-2025.firebasestorage.app",
+    messagingSenderId: "860507986531",
+    appId: "1:860507986531:web:5e9985c34d1b88ba0bf656",
+    measurementId: "G-HPMLHPXS2B"
   };
 
 // Initialize Firebase

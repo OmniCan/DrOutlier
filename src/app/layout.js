@@ -29,7 +29,7 @@ import { useEffect } from "react";
 
 export default function RootLayout({ children }) {
   // const GOOGLE_CLIENT_ID = '459812214714-easrf4ejhh45a86fmnh6856qpok26022.apps.googleusercontent.com'
-  const GOOGLE_CLIENT_ID = '90424675581-0d8lrekuq379coa2fpb9vhudttvs6k09.apps.googleusercontent.com'
+  const GOOGLE_CLIENT_ID = '702468795931-lhpkas4tj0ipau7nj15pna3c8s6etnt2.apps.googleusercontent.com'
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
