@@ -293,7 +293,7 @@ function LoginModel() {
                                         <Field
                                             type="email"
                                             className="form-control"
-                                            id="email"
+                                            id="login-email"
                                             name="email"
                                             placeholder="E-mail/Phone Number"
                                         />
@@ -308,7 +308,7 @@ function LoginModel() {
                                         <Field
                                             type="password"
                                             className="form-control"
-                                            id="password"
+                                            id="login-password"
                                             name="password"
                                             placeholder="Password"
                                         />
@@ -324,7 +324,7 @@ function LoginModel() {
                                             className="form-check-input"
                                             type="checkbox"
                                             name="remember"
-                                            id="remember"
+                                            id="login-remember"
                                         />
                                         <label className="form-check-label" htmlFor="remember">
                                             Remember me

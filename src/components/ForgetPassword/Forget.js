@@ -271,7 +271,7 @@ function Forget() {
                                         <input
                                             type="text"
                                             className="form-control"
-                                            id="email"
+                                            id="forget-email"
                                             placeholder="E-mail/Phone Number"
                                             name="email"
                                             value={formValues.email}
@@ -352,7 +352,7 @@ function Forget() {
                                         <input
                                             type="password"
                                             className="form-control"
-                                            id="password"
+                                            id="forget-password"
                                             placeholder="Password"
                                             name="password"
                                             value={formValues.password}
@@ -365,7 +365,7 @@ function Forget() {
                                         <input
                                             type="password"
                                             className="form-control"
-                                            id="password_confirmation"
+                                            id="forget-password_confirmation"
                                             placeholder="Confirm Password"
                                             name="password_confirmation"
                                             value={formValues.password_confirmation}

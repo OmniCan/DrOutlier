@@ -204,7 +204,7 @@ function SignUpModel() {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    id="firstname"
+                                    id="signup-firstname"
                                     placeholder="Full Name"
                                     name="firstname"
                                     value={formValues.firstname}
@@ -217,7 +217,7 @@ function SignUpModel() {
                                 <input
                                     type="text"
                                     className="form-control"
-                                    id="email"
+                                    id="signup-email"
                                     placeholder="E-mail/Phone Number"
                                     name="email"
                                     value={formValues.email}
@@ -230,7 +230,7 @@ function SignUpModel() {
                                 <input
                                     type="password"
                                     className="form-control"
-                                    id="password"
+                                    id="signup-password"
                                     placeholder="Password"
                                     name="password"
                                     value={formValues.password}
@@ -243,7 +243,7 @@ function SignUpModel() {
                                 <input
                                     type="password"
                                     className="form-control"
-                                    id="password_confirmation"
+                                    id="signup-password_confirmation"
                                     placeholder="Confirm Password"
                                     name="password_confirmation"
                                     value={formValues.password_confirmation}
