@@ -7,15 +7,15 @@ import Link from 'next/link';
 import axios from 'axios';
 import Cookies from 'js-cookie'
 import Loader from '@/components/Loader';
-import { toast } from 'react-toastify';
 import { useRouter, useSearchParams } from 'next/navigation'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function page() {
     const [userid, setUser] = useState('')
     const [loading, setLoading] = useState(false);
-    const [isActive, setIsActive] = useState(false);
-    const [spooterdetails, setspooterdetails] = useState([])
+    const [spotters, setSpotters] = useState([])
     const [categoryName, setCategoryName] = useState('')
+    const [bookmarkedSpotters, setBookmarkedSpotters] = useState({});
     const router = useRouter()
     const searchParams = useSearchParams()
     const categoryId = searchParams.get('id')
@@ -28,71 +28,14 @@ function page() {
         }
     }, []);
 
-    const [pagetitle, setSelectedTitle] = useState('')
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 1;
-
-    const totalPages = Math?.ceil(spooterdetails?.length / itemsPerPage);
-
-    const currentData = spooterdetails?.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
-
-    const handlePageChange = (page) => {
-        if (page > 0 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-        window.location.hash = `page${page}`; // Update the hash in the URL
-
-    };
-
-
-    useEffect(() => {
-        const hash = window.location.hash;
-        if (hash.startsWith("#page")) {
-            const page = parseInt(hash.replace("#page", ""), 10);
-            if (!isNaN(page)) {
-                setCurrentPage(page);
-            }
-        }
-    }, []);
-
-
     useEffect(() => {
         const user = Cookies.get('user-id');
         setUser(user)
     }, [])
 
-
-    const savespotters = (e) => {
-        const cookies = Cookies.get('user-token');
-        const formData = new FormData();
-        formData.append('user_id', userid);
-        formData.append('spotter_id', e);
-
-        axios.post(`${baseUrl}/api/spotters/change-bookmark-status`, formData, {
-            headers: {
-                'Authorization': `Bearer ${cookies}`,
-            }
-        })
-            .then((response) => {
-                console.log(response.data);
-                toast.success(response.data.message);
-                setIsActive(true);
-                setTimeout(() => {
-                    setIsActive(false);
-                }, 6000);
-            })
-            .catch((error) => {
-                console.error('There was an error!', error);
-            });
-    }
-
-
     useEffect(() => {
-        if (!categoryId) {
-            console.log('No category ID found');
+        if (!categoryId || !userid) {
+            console.log('No category ID or user ID found');
             return;
         }
 
@@ -102,263 +45,203 @@ function page() {
         
         console.log('Fetching spotters for category:', categoryId);
         
-        axios.post(`${baseUrl}/api/spotters/list-by-category`, formData, {
-            headers: {
-                'Authorization': `Bearer ${cookies}`
-            }
-        }).then((e) => {
-            console.log('Spotters API Response:', e);
-            console.log('Spotters Data:', e?.data);
-            console.log('Spotters List:', e?.data?.data?.datalist);
-            console.log('Category Name:', e?.data?.data?.category_name);
+        // Fetch spotters list and bookmarked spotters in parallel
+        Promise.all([
+            axios.post(`${baseUrl}/api/spotters/list-by-category`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${cookies}`
+                }
+            }),
+            axios.post(`${baseUrl}/api/spotters/get-bookmark?user_id=${userid}`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${cookies}`
+                }
+            })
+        ]).then(([categoryResponse, bookmarkedResponse]) => {
+            console.log('Spotters API Response:', categoryResponse);
+            console.log('Bookmarked API Response:', bookmarkedResponse);
             
-            setspooterdetails(e?.data?.data?.datalist || [])
-            setCategoryName(e?.data?.data?.category_name || 'Spotters')
+            const spottersList = categoryResponse?.data?.data?.datalist || [];
+            const bookmarkedList = bookmarkedResponse?.data?.data?.list?.data || [];
+            
+            setSpotters(spottersList);
+            setCategoryName(categoryResponse?.data?.data?.category_name || 'Spotters');
+            
+            // Create a Set of bookmarked spotter IDs for quick lookup
+            const bookmarkedIds = new Set(bookmarkedList.map(spotter => spotter.id));
+            
+            // Initialize bookmark status for each spotter
+            const bookmarkStatus = {};
+            spottersList.forEach(spotter => {
+                bookmarkStatus[spotter.id] = bookmarkedIds.has(spotter.id);
+            });
+            
+            console.log('Initial bookmark status:', bookmarkStatus);
+            setBookmarkedSpotters(bookmarkStatus);
+            
             setLoading(false);
         }).catch((error) => {
-            console.error('Error fetching spotters:', error);
-            console.error('Error response:', error.response);
-            setLoading(false);
-        })
-    }, [categoryId])
-
-
-
-    useState(() => {
-        if (currentData) {
-        }
-        setSelectedTitle()
-    }, [currentData])
-
-
-
-    const getPageRange = () => {
-        const range = [];
-        range.push(1);
-
-        if (currentPage > 3) {
-            range.push("...");
-        }
-
-        for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-            range.push(i);
-        }
-
-        if (currentPage < totalPages - 2) {
-            range.push("...");
-        }
-
-        if (totalPages > 1) {
-            range.push(totalPages);
-        }
-
-        return range;
-    };
-
-
-
-    const handleShare = async () => {
-        const currentUrl = `${window.location.origin}${window.location.pathname}${window.location.search}#page${currentPage}`;
-
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: "Check this out!",
-                    text: `I'm on page ${currentPage}. Check it out!`,
-                    url: currentUrl,
+            console.error('Error fetching data:', error);
+            
+            // Fallback: try just the category list if bookmarked fetch fails
+            axios.post(`${baseUrl}/api/spotters/list-by-category`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${cookies}`
+                }
+            }).then((e) => {
+                const spottersList = e?.data?.data?.datalist || [];
+                setSpotters(spottersList);
+                setCategoryName(e?.data?.data?.category_name || 'Spotters');
+                
+                // Initialize with empty bookmark status
+                const bookmarkStatus = {};
+                spottersList.forEach(spotter => {
+                    bookmarkStatus[spotter.id] = false;
                 });
-                console.log("Content shared successfully");
-            } catch (error) {
-                console.error("Error sharing content:", error);
-            }
-        } else {
-            try {
-                await navigator.clipboard.writeText(currentUrl);
-                alert("URL copied to clipboard! Share it with your friends.");
-            } catch (error) {
-                console.error("Failed to copy URL:", error);
-                alert("Unable to copy URL. Please try manually.");
-            }
-        }
-    };
+                setBookmarkedSpotters(bookmarkStatus);
+                
+                setLoading(false);
+            }).catch((err) => {
+                console.error('Error fetching spotters:', err);
+                setLoading(false);
+            });
+        });
+    }, [categoryId, userid])
 
+
+    // Generate color variations for spotters (similar to categories)
+    const colors = ['0deg', '120deg', '240deg', '60deg', '180deg', '300deg'];
 
     return (
-
         <>
-
-
-
             <Navbar />
             {!loading ? (
-
-
-
                 <div className="main-wrapper">
-
-
-
                     <section className="Macaroni-Sign-page pt-0 d-none d-lg-block">
-                        <div className="container">
-
-
+                        <div className="container-fluid px-0">
                             <div className="macaroni-top">
-                                <div className="row">
-
-
-                                    <div className="col-lg-4">
-                                        <div className="content">
-                                            <h2 className="text-white mb-0">
-
-                                                {categoryName}
-                                            </h2>
+                                <div className="container">
+                                    <div className="row align-items-center">
+                                        <div className="col-lg-6">
+                                            <div className="content">
+                                                <h2 className="text-white mb-0">
+                                                    {categoryName}
+                                                </h2>
+                                            </div>
                                         </div>
-                                    </div>
-
-
-                                    <div className="col-lg-8">
-                                        <div className="swiper-pagination">
-
-
-
-                                            <nav aria-label="Page navigation">
-
-
-                                                <ul className="pagination">
-                                                    {/* Previous button */}
-                                                    <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                                                        <a
-                                                            href="#"
-                                                            className="page-link"
-                                                            onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-                                                        >
-                                                            «
-                                                        </a>
-                                                    </li>
-
-                                                    {/* Page numbers */}
-                                                    {getPageRange().map((page, index) =>
-                                                        page === "..." ? (
-                                                            <li className="page-item" key={`ellipsis-${index}`}>
-                                                                <span className="page-link">...</span>
-                                                            </li>
-                                                        ) : (
-                                                            <li
-                                                                className={`page-item ${currentPage === page ? "active" : ""}`}
-                                                                key={page}
-                                                            >
-                                                                <a
-                                                                    href="#"
-                                                                    onClick={() => handlePageChange(page)}
-                                                                    className={`btn mx-1 ${currentPage === page ? "btn-primary" : "btn-outline-primary"}`}
-                                                                >
-                                                                    {page}
-                                                                </a>
-                                                            </li>
-                                                        )
-                                                    )}
-
-                                                    {/* Next button */}
-                                                    <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                                                        <a
-                                                            href="#"
-                                                            className="page-link"
-                                                            onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
-                                                        >
-                                                            »
-                                                        </a>
-                                                    </li>
-                                                </ul>
-
-
-                                            </nav>
-
-
+                                        <div className="col-lg-6 text-end">
+                                            <h6 className="text-white mb-0">Select Spotter</h6>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
                         </div>
 
-
-
-
-                        {currentData && currentData.length > 0 ? (
-                            currentData?.map((e, index) => (
-                                <div key={index} className="container"
-                                    onChange={() => {
-                                        console.log("Clicked Title:", e?.title); // Debugging click value
-                                        setSelectedTitle(e?.title);
-                                    }}
-                                >
-                                    <div
-                                        className="macaroni-sign-wrap p-4"
-                                        style={{ backgroundColor: "#fff" }}
-                                    >
-                                        <div className="row">
-                                            <div className="col-lg-4 sticky-top">
-                                                <div className="image">
-                                                    <img
-                                                        src={`${baseUrl}/assets/admin/images/spotters/${e.image}`}
-
-                                                        className="img-fluid w-100 mb-4"
-                                                        alt="Macaroni Sign"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-8">
-                                                <div className="macaroni-sign-inner">
-                                                    <h3
-                                                        style={{ color: 'black', display: 'flex', justifyContent: 'space-between' }}
-
-                                                    >
-                                                        {e?.title}
-                                                        <div
-                                                            className={`icon ${isActive ? "bookmark-active" : ""}`}
-                                                            onClick={() => savespotters(e.id)}>
-                                                            <i className="fa-solid fa-bookmark" />
+                        <div className="container">
+                            <div className="row justify-content-center mt-4">
+                                <div className="col-lg-12">
+                                    <div className="row g-4">
+                                        {spotters && spotters.length > 0 ? (
+                                            spotters?.map((spotter, index) => (
+                                                <div className="col-md-4 col-sm-6 col-6" key={spotter.id} style={{ padding: '12px', flex: '0 0 12.5%', maxWidth: '12.5%' }}>
+                                                    <Link href={`/spotters/view?id=${categoryId}&spotterId=${spotter.id}#page${index + 1}`}>
+                                                        <div className="box" style={{ 
+                                                            display: 'flex', 
+                                                            alignItems: 'center', 
+                                                            justifyContent: 'center', 
+                                                            textAlign: 'center', 
+                                                            borderRadius: '15px',
+                                                            transition: 'all 0.3s ease',
+                                                            cursor: 'pointer',
+                                                            position: 'relative',
+                                                            width: '100%',
+                                                            aspectRatio: '1 / 1'
+                                                        }}>
+                                                            <DotLottieReact
+                                                                src="/animantion/Blue circle 2.json"
+                                                                loop
+                                                                autoplay
+                                                                style={{ 
+                                                                    width: '100%', 
+                                                                    height: '100%',
+                                                                    filter: `hue-rotate(${colors[index % colors.length]})`
+                                                                }}
+                                                            />
+                                                            <h6 style={{ 
+                                                                position: 'absolute',
+                                                                top: '50%',
+                                                                left: '50%',
+                                                                transform: 'translate(-50%, -50%)',
+                                                                color: 'white',
+                                                                fontSize: '12px',
+                                                                fontWeight: '600',
+                                                                margin: '0',
+                                                                width: '80%',
+                                                                wordWrap: 'break-word',
+                                                                lineHeight: '1.2'
+                                                            }}>{spotter.title}</h6>
+                                                            
+                                                            {/* Bookmark Icon */}
+                                                            {bookmarkedSpotters[spotter.id] && (
+                                                                <div style={{
+                                                                    position: 'absolute',
+                                                                    top: '8px',
+                                                                    right: '8px',
+                                                                    background: 'white',
+                                                                    borderRadius: '8px',
+                                                                    padding: '4px',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                                                                }}>
+                                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path 
+                                                                            d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" 
+                                                                            fill="url(#bookmarkGradient)"
+                                                                        />
+                                                                        <defs>
+                                                                            <linearGradient id="bookmarkGradient" x1="5" y1="3" x2="19" y2="21" gradientUnits="userSpaceOnUse">
+                                                                                <stop offset="0%" stopColor="#44A6C5"/>
+                                                                                <stop offset="100%" stopColor="#1E4FFD"/>
+                                                                            </linearGradient>
+                                                                        </defs>
+                                                                    </svg>
+                                                                </div>
+                                                            )}
                                                         </div>
-
-                                                    </h3>
-                                                    <p dangerouslySetInnerHTML={{ __html: e?.content }}></p>
+                                                    </Link>
                                                 </div>
+                                            ))
+                                        ) : (
+                                            <div className="col-12 text-center py-5">
+                                                <p className="text-white">No spotters found in this category.</p>
+                                                <Link href="/spotters" style={{
+                                                    padding: '12px 30px',
+                                                    background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
+                                                    borderRadius: '12px',
+                                                    color: 'white',
+                                                    textDecoration: 'none',
+                                                    fontSize: '16px',
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: '600',
+                                                    display: 'inline-block'
+                                                }}>
+                                                    Back to Categories
+                                                </Link>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="container">
-                                <div className="macaroni-sign-wrap p-4" style={{ backgroundColor: "#fff" }}>
-                                    <div className="text-center py-5">
-                                        <h4 style={{ color: '#666' }}>No spotters found in this category</h4>
-                                        <p style={{ color: '#999' }}>Please check back later or select another category.</p>
-                                        <Link href="/spotters" className="btn btn-primary mt-3">
-                                            Back to Categories
-                                        </Link>
+                                        )}
                                     </div>
                                 </div>
                             </div>
-                        )}
-
-
-                    </section >
-
-
-
+                        </div>
+                    </section>
 
                     <section className="Macaroni-sign-page-mobile p-0 d-block d-lg-none">
                         <div className="Macaroni-top">
                             <div className="container">
                                 <div className="row">
                                     <Link href='/spotters'>
-
-
                                         <div className="col-4">
                                             <i className="fa-solid fa-chevron-left" />
                                         </div>
@@ -366,130 +249,93 @@ function page() {
                                             <h6>{categoryName}</h6>
                                         </div>
                                         <div className="col-4" />
-
                                     </Link>
-
                                 </div>
                             </div>
                         </div>
 
-
-                        <div className="Macaroni-middle">
-
-                            {currentData?.map((e) => {
-                                return (
-                                    <>
-
-                                        <div
-                                            className={`icon ${isActive ? "bookmark-active" : ""}`}
-                                            onClick={() => savespotters(e.id)}>
-                                            <i className="fa-solid fa-bookmark" />
-                                        </div>
-                                        <div className="image">
-                                            <img
-                                                src={`${baseUrl}/assets/admin/images/spotters/${e.image}`}
-
-                                                className="img-fluid w-100 mb-5"
-                                                alt="Macaroni Sign"
-                                            />
-                                        </div>
-
-
-                                        <div className="macaroni-sign-wrap " style={{ backgroundColor: "#fff" }}>
-                                            <div className="container">
-                                                <div className="row">
-                                                    <div className="col-12">
-                                                        <div className='logo-with-share' >
-                                                            <img className=' img-fluid' src="/images/add-logo.png" alt="" />
-                                                        </div>
-
-                                                        <div className='title-in-header'>
-                                                            <h5 >{e?.title}</h5>
-
-
-                                                        </div>
-
-                                                        <i className="fa-solid fa-share" onClick={handleShare} />
-
-                                                        <div className="macaroni-sign-inner">
-                                                            <div className="">
-                                                                <div className="">
-
-
-                                                                    <div style={{ width: '100%' }} className="html-content">
-                                                                        <div dangerouslySetInnerHTML={{ __html: e?.content }}></div>
-                                                                    </div>
-                                                                </div>
+                        <div className="Macaroni-middle" style={{ paddingTop: '20px' }}>
+                            <div className="container">
+                                <div className="row g-3">
+                                    {spotters && spotters.length > 0 ? (
+                                        spotters?.map((spotter, index) => (
+                                            <div className="col-6" key={spotter.id}>
+                                                <Link href={`/spotters/view?id=${categoryId}&spotterId=${spotter.id}#page${index + 1}`}>
+                                                    <div className="box" style={{ 
+                                                        display: 'flex', 
+                                                        flexDirection: 'column', 
+                                                        alignItems: 'center', 
+                                                        justifyContent: 'center', 
+                                                        textAlign: 'center', 
+                                                        padding: '15px',
+                                                        borderRadius: '15px',
+                                                        position: 'relative'
+                                                    }}>
+                                                        <DotLottieReact
+                                                            src="/animantion/Blue circle 2.json"
+                                                            loop
+                                                            autoplay
+                                                            style={{ 
+                                                                width: '100px', 
+                                                                height: '100px',
+                                                                filter: `hue-rotate(${colors[index % colors.length]})`
+                                                            }}
+                                                        />
+                                                        <h6 style={{ 
+                                                            marginTop: '10px', 
+                                                            fontSize: '13px',
+                                                            color: 'white',
+                                                            fontWeight: '500',
+                                                            marginBottom: '0'
+                                                        }}>{spotter.title}</h6>
+                                                        
+                                                        {/* Bookmark Icon */}
+                                                        {bookmarkedSpotters[spotter.id] && (
+                                                            <div style={{
+                                                                position: 'absolute',
+                                                                top: '10px',
+                                                                right: '10px',
+                                                                background: 'white',
+                                                                borderRadius: '8px',
+                                                                padding: '4px',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                                                            }}>
+                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path 
+                                                                        d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" 
+                                                                        fill="url(#bookmarkGradientMobile)"
+                                                                    />
+                                                                    <defs>
+                                                                        <linearGradient id="bookmarkGradientMobile" x1="5" y1="3" x2="19" y2="21" gradientUnits="userSpaceOnUse">
+                                                                            <stop offset="0%" stopColor="#44A6C5"/>
+                                                                            <stop offset="100%" stopColor="#1E4FFD"/>
+                                                                        </linearGradient>
+                                                                    </defs>
+                                                                </svg>
                                                             </div>
-                                                        </div>
+                                                        )}
                                                     </div>
-                                                </div>
+                                                </Link>
                                             </div>
+                                        ))
+                                    ) : (
+                                        <div className="col-12 text-center py-5">
+                                            <p className="text-white">No spotters found in this category.</p>
                                         </div>
-                                    </>
-                                )
-                            })}
-
-                            <div className="bottom-pagination">
-                                <div className="swiper-pagination">
-                                    <nav aria-label="Page navigation">
-                                        <ul className="pagination justify-content-end mb-0">
-                                            <li className="page-item previous">
-                                                <a
-                                                    className="page-link"
-                                                    onClick={() => handlePageChange(currentPage - 1)}
-                                                >
-                                                    «
-                                                </a>
-                                            </li>
-
-
-                                            {Array.from({ length: totalPages }, (_, index) => (
-                                                <li className="page-item">
-                                                    <a
-                                                        key={index}
-                                                        onClick={() => handlePageChange(index + 1)}
-                                                        className={`btn mx-1 ${currentPage === index + 1 ? "btn-primary" : "btn-outline-primary"
-                                                            }`}
-                                                    >
-                                                        {index + 1}
-                                                    </a>
-                                                </li>
-                                            ))}
-                                            <li className="page-item next">
-                                                <a
-                                                    className="page-link"
-                                                    href="#"
-                                                    onClick={() => handlePageChange(currentPage + 1)}
-                                                >
-                                                    »
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-
-
+                                    )}
                                 </div>
                             </div>
                         </div>
-
-
-
-
                     </section>
-                </div >
+                </div>
             ) : (
                 <Loader />
             )}
-
-
-
             <Footer />
-
         </>
-
-
-
     )
 }
 

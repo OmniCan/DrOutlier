@@ -68,52 +68,74 @@ function page() {
 
 
                     <section className="Macaroni-Sign-page pt-0 d-none d-lg-block">
-                        <div className="container">
-
-
+                        <div className="container-fluid px-0">
                             <div className="macaroni-top">
-                                <div className="row">
-
-
-                                    <div className="col-lg-12">
-                                        <div className="content">
-                                            <h2 className="text-white mb-4 text-center">
-
-                                                Spotters Categories
-                                            </h2>
+                                <div className="container">
+                                    <div className="row align-items-center">
+                                        <div className="col-lg-6">
+                                            <div className="content">
+                                                <h2 className="text-white mb-0">
+                                                    Spotters Categories
+                                                </h2>
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-6 text-end">
+                                            <h6 className="text-white mb-0">Select Chapter</h6>
                                         </div>
                                     </div>
-
-
                                 </div>
                             </div>
+                        </div>
 
-
-                            <div className="row">
-                                <div className="col-lg-10 m-auto">
-                                    <div className="row">
+                        <div className="container">
+                            <div className="row justify-content-center mt-4">
+                                <div className="col-lg-12">
+                                    <div className="row g-4">
                                         {categories && categories.length > 0 ? (
                                             categories?.map((category, index) => (
-                                                <div className="col-lg-4 col-6 mb-4" key={category.id}>
+                                                <div className="col-md-4 col-sm-6 col-6" key={category.id} style={{ padding: '18px', flex: '0 0 20%', maxWidth: '20%' }}>
                                                     <Link href={`/spotters/category?id=${category.id}`}>
-                                                        <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
+                                                        <div className="box" style={{ 
+                                                            display: 'flex', 
+                                                            alignItems: 'center', 
+                                                            justifyContent: 'center', 
+                                                            textAlign: 'center', 
+                                                            borderRadius: '15px',
+                                                            transition: 'all 0.3s ease',
+                                                            cursor: 'pointer',
+                                                            position: 'relative',
+                                                            width: '100%',
+                                                            aspectRatio: '1 / 1'
+                                                        }}>
                                                             <DotLottieReact
                                                                 src="/animantion/Blue circle 2.json"
                                                                 loop
                                                                 autoplay
                                                                 style={{ 
-                                                                    width: '174px', 
-                                                                    height: '182px',
+                                                                    width: '100%', 
+                                                                    height: '100%',
                                                                     filter: category.color ? `hue-rotate(${category.color})` : 'none'
                                                                 }}
                                                             />
-                                                            <h6 style={{ marginTop: '10px' }}>{category.name}</h6>
+                                                            <h6 style={{ 
+                                                                position: 'absolute',
+                                                                top: '50%',
+                                                                left: '50%',
+                                                                transform: 'translate(-50%, -50%)',
+                                                                color: 'white',
+                                                                fontSize: '16px',
+                                                                fontWeight: '600',
+                                                                margin: '0',
+                                                                width: '75%',
+                                                                wordWrap: 'break-word',
+                                                                lineHeight: '1.3'
+                                                            }}>{category.name}</h6>
                                                         </div>
                                                     </Link>
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="col-12 text-center">
+                                            <div className="col-12 text-center py-5">
                                                 <p className="text-white">No categories found. Please check the API endpoint or database.</p>
                                             </div>
                                         )}
@@ -139,8 +161,6 @@ function page() {
                             <div className="container">
                                 <div className="row">
                                     <Link href='/'>
-
-
                                         <div className="col-4">
                                             <i className="fa-solid fa-chevron-left" />
                                         </div>
@@ -148,39 +168,51 @@ function page() {
                                             <h6>Spotters Categories</h6>
                                         </div>
                                         <div className="col-4" />
-
                                     </Link>
-
                                 </div>
                             </div>
                         </div>
 
 
-                        <div className="Macaroni-middle">
+                        <div className="Macaroni-middle" style={{ paddingTop: '20px' }}>
                             <div className="container">
-                                <div className="row">
+                                <div className="row g-3">
                                     {categories && categories.length > 0 ? (
                                         categories?.map((category, index) => (
-                                            <div className="col-6 mb-4" key={category.id}>
+                                            <div className="col-6" key={category.id}>
                                                 <Link href={`/spotters/category?id=${category.id}`}>
-                                                    <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
+                                                    <div className="box" style={{ 
+                                                        display: 'flex', 
+                                                        flexDirection: 'column', 
+                                                        alignItems: 'center', 
+                                                        justifyContent: 'center', 
+                                                        textAlign: 'center', 
+                                                        padding: '15px',
+                                                        borderRadius: '15px'
+                                                    }}>
                                                         <DotLottieReact
                                                             src="/animantion/Blue circle 2.json"
                                                             loop
                                                             autoplay
                                                             style={{ 
-                                                                width: '120px', 
-                                                                height: '120px',
+                                                                width: '100px', 
+                                                                height: '100px',
                                                                 filter: category.color ? `hue-rotate(${category.color})` : 'none'
                                                             }}
                                                         />
-                                                        <h6 style={{ marginTop: '10px', fontSize: '14px' }}>{category.name}</h6>
+                                                        <h6 style={{ 
+                                                            marginTop: '10px', 
+                                                            fontSize: '13px',
+                                                            color: 'white',
+                                                            fontWeight: '500',
+                                                            marginBottom: '0'
+                                                        }}>{category.name}</h6>
                                                     </div>
                                                 </Link>
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="col-12 text-center">
+                                        <div className="col-12 text-center py-5">
                                             <p className="text-white">No categories found. Please check the API endpoint or database.</p>
                                         </div>
                                     )}
