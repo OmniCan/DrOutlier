@@ -8,7 +8,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie'
 import Loader from '@/components/Loader';
 import { toast } from 'react-toastify';
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 function page() {
     const [userid, setUser] = useState('')
@@ -17,8 +17,8 @@ function page() {
     const [spooterdetails, setspooterdetails] = useState([])
     const [categoryName, setCategoryName] = useState('')
     const router = useRouter()
-    const params = useParams()
-    const categoryId = params.id
+    const searchParams = useSearchParams()
+    const categoryId = searchParams.get('id')
 
     useEffect(() => {
         setLoading(true);
@@ -91,6 +91,7 @@ function page() {
 
 
     useEffect(() => {
+        if (!categoryId) return;
 
         const cookies = Cookies.get('user-token');
         const formData = new FormData();
@@ -146,7 +147,7 @@ function page() {
 
 
     const handleShare = async () => {
-        const currentUrl = `${window.location.origin}${window.location.pathname}#page${currentPage}`;
+        const currentUrl = `${window.location.origin}${window.location.pathname}${window.location.search}#page${currentPage}`;
 
         if (navigator.share) {
             try {

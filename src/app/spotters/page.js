@@ -88,7 +88,7 @@ function page() {
                                     <div className="row">
                                         {categories?.map((category, index) => (
                                             <div className="col-lg-4 col-6 mb-4" key={category.id}>
-                                                <Link href={`/spotters/category/${category.id}`}>
+                                                <Link href={`/spotters/category?id=${category.id}`}>
                                                     <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
                                                         <DotLottieReact
                                                             src="/animantion/Blue circle 2.json"
@@ -149,7 +149,7 @@ function page() {
                                 <div className="row">
                                     {categories?.map((category, index) => (
                                         <div className="col-6 mb-4" key={category.id}>
-                                            <Link href={`/spotters/category/${category.id}`}>
+                                            <Link href={`/spotters/category?id=${category.id}`}>
                                                 <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
                                                     <DotLottieReact
                                                         src="/animantion/Blue circle 2.json"
