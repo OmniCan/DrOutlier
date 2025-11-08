@@ -32,15 +32,21 @@ function page() {
 
     useEffect(() => {
         const cookies = Cookies.get('user-token');
+        console.log('Fetching categories from:', `${baseUrl}/api/spotters/categories`);
+        
         axios.post(`${baseUrl}/api/spotters/categories`, {}, {
             headers: {
                 'Authorization': `Bearer ${cookies}`
             }
         }).then((response) => {
+            console.log('Categories API Response:', response);
+            console.log('Categories Data:', response?.data);
+            console.log('Categories Array:', response?.data?.data);
             setCategories(response?.data?.data || [])
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching categories:', error);
+            console.error('Error response:', error.response);
             setLoading(false);
         })
     }, [])
@@ -86,25 +92,31 @@ function page() {
                             <div className="row">
                                 <div className="col-lg-10 m-auto">
                                     <div className="row">
-                                        {categories?.map((category, index) => (
-                                            <div className="col-lg-4 col-6 mb-4" key={category.id}>
-                                                <Link href={`/spotters/category?id=${category.id}`}>
-                                                    <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
-                                                        <DotLottieReact
-                                                            src="/animantion/Blue circle 2.json"
-                                                            loop
-                                                            autoplay
-                                                            style={{ 
-                                                                width: '174px', 
-                                                                height: '182px',
-                                                                filter: category.color ? `hue-rotate(${category.color})` : 'none'
-                                                            }}
-                                                        />
-                                                        <h6 style={{ marginTop: '10px' }}>{category.name}</h6>
-                                                    </div>
-                                                </Link>
+                                        {categories && categories.length > 0 ? (
+                                            categories?.map((category, index) => (
+                                                <div className="col-lg-4 col-6 mb-4" key={category.id}>
+                                                    <Link href={`/spotters/category?id=${category.id}`}>
+                                                        <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
+                                                            <DotLottieReact
+                                                                src="/animantion/Blue circle 2.json"
+                                                                loop
+                                                                autoplay
+                                                                style={{ 
+                                                                    width: '174px', 
+                                                                    height: '182px',
+                                                                    filter: category.color ? `hue-rotate(${category.color})` : 'none'
+                                                                }}
+                                                            />
+                                                            <h6 style={{ marginTop: '10px' }}>{category.name}</h6>
+                                                        </div>
+                                                    </Link>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="col-12 text-center">
+                                                <p className="text-white">No categories found. Please check the API endpoint or database.</p>
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -147,25 +159,31 @@ function page() {
                         <div className="Macaroni-middle">
                             <div className="container">
                                 <div className="row">
-                                    {categories?.map((category, index) => (
-                                        <div className="col-6 mb-4" key={category.id}>
-                                            <Link href={`/spotters/category?id=${category.id}`}>
-                                                <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
-                                                    <DotLottieReact
-                                                        src="/animantion/Blue circle 2.json"
-                                                        loop
-                                                        autoplay
-                                                        style={{ 
-                                                            width: '120px', 
-                                                            height: '120px',
-                                                            filter: category.color ? `hue-rotate(${category.color})` : 'none'
-                                                        }}
-                                                    />
-                                                    <h6 style={{ marginTop: '10px', fontSize: '14px' }}>{category.name}</h6>
-                                                </div>
-                                            </Link>
+                                    {categories && categories.length > 0 ? (
+                                        categories?.map((category, index) => (
+                                            <div className="col-6 mb-4" key={category.id}>
+                                                <Link href={`/spotters/category?id=${category.id}`}>
+                                                    <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
+                                                        <DotLottieReact
+                                                            src="/animantion/Blue circle 2.json"
+                                                            loop
+                                                            autoplay
+                                                            style={{ 
+                                                                width: '120px', 
+                                                                height: '120px',
+                                                                filter: category.color ? `hue-rotate(${category.color})` : 'none'
+                                                            }}
+                                                        />
+                                                        <h6 style={{ marginTop: '10px', fontSize: '14px' }}>{category.name}</h6>
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="col-12 text-center">
+                                            <p className="text-white">No categories found. Please check the API endpoint or database.</p>
                                         </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
                         </div>

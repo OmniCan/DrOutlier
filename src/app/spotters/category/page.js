@@ -91,22 +91,33 @@ function page() {
 
 
     useEffect(() => {
-        if (!categoryId) return;
+        if (!categoryId) {
+            console.log('No category ID found');
+            return;
+        }
 
         const cookies = Cookies.get('user-token');
         const formData = new FormData();
         formData.append('category_id', categoryId);
+        
+        console.log('Fetching spotters for category:', categoryId);
         
         axios.post(`${baseUrl}/api/spotters/list-by-category`, formData, {
             headers: {
                 'Authorization': `Bearer ${cookies}`
             }
         }).then((e) => {
+            console.log('Spotters API Response:', e);
+            console.log('Spotters Data:', e?.data);
+            console.log('Spotters List:', e?.data?.data?.datalist);
+            console.log('Category Name:', e?.data?.data?.category_name);
+            
             setspooterdetails(e?.data?.data?.datalist || [])
             setCategoryName(e?.data?.data?.category_name || 'Spotters')
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching spotters:', error);
+            console.error('Error response:', error.response);
             setLoading(false);
         })
     }, [categoryId])
@@ -277,49 +288,63 @@ function page() {
 
 
 
-                        {currentData?.map((e, index) => (
-                            <div key={index} className="container"
-                                onChange={() => {
-                                    console.log("Clicked Title:", e?.title); // Debugging click value
-                                    setSelectedTitle(e?.title);
-                                }}
-                            >
-                                <div
-                                    className="macaroni-sign-wrap p-4"
-                                    style={{ backgroundColor: "#fff" }}
+                        {currentData && currentData.length > 0 ? (
+                            currentData?.map((e, index) => (
+                                <div key={index} className="container"
+                                    onChange={() => {
+                                        console.log("Clicked Title:", e?.title); // Debugging click value
+                                        setSelectedTitle(e?.title);
+                                    }}
                                 >
-                                    <div className="row">
-                                        <div className="col-lg-4 sticky-top">
-                                            <div className="image">
-                                                <img
-                                                    src={`${baseUrl}/assets/admin/images/spotters/${e.image}`}
+                                    <div
+                                        className="macaroni-sign-wrap p-4"
+                                        style={{ backgroundColor: "#fff" }}
+                                    >
+                                        <div className="row">
+                                            <div className="col-lg-4 sticky-top">
+                                                <div className="image">
+                                                    <img
+                                                        src={`${baseUrl}/assets/admin/images/spotters/${e.image}`}
 
-                                                    className="img-fluid w-100 mb-4"
-                                                    alt="Macaroni Sign"
-                                                />
+                                                        className="img-fluid w-100 mb-4"
+                                                        alt="Macaroni Sign"
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="col-lg-8">
-                                            <div className="macaroni-sign-inner">
-                                                <h3
-                                                    style={{ color: 'black', display: 'flex', justifyContent: 'space-between' }}
+                                            <div className="col-lg-8">
+                                                <div className="macaroni-sign-inner">
+                                                    <h3
+                                                        style={{ color: 'black', display: 'flex', justifyContent: 'space-between' }}
 
-                                                >
-                                                    {e?.title}
-                                                    <div
-                                                        className={`icon ${isActive ? "bookmark-active" : ""}`}
-                                                        onClick={() => savespotters(e.id)}>
-                                                        <i className="fa-solid fa-bookmark" />
-                                                    </div>
+                                                    >
+                                                        {e?.title}
+                                                        <div
+                                                            className={`icon ${isActive ? "bookmark-active" : ""}`}
+                                                            onClick={() => savespotters(e.id)}>
+                                                            <i className="fa-solid fa-bookmark" />
+                                                        </div>
 
-                                                </h3>
-                                                <p dangerouslySetInnerHTML={{ __html: e?.content }}></p>
+                                                    </h3>
+                                                    <p dangerouslySetInnerHTML={{ __html: e?.content }}></p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            ))
+                        ) : (
+                            <div className="container">
+                                <div className="macaroni-sign-wrap p-4" style={{ backgroundColor: "#fff" }}>
+                                    <div className="text-center py-5">
+                                        <h4 style={{ color: '#666' }}>No spotters found in this category</h4>
+                                        <p style={{ color: '#999' }}>Please check back later or select another category.</p>
+                                        <Link href="/spotters" className="btn btn-primary mt-3">
+                                            Back to Categories
+                                        </Link>
+                                    </div>
+                                </div>
                             </div>
-                        ))}
+                        )}
 
 
                     </section >
