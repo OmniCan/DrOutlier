@@ -11,7 +11,7 @@ import { styled, lighten, darken } from '@mui/system';
 import baseUrl from '@/Services/BaseUrl';
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useGoogleLogin } from '@react-oauth/google/dist';
 import LoginModel from './LoginModel';
 import SignUpModel from './SignUpModel';
@@ -31,6 +31,7 @@ function Navbar() {
 
     const [count, setcount] = useState(0)
     const router = useRouter()
+    const pathname = usePathname()
     const [Username, SetLoginUsername] = useState('UserName')
 
 
@@ -560,18 +561,31 @@ function Navbar() {
                             tabIndex={-1}
                             id="offcanvasDarkNavbar"
                             aria-labelledby="offcanvasDarkNavbarLabel"
+                            style={{
+                                width: '50%',
+                                maxWidth: '300px',
+                                minWidth: '250px'
+                            }}
                         >
                             <div className="offcanvas-body">
-                                <button
-                                    type="button"
-                                    className="btn-close btn-close-white"
-                                    data-bs-dismiss="offcanvas"
-                                    aria-label="Close"
-                                >
-                                    <i className="fa-solid fa-chevron-left" />
-                                </button>
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 className="mb-0" style={{ color: 'white' }}>Menu</h6>
+                                    <button
+                                        type="button"
+                                        className="btn-close btn-close-white"
+                                        data-bs-dismiss="offcanvas"
+                                        aria-label="Close"
+                                        style={{
+                                            fontSize: '24px',
+                                            opacity: 1,
+                                            filter: 'brightness(0) invert(1)'
+                                        }}
+                                    >
+                                        <i className="fa-solid fa-xmark" style={{ fontSize: '24px', color: 'white' }} />
+                                    </button>
+                                </div>
                                 <div className="heading-wrap">
-                                    <h5 className="mt-4">
+                                    <h5 className="mt-2">
                                         Welcome to
                                         <span>
                                             Dr Outlier <strong>Radiology</strong>
@@ -608,37 +622,37 @@ function Navbar() {
 
 
                                     <li className="nav-item active">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/">
+                                        <Link className={`nav-link ${pathname === '/' ? 'active' : ''}`} onClick={hendleChecklogin} href="/" data-bs-dismiss="offcanvas">
                                             Home{" "}
                                         </Link>
                                     </li>
                                     <li className="nav-item active">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/spotters">
+                                        <Link className={`nav-link ${pathname?.startsWith('/spotters') ? 'active' : ''}`} onClick={hendleChecklogin} href="/spotters" data-bs-dismiss="offcanvas">
                                             Spotters{" "}
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/notes">
+                                        <Link className={`nav-link ${pathname?.startsWith('/notes') ? 'active' : ''}`} onClick={hendleChecklogin} href="/notes" data-bs-dismiss="offcanvas">
                                             Notes{" "}
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/osce">
+                                        <Link className={`nav-link ${pathname?.startsWith('/osce') ? 'active' : ''}`} onClick={hendleChecklogin} href="/osce" data-bs-dismiss="offcanvas">
                                             OSCE{" "}
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/ai-rad">
+                                        <Link className={`nav-link ${pathname?.startsWith('/ai-rad') ? 'active' : ''}`} onClick={hendleChecklogin} href="/ai-rad" data-bs-dismiss="offcanvas">
                                             AI-Rad
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/practical-essentials">
+                                        <Link className={`nav-link ${pathname?.startsWith('/practical-essentials') ? 'active' : ''}`} onClick={hendleChecklogin} href="/practical-essentials" data-bs-dismiss="offcanvas">
                                             Practical Essentials
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/watch-and-learn">
+                                        <Link className={`nav-link ${pathname?.startsWith('/watch-and-learn') ? 'active' : ''}`} onClick={hendleChecklogin} href="/watch-and-learn" data-bs-dismiss="offcanvas">
                                             Watch &amp; Learn{" "}
                                         </Link>
                                     </li>
@@ -655,37 +669,37 @@ function Navbar() {
                                         </Link>
                                         <ul className="dropdown-menu">
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/spotters/save-spootters">
+                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/spotters/save-spootters" data-bs-dismiss="offcanvas">
                                                     Saved Spotters
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/notes/save-notes">
+                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/notes/save-notes" data-bs-dismiss="offcanvas">
                                                     Saved Notes{" "}
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/osce/save-osce">
+                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/osce/save-osce" data-bs-dismiss="offcanvas">
                                                     Saved OSCE{" "}
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/ai-rad/save-ai-rad">
+                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/ai-rad/save-ai-rad" data-bs-dismiss="offcanvas">
                                                     Saved AI-Rad{" "}
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/practical-essentials/save-practical-essentials">
+                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/practical-essentials/save-practical-essentials" data-bs-dismiss="offcanvas">
                                                     Saved Practical Essentials{" "}
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/watch-and-learn/save-watch-and-lern">
+                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/watch-and-learn/save-watch-and-lern" data-bs-dismiss="offcanvas">
                                                     Saved Watch &amp; Learn{" "}
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/quizora">
+                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/quizora" data-bs-dismiss="offcanvas">
                                                     Saved Quizzes{' '}
                                                 </Link>
                                             </li>
@@ -740,42 +754,42 @@ function Navbar() {
                             <div className="container">
                                 <ul className="navbar-nav justify-content-between w-100 align-items-center">
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/">
+                                        <Link className={`nav-link ${pathname === '/' ? 'active' : ''}`} onClick={hendleChecklogin} href="/">
                                             Home
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/spotters">
+                                        <Link className={`nav-link ${pathname?.startsWith('/spotters') ? 'active' : ''}`} onClick={hendleChecklogin} href="/spotters">
                                             Spotters
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/notes">
+                                        <Link className={`nav-link ${pathname?.startsWith('/notes') ? 'active' : ''}`} onClick={hendleChecklogin} href="/notes">
                                             NOtes
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/osce">
+                                        <Link className={`nav-link ${pathname?.startsWith('/osce') ? 'active' : ''}`} onClick={hendleChecklogin} href="/osce">
                                             OSCE
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/ai-rad">
+                                        <Link className={`nav-link ${pathname?.startsWith('/ai-rad') ? 'active' : ''}`} onClick={hendleChecklogin} href="/ai-rad">
                                             AI-Rad
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/practical-essentials">
+                                        <Link className={`nav-link ${pathname?.startsWith('/practical-essentials') ? 'active' : ''}`} onClick={hendleChecklogin} href="/practical-essentials">
                                             Practical Essentials
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/watch-and-learn">
+                                        <Link className={`nav-link ${pathname?.startsWith('/watch-and-learn') ? 'active' : ''}`} onClick={hendleChecklogin} href="/watch-and-learn">
                                             Watch &amp; Learn
                                         </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleCheckloginNav} href="/quizora">
+                                        <Link className={`nav-link ${pathname?.startsWith('/quizora') ? 'active' : ''}`} onClick={hendleCheckloginNav} href="/quizora">
                                             Quizora
                                         </Link>
                                     </li>
