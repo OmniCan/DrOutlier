@@ -17,6 +17,9 @@ function page() {
     const [categoryName, setCategoryName] = useState('')
     const [showAnswer, setShowAnswer] = useState(false);
     const [bookmarkedSpotters, setBookmarkedSpotters] = useState({});
+    const [allChapters, setAllChapters] = useState([])
+    const [currentChapterIndex, setCurrentChapterIndex] = useState(-1)
+    const [parentCategoryId, setParentCategoryId] = useState(null)
     const router = useRouter()
     const searchParams = useSearchParams()
     const categoryId = searchParams.get('id')
@@ -108,14 +111,14 @@ function page() {
         }
 
         const cookies = Cookies.get('user-token');
-        const formData = new FormData();
-        formData.append('category_id', categoryId);
         
         console.log('Fetching spotters for category:', categoryId, 'User:', userid);
         
         // Fetch spotters list and bookmarked spotters in parallel
         Promise.all([
-            axios.post(`${baseUrl}/api/spotters/list-by-category`, formData, {
+            axios.post(`${baseUrl}/api/spotters/list-by-category`, {
+                category_id: categoryId
+            }, {
                 headers: {
                     'Authorization': `Bearer ${cookies}`
                 }
@@ -127,13 +130,55 @@ function page() {
             })
         ]).then(([categoryResponse, bookmarkedResponse]) => {
             console.log('Spotters API Response:', categoryResponse);
+            console.log('Full categoryResponse.data:', categoryResponse?.data);
+            console.log('categoryResponse.data.data:', categoryResponse?.data?.data);
             console.log('Bookmarked API Response:', bookmarkedResponse);
+            
+            // Log all keys in the data object
+            if (categoryResponse?.data?.data) {
+                console.log('Keys in data:', Object.keys(categoryResponse.data.data));
+                console.log('category_name:', categoryResponse.data.data.category_name);
+                console.log('category field:', categoryResponse.data.data.category);
+                console.log('datalist length:', categoryResponse.data.data.datalist?.length);
+            }
             
             const spottersList = categoryResponse?.data?.data?.datalist || [];
             const bookmarkedList = bookmarkedResponse?.data?.data?.list?.data || [];
+            const category = categoryResponse?.data?.data?.category;
+            
+            console.log('Category object:', category);
             
             setspooterdetails(spottersList);
             setCategoryName(categoryResponse?.data?.data?.category_name || 'Spotters');
+            
+            // If category has parent_id, fetch all sibling chapters
+            if (category && category.parent_id && category.parent_id !== 0) {
+                console.log('Category has parent_id:', category.parent_id, 'Fetching siblings...');
+                setParentCategoryId(category.parent_id);
+                
+                axios.post(`${baseUrl}/api/spotters/chapters`, {
+                    category_id: category.parent_id
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${cookies}`
+                    }
+                }).then((chaptersResponse) => {
+                    console.log('Chapters Response:', chaptersResponse);
+                    const chapters = chaptersResponse?.data?.data?.chapters || [];
+                    console.log('Chapters found:', chapters.length, chapters);
+                    setAllChapters(chapters);
+                    
+                    // Find current chapter index
+                    const currentIndex = chapters.findIndex(ch => ch.id.toString() === categoryId.toString());
+                    console.log('Current chapter index:', currentIndex, 'out of', chapters.length);
+                    setCurrentChapterIndex(currentIndex);
+                }).catch((error) => {
+                    console.error('Error fetching chapters:', error);
+                    console.error('Error details:', error.response);
+                });
+            } else {
+                console.log('Category has no parent or parent_id is 0:', category);
+            }
             
             // Create a Set of bookmarked spotter IDs for quick lookup
             const bookmarkedIds = new Set(bookmarkedList.map(spotter => spotter.id));
@@ -161,7 +206,9 @@ function page() {
             console.error('Error fetching data:', error);
             
             // Fallback: try just the category list if bookmarked fetch fails
-            axios.post(`${baseUrl}/api/spotters/list-by-category`, formData, {
+            axios.post(`${baseUrl}/api/spotters/list-by-category`, {
+                category_id: categoryId
+            }, {
                 headers: {
                     'Authorization': `Bearer ${cookies}`
                 }
@@ -452,6 +499,70 @@ function page() {
                                                 }}
                                                 dangerouslySetInnerHTML={{ __html: e?.content }}>
                                                 </div>
+                                            </div>
+                                        )}
+
+                                        {/* Chapter Navigation Buttons */}
+                                        {allChapters.length > 0 && (
+                                            <div style={{ 
+                                                display: 'flex', 
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                marginTop: '40px',
+                                                padding: '0 20px'
+                                            }}>
+                                                {/* Previous Chapter Button */}
+                                                {currentChapterIndex > 0 ? (
+                                                    <Link href={`/spotters/category?id=${allChapters[currentChapterIndex - 1].id}`}>
+                                                        <button style={{ 
+                                                            padding: '15px 30px',
+                                                            background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
+                                                            borderRadius: '12px',
+                                                            border: 'none',
+                                                            cursor: 'pointer',
+                                                            color: 'white',
+                                                            fontSize: '16px',
+                                                            fontFamily: 'Poppins',
+                                                            fontWeight: '600',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '10px'
+                                                        }}>
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M15 19l-7-7 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                            </svg>
+                                                            Previous Chapter
+                                                        </button>
+                                                    </Link>
+                                                ) : (
+                                                    <div></div>
+                                                )}
+
+                                                {/* Next Chapter Button */}
+                                                {currentChapterIndex < allChapters.length - 1 && (
+                                                    <Link href={`/spotters/category?id=${allChapters[currentChapterIndex + 1].id}`}>
+                                                        <button style={{ 
+                                                            padding: '15px 30px',
+                                                            background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
+                                                            borderRadius: '12px',
+                                                            border: 'none',
+                                                            cursor: 'pointer',
+                                                            color: 'white',
+                                                            fontSize: '16px',
+                                                            fontFamily: 'Poppins',
+                                                            fontWeight: '600',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: '10px',
+                                                            marginLeft: 'auto'
+                                                        }}>
+                                                            Next Chapter
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M9 5l7 7-7 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                            </svg>
+                                                        </button>
+                                                    </Link>
+                                                )}
                                             </div>
                                         )}
                                     </div>

@@ -191,24 +191,27 @@ function page() {
                                                         justifyContent: 'center', 
                                                         textAlign: 'center', 
                                                         padding: '15px',
-                                                        borderRadius: '15px'
+                                                        borderRadius: '15px',
+                                                        position: 'relative',
+                                                        minHeight: '180px'
                                                     }}>
                                                         <DotLottieReact
                                                             src="/animantion/Blue circle 2.json"
                                                             loop
                                                             autoplay
                                                             style={{ 
-                                                                width: '100px', 
-                                                                height: '100px',
+                                                                width: '140px', 
+                                                                height: '140px',
                                                                 filter: `hue-rotate(${colors[index % colors.length]})`
                                                             }}
                                                         />
                                                         <h6 style={{ 
                                                             marginTop: '10px', 
-                                                            fontSize: '13px',
+                                                            fontSize: '14px',
                                                             color: 'white',
-                                                            fontWeight: '500',
-                                                            marginBottom: '0'
+                                                            fontWeight: '600',
+                                                            marginBottom: '0',
+                                                            textAlign: 'center'
                                                         }}>{chapter.name}</h6>
                                                     </div>
                                                 </Link>

@@ -145,7 +145,7 @@ function page() {
                                     <div className="row g-4">
                                         {spotters && spotters.length > 0 ? (
                                             spotters?.map((spotter, index) => (
-                                                <div className="col-md-4 col-sm-6 col-6" key={spotter.id} style={{ padding: '12px', flex: '0 0 12.5%', maxWidth: '12.5%' }}>
+                                                <div className="col-md-4 col-sm-6 col-6" key={spotter.id} style={{ padding: '12px', flex: '0 0 16.666%', maxWidth: '16.666%' }}>
                                                     <Link href={`/spotters/view?id=${categoryId}&spotterId=${spotter.id}#page${index + 1}`}>
                                                         <div className="box" style={{ 
                                                             display: 'flex', 
@@ -271,24 +271,28 @@ function page() {
                                                         textAlign: 'center', 
                                                         padding: '15px',
                                                         borderRadius: '15px',
-                                                        position: 'relative'
+                                                        position: 'relative',
+                                                        minHeight: '180px'
                                                     }}>
                                                         <DotLottieReact
                                                             src="/animantion/Blue circle 2.json"
                                                             loop
                                                             autoplay
                                                             style={{ 
-                                                                width: '100px', 
-                                                                height: '100px',
+                                                                width: '140px', 
+                                                                height: '140px',
                                                                 filter: `hue-rotate(${colors[index % colors.length]})`
                                                             }}
                                                         />
                                                         <h6 style={{ 
                                                             marginTop: '10px', 
-                                                            fontSize: '13px',
+                                                            fontSize: '14px',
                                                             color: 'white',
-                                                            fontWeight: '500',
-                                                            marginBottom: '0'
+                                                            fontWeight: '600',
+                                                            marginBottom: '0',
+                                                            textAlign: 'center',
+                                                            wordBreak: 'break-word',
+                                                            width: '100%'
                                                         }}>{spotter.title}</h6>
                                                         
                                                         {/* Bookmark Icon */}
