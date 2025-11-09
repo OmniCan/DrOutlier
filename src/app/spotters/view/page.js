@@ -270,22 +270,27 @@ function page() {
                     {currentData && currentData.length > 0 ? (
                         currentData?.map((e, index) => (
                             <div key={index}>
-                                {/* Container-width White Background */}
-                                <div className="container">
-                                    <div style={{ 
-                                        background: 'white',
-                                        padding: '40px',
-                                        borderRadius: '0'
-                                    }}>
-                                        {/* Dark Image Viewer Card */}
+                                {/* Container-width White Background - Full width on mobile */}
+                                <div className="container-fluid px-0 px-lg-3">
+                                    <div className="container px-0 px-lg-3">
                                         <div style={{ 
-                                            background: '#1B1A1A', 
-                                            borderRadius: '24px',
-                                            overflow: 'hidden',
-                                            marginBottom: '30px'
+                                            background: 'white',
+                                            padding: '40px 0',
+                                            borderRadius: '0'
                                         }}>
-                                            {/* Image Section with 16:9 ratio */}
-                                            <div style={{
+                                            {/* Dark Image Viewer Card */}
+                                            <div style={{ 
+                                                background: '#1B1A1A', 
+                                                borderRadius: '24px',
+                                                overflow: 'hidden',
+                                                marginBottom: '30px',
+                                                marginLeft: '15px',
+                                                marginRight: '15px'
+                                            }}
+                                                className="mx-lg-5"
+                                            >
+                                                {/* Image Section with 16:9 ratio */}
+                                                <div style={{
                                                 position: 'relative',
                                                 width: '100%',
                                                 paddingTop: '56.25%', // 16:9 aspect ratio
@@ -359,6 +364,7 @@ function page() {
                                                         cursor: currentPage > 1 ? 'pointer' : 'not-allowed',
                                                         opacity: currentPage > 1 ? 1 : 0.5
                                                     }}
+                                                    className="spotter-nav-btn"
                                                 >
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M10.17 6.42001C10.3687 6.20675 10.4769 5.92468 10.4717 5.63323C10.4666 5.34178 10.3485 5.0637 10.1424 4.85758C9.9363 4.65146 9.65822 4.53339 9.36677 4.52825C9.07532 4.52311 8.79325 4.63129 8.57999 4.83001L3.32999 10.08C3.11931 10.291 3.00098 10.5769 3.00098 10.875C3.00098 11.1731 3.11931 11.4591 3.32999 11.67L8.57999 16.92C8.79325 17.1187 9.07532 17.2269 9.36677 17.2218C9.65822 17.2166 9.9363 17.0986 10.1424 16.8924C10.3485 16.6863 10.4666 16.4082 10.4717 16.1168C10.4769 15.8253 10.3687 15.5433 10.17 15.33L6.83999 12H12.375C14.0657 12 15.6872 12.6717 16.8828 13.8672C18.0783 15.0628 18.75 16.6843 18.75 18.375C18.75 18.6734 18.8685 18.9595 19.0795 19.1705C19.2905 19.3815 19.5766 19.5 19.875 19.5C20.1734 19.5 20.4595 19.3815 20.6705 19.1705C20.8815 18.9595 21 18.6734 21 18.375C21 17.2424 20.7769 16.1208 20.3434 15.0744C19.91 14.0279 19.2747 13.0771 18.4738 12.2762C17.6729 11.4753 16.7221 10.84 15.6756 10.4066C14.6292 9.97311 13.5076 9.75001 12.375 9.75001H6.83999L10.17 6.42001Z" fill="#FEFFFF"/>
@@ -368,7 +374,9 @@ function page() {
                                                         fontSize: '16px', 
                                                         fontFamily: 'Poppins', 
                                                         fontWeight: '400' 
-                                                    }}>
+                                                    }}
+                                                        className="d-none d-md-inline"
+                                                    >
                                                         Previous
                                                     </span>
                                                 </div>
@@ -433,29 +441,35 @@ function page() {
                                                         cursor: currentPage < totalPages ? 'pointer' : 'not-allowed',
                                                         opacity: currentPage < totalPages ? 1 : 0.5
                                                     }}
+                                                    className="spotter-nav-btn"
                                                 >
                                                     <span style={{ 
                                                         color: 'white', 
                                                         fontSize: '16px', 
                                                         fontFamily: 'Poppins', 
                                                         fontWeight: '400' 
-                                                    }}>
+                                                    }}
+                                                        className="d-none d-md-inline"
+                                                    >
                                                         Next
                                                     </span>
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M13.83 6.42001C13.6313 6.20675 13.5231 5.92468 13.5283 5.63323C13.5334 5.34178 13.6515 5.0637 13.8576 4.85758C14.0637 4.65146 14.3418 4.53339 14.6332 4.52825C14.9247 4.52311 15.2068 4.63129 15.42 4.83001L20.67 10.08C20.8807 10.291 20.999 10.5769 20.999 10.875C20.999 11.1731 20.8807 11.4591 20.67 11.67L15.42 16.92C15.2068 17.1187 14.9247 17.2269 14.6332 17.2218C14.3418 17.2166 14.0637 17.0986 13.8576 16.8924C13.6515 16.6863 13.5334 16.4082 13.5283 16.1168C13.5231 15.8253 13.6313 15.5433 13.83 15.33L17.16 12H11.625C9.93426 12 8.31275 12.6717 7.11721 13.8672C5.92166 15.0628 5.25001 16.6843 5.25001 18.375C5.25001 18.6734 5.13149 18.9595 4.92051 19.1705C4.70953 19.3815 4.42338 19.5 4.12501 19.5C3.82664 19.5 3.5405 19.3815 3.32952 19.1705C3.11854 18.9595 3.00001 18.6734 3.00001 18.375C3.00001 17.2424 3.22311 16.1208 3.65655 15.0744C4.09 14.0279 4.72531 13.0771 5.52622 12.2762C6.32712 11.4753 7.27794 10.84 8.32437 10.4066C9.3708 9.97311 10.4924 9.75001 11.625 9.75001H17.16L13.83 6.42001Z" fill="#FEFFFF"/>
                                                     </svg>
                                                 </div>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* Show/Hide Answer Button */}
-                                        <div style={{ 
+                                            {/* Show/Hide Answer Button */}
+                                            <div style={{
                                             display: 'flex', 
                                             justifyContent: 'center', 
-                                            marginBottom: showAnswer ? '30px' : '0'
-                                        }}>
-                                            <button
+                                            marginBottom: showAnswer ? '30px' : '0',
+                                            padding: '0 15px'
+                                            }}
+                                                className="px-lg-5"
+                                            >
+                                                <button
                                                 onClick={() => setShowAnswer(!showAnswer)}
                                                 style={{ 
                                                     padding: '17px 34px',
@@ -470,14 +484,16 @@ function page() {
                                                 }}
                                             >
                                                 {showAnswer ? 'Hide Answer' : 'Show Answer'}
-                                            </button>
-                                        </div>
+                                                </button>
+                                            </div>
 
-                                        {/* Answer Section */}
-                                        {showAnswer && (
-                                            <div style={{ 
-                                                padding: '0 100px'
-                                            }}>
+                                            {/* Answer Section */}
+                                            {showAnswer && (
+                                                <div style={{ 
+                                                padding: '0 15px'
+                                            }}
+                                                className="px-lg-5"
+                                            >
                                                 {/* Answer Title */}
                                                 <h4 style={{ 
                                                     color: 'black', 
@@ -500,17 +516,19 @@ function page() {
                                                 dangerouslySetInnerHTML={{ __html: e?.content }}>
                                                 </div>
                                             </div>
-                                        )}
+                                            )}
 
-                                        {/* Chapter Navigation Buttons */}
-                                        {allChapters.length > 0 && (
-                                            <div style={{ 
+                                            {/* Chapter Navigation Buttons */}
+                                            {allChapters.length > 0 && (
+                                                <div style={{
                                                 display: 'flex', 
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
                                                 marginTop: '40px',
-                                                padding: '0 20px'
-                                            }}>
+                                                padding: '0 15px'
+                                            }}
+                                                className="px-lg-4"
+                                            >
                                                 {/* Previous Chapter Button */}
                                                 {currentChapterIndex > 0 ? (
                                                     <Link href={`/spotters/category?id=${allChapters[currentChapterIndex - 1].id}`}>
@@ -527,11 +545,13 @@ function page() {
                                                             display: 'flex',
                                                             alignItems: 'center',
                                                             gap: '10px'
-                                                        }}>
+                                                        }}
+                                                            className="mobile-icon-only"
+                                                        >
                                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                 <path d="M15 19l-7-7 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                                             </svg>
-                                                            Previous Chapter
+                                                            <span className="d-none d-md-inline">Previous Chapter</span>
                                                         </button>
                                                     </Link>
                                                 ) : (
@@ -555,8 +575,10 @@ function page() {
                                                             alignItems: 'center',
                                                             gap: '10px',
                                                             marginLeft: 'auto'
-                                                        }}>
-                                                            Next Chapter
+                                                        }}
+                                                            className="mobile-icon-only"
+                                                        >
+                                                            <span className="d-none d-md-inline">Next Chapter</span>
                                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                 <path d="M9 5l7 7-7 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                                             </svg>
@@ -564,7 +586,8 @@ function page() {
                                                     </Link>
                                                 )}
                                             </div>
-                                        )}
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
