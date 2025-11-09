@@ -94,7 +94,7 @@ function page() {
                                         {categories && categories.length > 0 ? (
                                             categories?.map((category, index) => (
                                                 <div className="col-md-4 col-sm-6 col-6" key={category.id} style={{ padding: '18px', flex: '0 0 20%', maxWidth: '20%' }}>
-                                                    <Link href={`/spotters/category?id=${category.id}`}>
+                                                    <Link href={`/spotters/chapters?id=${category.id}`}>
                                                         <div className="box" style={{ 
                                                             display: 'flex', 
                                                             alignItems: 'center', 
@@ -180,7 +180,7 @@ function page() {
                                     {categories && categories.length > 0 ? (
                                         categories?.map((category, index) => (
                                             <div className="col-6" key={category.id}>
-                                                <Link href={`/spotters/category?id=${category.id}`}>
+                                                <Link href={`/spotters/chapters?id=${category.id}`}>
                                                     <div className="box" style={{ 
                                                         display: 'flex', 
                                                         flexDirection: 'column', 

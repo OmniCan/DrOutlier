@@ -13,9 +13,8 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 function page() {
     const [userid, setUser] = useState('')
     const [loading, setLoading] = useState(false);
-    const [spotters, setSpotters] = useState([])
+    const [chapters, setChapters] = useState([])
     const [categoryName, setCategoryName] = useState('')
-    const [bookmarkedSpotters, setBookmarkedSpotters] = useState({});
     const router = useRouter()
     const searchParams = useSearchParams()
     const categoryId = searchParams.get('id')
@@ -34,84 +33,35 @@ function page() {
     }, [])
 
     useEffect(() => {
-        if (!categoryId || !userid) {
-            console.log('No category ID or user ID found');
+        if (!categoryId) {
+            console.log('No category ID found');
             return;
         }
 
         const cookies = Cookies.get('user-token');
         
-        console.log('Fetching spotters for category:', categoryId);
+        console.log('Fetching chapters for category:', categoryId);
         
-        // Fetch spotters list and bookmarked spotters in parallel
-        Promise.all([
-            axios.post(`${baseUrl}/api/spotters/list-by-category`, {
-                category_id: categoryId
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${cookies}`
-                }
-            }),
-            axios.post(`${baseUrl}/api/spotters/get-bookmark?user_id=${userid}`, {}, {
-                headers: {
-                    'Authorization': `Bearer ${cookies}`
-                }
-            })
-        ]).then(([categoryResponse, bookmarkedResponse]) => {
-            console.log('Spotters API Response:', categoryResponse);
-            console.log('Bookmarked API Response:', bookmarkedResponse);
+        axios.post(`${baseUrl}/api/spotters/chapters`, {
+            category_id: categoryId
+        }, {
+            headers: {
+                'Authorization': `Bearer ${cookies}`
+            }
+        }).then((response) => {
+            console.log('Chapters API Response:', response);
             
-            const spottersList = categoryResponse?.data?.data?.datalist || [];
-            const bookmarkedList = bookmarkedResponse?.data?.data?.list?.data || [];
-            
-            setSpotters(spottersList);
-            setCategoryName(categoryResponse?.data?.data?.category_name || 'Spotters');
-            
-            // Create a Set of bookmarked spotter IDs for quick lookup
-            const bookmarkedIds = new Set(bookmarkedList.map(spotter => spotter.id));
-            
-            // Initialize bookmark status for each spotter
-            const bookmarkStatus = {};
-            spottersList.forEach(spotter => {
-                bookmarkStatus[spotter.id] = bookmarkedIds.has(spotter.id);
-            });
-            
-            console.log('Initial bookmark status:', bookmarkStatus);
-            setBookmarkedSpotters(bookmarkStatus);
-            
+            const chaptersList = response?.data?.data?.chapters || [];
+            setCategoryName(response?.data?.data?.category_name || 'Chapters');
+            setChapters(chaptersList);
             setLoading(false);
         }).catch((error) => {
-            console.error('Error fetching data:', error);
-            
-            // Fallback: try just the category list if bookmarked fetch fails
-            axios.post(`${baseUrl}/api/spotters/list-by-category`, {
-                category_id: categoryId
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${cookies}`
-                }
-            }).then((e) => {
-                const spottersList = e?.data?.data?.datalist || [];
-                setSpotters(spottersList);
-                setCategoryName(e?.data?.data?.category_name || 'Spotters');
-                
-                // Initialize with empty bookmark status
-                const bookmarkStatus = {};
-                spottersList.forEach(spotter => {
-                    bookmarkStatus[spotter.id] = false;
-                });
-                setBookmarkedSpotters(bookmarkStatus);
-                
-                setLoading(false);
-            }).catch((err) => {
-                console.error('Error fetching spotters:', err);
-                setLoading(false);
-            });
+            console.error('Error fetching chapters:', error);
+            setLoading(false);
         });
-    }, [categoryId, userid])
+    }, [categoryId])
 
-
-    // Generate color variations for spotters (similar to categories)
+    // Generate color variations for chapters
     const colors = ['0deg', '120deg', '240deg', '60deg', '180deg', '300deg'];
 
     return (
@@ -132,7 +82,7 @@ function page() {
                                             </div>
                                         </div>
                                         <div className="col-lg-6 text-end">
-                                            <h6 className="text-white mb-0">Select Spotter</h6>
+                                            <h6 className="text-white mb-0">Select Chapter</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -143,10 +93,10 @@ function page() {
                             <div className="row justify-content-center mt-4">
                                 <div className="col-lg-12">
                                     <div className="row g-4">
-                                        {spotters && spotters.length > 0 ? (
-                                            spotters?.map((spotter, index) => (
-                                                <div className="col-md-4 col-sm-6 col-6" key={spotter.id} style={{ padding: '12px', flex: '0 0 12.5%', maxWidth: '12.5%' }}>
-                                                    <Link href={`/spotters/view?id=${categoryId}&spotterId=${spotter.id}#page${index + 1}`}>
+                                        {chapters && chapters.length > 0 ? (
+                                            chapters?.map((chapter, index) => (
+                                                <div className="col-md-4 col-sm-6 col-6" key={chapter.id} style={{ padding: '18px', flex: '0 0 20%', maxWidth: '20%' }}>
+                                                    <Link href={`/spotters/category?id=${chapter.id}`}>
                                                         <div className="box" style={{ 
                                                             display: 'flex', 
                                                             alignItems: 'center', 
@@ -175,49 +125,20 @@ function page() {
                                                                 left: '50%',
                                                                 transform: 'translate(-50%, -50%)',
                                                                 color: 'white',
-                                                                fontSize: '12px',
+                                                                fontSize: '16px',
                                                                 fontWeight: '600',
                                                                 margin: '0',
-                                                                width: '80%',
+                                                                width: '75%',
                                                                 wordWrap: 'break-word',
-                                                                lineHeight: '1.2'
-                                                            }}>{spotter.title}</h6>
-                                                            
-                                                            {/* Bookmark Icon */}
-                                                            {bookmarkedSpotters[spotter.id] && (
-                                                                <div style={{
-                                                                    position: 'absolute',
-                                                                    top: '8px',
-                                                                    right: '8px',
-                                                                    background: 'white',
-                                                                    borderRadius: '8px',
-                                                                    padding: '4px',
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    justifyContent: 'center',
-                                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-                                                                }}>
-                                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path 
-                                                                            d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" 
-                                                                            fill="url(#bookmarkGradient)"
-                                                                        />
-                                                                        <defs>
-                                                                            <linearGradient id="bookmarkGradient" x1="5" y1="3" x2="19" y2="21" gradientUnits="userSpaceOnUse">
-                                                                                <stop offset="0%" stopColor="#44A6C5"/>
-                                                                                <stop offset="100%" stopColor="#1E4FFD"/>
-                                                                            </linearGradient>
-                                                                        </defs>
-                                                                    </svg>
-                                                                </div>
-                                                            )}
+                                                                lineHeight: '1.3'
+                                                            }}>{chapter.name}</h6>
                                                         </div>
                                                     </Link>
                                                 </div>
                                             ))
                                         ) : (
                                             <div className="col-12 text-center py-5">
-                                                <p className="text-white">No spotters found in this category.</p>
+                                                <p className="text-white">No chapters found in this category.</p>
                                                 <Link href="/spotters" style={{
                                                     padding: '12px 30px',
                                                     background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
@@ -259,10 +180,10 @@ function page() {
                         <div className="Macaroni-middle" style={{ paddingTop: '20px' }}>
                             <div className="container">
                                 <div className="row g-3">
-                                    {spotters && spotters.length > 0 ? (
-                                        spotters?.map((spotter, index) => (
-                                            <div className="col-6" key={spotter.id}>
-                                                <Link href={`/spotters/view?id=${categoryId}&spotterId=${spotter.id}#page${index + 1}`}>
+                                    {chapters && chapters.length > 0 ? (
+                                        chapters?.map((chapter, index) => (
+                                            <div className="col-6" key={chapter.id}>
+                                                <Link href={`/spotters/category?id=${chapter.id}`}>
                                                     <div className="box" style={{ 
                                                         display: 'flex', 
                                                         flexDirection: 'column', 
@@ -270,8 +191,7 @@ function page() {
                                                         justifyContent: 'center', 
                                                         textAlign: 'center', 
                                                         padding: '15px',
-                                                        borderRadius: '15px',
-                                                        position: 'relative'
+                                                        borderRadius: '15px'
                                                     }}>
                                                         <DotLottieReact
                                                             src="/animantion/Blue circle 2.json"
@@ -289,43 +209,14 @@ function page() {
                                                             color: 'white',
                                                             fontWeight: '500',
                                                             marginBottom: '0'
-                                                        }}>{spotter.title}</h6>
-                                                        
-                                                        {/* Bookmark Icon */}
-                                                        {bookmarkedSpotters[spotter.id] && (
-                                                            <div style={{
-                                                                position: 'absolute',
-                                                                top: '10px',
-                                                                right: '10px',
-                                                                background: 'white',
-                                                                borderRadius: '8px',
-                                                                padding: '4px',
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'center',
-                                                                boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-                                                            }}>
-                                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path 
-                                                                        d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" 
-                                                                        fill="url(#bookmarkGradientMobile)"
-                                                                    />
-                                                                    <defs>
-                                                                        <linearGradient id="bookmarkGradientMobile" x1="5" y1="3" x2="19" y2="21" gradientUnits="userSpaceOnUse">
-                                                                            <stop offset="0%" stopColor="#44A6C5"/>
-                                                                            <stop offset="100%" stopColor="#1E4FFD"/>
-                                                                        </linearGradient>
-                                                                    </defs>
-                                                                </svg>
-                                                            </div>
-                                                        )}
+                                                        }}>{chapter.name}</h6>
                                                     </div>
                                                 </Link>
                                             </div>
                                         ))
                                     ) : (
                                         <div className="col-12 text-center py-5">
-                                            <p className="text-white">No spotters found in this category.</p>
+                                            <p className="text-white">No chapters found in this category.</p>
                                         </div>
                                     )}
                                 </div>
