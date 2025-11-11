@@ -7,14 +7,17 @@ import Link from 'next/link';
 import axios from 'axios';
 import Cookies from 'js-cookie'
 import Loader from '@/components/Loader';
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function page() {
     const [userid, setUser] = useState('')
     const [loading, setLoading] = useState(false);
-    const [categories, setCategories] = useState([])
+    const [chapters, setChapters] = useState([])
+    const [categoryName, setCategoryName] = useState('')
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const categoryId = searchParams.get('id')
 
     useEffect(() => {
         setLoading(true);
@@ -30,42 +33,51 @@ function page() {
     }, [])
 
     useEffect(() => {
+        if (!categoryId) {
+            console.log('No category ID found');
+            return;
+        }
+
         const cookies = Cookies.get('user-token');
-        console.log('Fetching note categories from:', `${baseUrl}/api/note/list`);
         
+        console.log('Fetching chapters for note category:', categoryId);
+        
+        // Fetch the category list to get children (chapters)
         axios.post(`${baseUrl}/api/note/list`, {}, {
             headers: {
                 'Authorization': `Bearer ${cookies}`
             }
         }).then((response) => {
-            console.log('Note Categories API Response:', response);
-            console.log('Categories Data:', response?.data);
-            console.log('Categories Array:', response?.data?.data?.datalist);
-            setCategories(response?.data?.data?.datalist || [])
+            console.log('Notes Categories API Response:', response);
+            
+            const categories = response?.data?.data?.datalist || [];
+            const currentCategory = categories.find(cat => cat.id.toString() === categoryId.toString());
+            
+            if (currentCategory) {
+                const chaptersList = currentCategory.child || [];
+                setCategoryName(currentCategory.name || 'Chapters');
+                setChapters(chaptersList);
+            } else {
+                console.log('Category not found');
+                setCategoryName('Chapters');
+                setChapters([]);
+            }
+            
             setLoading(false);
         }).catch((error) => {
-            console.error('Error fetching note categories:', error);
-            console.error('Error response:', error.response);
+            console.error('Error fetching chapters:', error);
             setLoading(false);
-        })
-    }, [])
+        });
+    }, [categoryId])
 
+    // Generate color variations for chapters
+    const colors = ['0deg', '120deg', '240deg', '60deg', '180deg', '300deg'];
 
     return (
-
         <>
-
-
-
             <Navbar />
             {!loading ? (
-
-
-
                 <div className="main-wrapper">
-
-
-
                     <section className="Macaroni-Sign-page pt-0 d-none d-lg-block">
                         <div className="container-fluid px-0">
                             <div className="macaroni-top">
@@ -74,7 +86,7 @@ function page() {
                                         <div className="col-lg-6">
                                             <div className="content">
                                                 <h2 className="text-white mb-0">
-                                                    Notes Categories
+                                                    {categoryName}
                                                 </h2>
                                             </div>
                                         </div>
@@ -90,10 +102,10 @@ function page() {
                             <div className="row justify-content-center mt-4">
                                 <div className="col-lg-12">
                                     <div className="row g-4">
-                                        {categories && categories.length > 0 ? (
-                                            categories?.map((category, index) => (
-                                                <div className="col-md-4 col-sm-6 col-6" key={category.id} style={{ padding: '18px', flex: '0 0 20%', maxWidth: '20%' }}>
-                                                    <Link href={`/notes/chapters?id=${category.id}`}>
+                                        {chapters && chapters.length > 0 ? (
+                                            chapters?.map((chapter, index) => (
+                                                <div className="col-md-4 col-sm-6 col-6" key={chapter.id} style={{ padding: '18px', flex: '0 0 20%', maxWidth: '20%' }}>
+                                                    <Link href={`/notes/category?id=${chapter.id}`}>
                                                         <div className="box" style={{ 
                                                             display: 'flex', 
                                                             alignItems: 'center', 
@@ -113,7 +125,7 @@ function page() {
                                                                 style={{ 
                                                                     width: '100%', 
                                                                     height: '100%',
-                                                                    filter: category.color ? `hue-rotate(${category.color})` : 'none'
+                                                                    filter: `hue-rotate(${colors[index % colors.length]})`
                                                                 }}
                                                             />
                                                             <h6 style={{ 
@@ -128,43 +140,45 @@ function page() {
                                                                 width: '75%',
                                                                 wordWrap: 'break-word',
                                                                 lineHeight: '1.3'
-                                                            }}>{category.name}</h6>
+                                                            }}>{chapter.name}</h6>
                                                         </div>
                                                     </Link>
                                                 </div>
                                             ))
                                         ) : (
                                             <div className="col-12 text-center py-5">
-                                                <p className="text-white">No categories found. Please check the API endpoint or database.</p>
+                                                <p className="text-white">No chapters found in this category.</p>
+                                                <Link href="/notes" style={{
+                                                    padding: '12px 30px',
+                                                    background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
+                                                    borderRadius: '12px',
+                                                    color: 'white',
+                                                    textDecoration: 'none',
+                                                    fontSize: '16px',
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: '600',
+                                                    display: 'inline-block'
+                                                }}>
+                                                    Back to Categories
+                                                </Link>
                                             </div>
                                         )}
                                     </div>
                                 </div>
                             </div>
-
-
-
-
                         </div>
-
-
-
-
-                    </section >
-
-
-
+                    </section>
 
                     <section className="Macaroni-sign-page-mobile p-0 d-block d-lg-none">
                         <div className="Macaroni-top">
                             <div className="container">
                                 <div className="row">
-                                    <Link href='/'>
+                                    <Link href='/notes'>
                                         <div className="col-4">
                                             <i className="fa-solid fa-chevron-left" />
                                         </div>
                                         <div className="col-4 text-center">
-                                            <h6>Notes Categories</h6>
+                                            <h6>{categoryName}</h6>
                                         </div>
                                         <div className="col-4" />
                                     </Link>
@@ -172,14 +186,13 @@ function page() {
                             </div>
                         </div>
 
-
                         <div className="Macaroni-middle" style={{ paddingTop: '20px' }}>
                             <div className="container">
                                 <div className="row g-3">
-                                    {categories && categories.length > 0 ? (
-                                        categories?.map((category, index) => (
-                                            <div className="col-6" key={category.id}>
-                                                <Link href={`/notes/chapters?id=${category.id}`}>
+                                    {chapters && chapters.length > 0 ? (
+                                        chapters?.map((chapter, index) => (
+                                            <div className="col-6" key={chapter.id}>
+                                                <Link href={`/notes/category?id=${chapter.id}`}>
                                                     <div className="box" style={{ 
                                                         display: 'flex', 
                                                         flexDirection: 'column', 
@@ -198,7 +211,7 @@ function page() {
                                                             style={{ 
                                                                 width: '140px', 
                                                                 height: '140px',
-                                                                filter: category.color ? `hue-rotate(${category.color})` : 'none'
+                                                                filter: `hue-rotate(${colors[index % colors.length]})`
                                                             }}
                                                         />
                                                         <h6 style={{ 
@@ -208,37 +221,26 @@ function page() {
                                                             fontWeight: '600',
                                                             marginBottom: '0',
                                                             textAlign: 'center'
-                                                        }}>{category.name}</h6>
+                                                        }}>{chapter.name}</h6>
                                                     </div>
                                                 </Link>
                                             </div>
                                         ))
                                     ) : (
                                         <div className="col-12 text-center py-5">
-                                            <p className="text-white">No categories found. Please check the API endpoint or database.</p>
+                                            <p className="text-white">No chapters found in this category.</p>
                                         </div>
                                     )}
                                 </div>
                             </div>
                         </div>
-
-
-
-
                     </section>
-                </div >
+                </div>
             ) : (
                 <Loader />
             )}
-
-
-
             <Footer />
-
         </>
-
-
-
     )
 }
 
