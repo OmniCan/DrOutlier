@@ -7,14 +7,16 @@ import Link from 'next/link';
 import axios from 'axios';
 import Cookies from 'js-cookie'
 import Loader from '@/components/Loader';
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function page() {
     const [userid, setUser] = useState('')
     const [loading, setLoading] = useState(false);
-    const [categories, setCategories] = useState([])
+    const [chapters, setChapters] = useState([])
+    const [categoryName, setCategoryName] = useState('')
     const router = useRouter()
+    const searchParams = useSearchParams()
 
     useEffect(() => {
         setLoading(true);
@@ -32,6 +34,9 @@ function page() {
     useEffect(() => {
         if (!userid) return;
 
+        const categoryId = searchParams.get('id');
+        if (!categoryId) return;
+
         const cookies = Cookies.get('user-token');
         
         axios.post(`${baseUrl}/api/osce/list`, {}, {
@@ -39,54 +44,41 @@ function page() {
                 'Authorization': `Bearer ${cookies}`
             }
         }).then((response) => {
-            console.log('OSCE API Full Response:', response?.data);
-            console.log('Response data object:', response?.data?.data);
-            console.log('Response data type:', typeof response?.data?.data);
-            console.log('Response data keys:', response?.data?.data ? Object.keys(response?.data?.data) : 'null');
+            console.log('OSCE Chapters - Full Response:', response?.data);
             
-            // Backend returns paginated data: { status, data: { current_page, data: [...], last_page, etc } }
-            const paginatedData = response?.data?.data;
-            let categoriesList = [];
+            // Handle paginated response structure
+            let categoriesList = response?.data?.data?.data || 
+                                response?.data?.data || 
+                                [];
             
-            if (paginatedData) {
-                console.log('Paginated data exists');
-                console.log('Has data property?', 'data' in paginatedData);
-                console.log('Is data an array?', Array.isArray(paginatedData.data));
-                
-                // Check if it's a paginated response (has 'data' property with array)
-                if (paginatedData.data && Array.isArray(paginatedData.data)) {
-                    categoriesList = paginatedData.data;
-                    console.log('Using paginatedData.data');
-                } else if (Array.isArray(paginatedData)) {
-                    categoriesList = paginatedData;
-                    console.log('Using paginatedData directly (array)');
-                }
-            }
+            console.log('Categories List:', categoriesList);
+            console.log('Looking for category ID:', categoryId);
             
-            console.log('Categories List (all):', categoriesList);
-            console.log('Categories count:', categoriesList.length);
+            // Find the selected category by ID
+            const selectedCategory = Array.isArray(categoriesList) 
+                ? categoriesList.find(cat => cat.id.toString() === categoryId.toString())
+                : null;
             
-            // Filter for parent categories only (parent_id = 0 or null) if needed
-            if (Array.isArray(categoriesList) && categoriesList.length > 0) {
-                // The API should already return only parent categories, but filter as safety measure
-                const parentCategories = categoriesList.filter(cat => {
-                    return cat.parent_id === 0 || cat.parent_id === '0' || cat.parent_id === null || !cat.parent_id;
-                });
-                console.log('Filtered Parent Categories:', parentCategories);
-                setCategories(parentCategories.length > 0 ? parentCategories : categoriesList);
+            console.log('Selected Category:', selectedCategory);
+            
+            if (selectedCategory) {
+                setCategoryName(selectedCategory.name);
+                // Get child categories
+                const childCategories = selectedCategory.child || [];
+                console.log('Child Categories:', childCategories);
+                console.log('Number of chapters:', childCategories.length);
+                setChapters(childCategories);
             } else {
-                console.log('No categories found or categoriesList is not an array');
-                setCategories([]);
+                console.error('Category not found for ID:', categoryId);
             }
-            
             setLoading(false);
         }).catch((error) => {
-            console.error('Error fetching OSCE categories:', error);
+            console.error('Error fetching OSCE chapters:', error);
             setLoading(false);
         });
-    }, [userid])
+    }, [userid, searchParams])
 
-    // Color variations for categories
+    // Color variations for chapters
     const colors = ['0deg', '120deg', '240deg', '60deg', '180deg', '300deg'];
 
     return (
@@ -101,11 +93,11 @@ function page() {
                                     <div className="row align-items-center">
                                         <div className="col-lg-6">
                                             <div className="content">
-                                                <h2 className="text-white mb-0">OSCE</h2>
+                                                <h2 className="text-white mb-0">{categoryName || 'OSCE'}</h2>
                                             </div>
                                         </div>
                                         <div className="col-lg-6 text-end">
-                                            <h6 className="text-white mb-0">Select Category</h6>
+                                            <h6 className="text-white mb-0">Select Chapter</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -116,10 +108,10 @@ function page() {
                             <div className="row justify-content-center mt-4">
                                 <div className="col-lg-12">
                                     <div className="row g-4">
-                                        {categories && categories.length > 0 ? (
-                                            categories?.map((category, index) => (
-                                                <div className="col-md-4 col-sm-6 col-6" key={category.id} style={{ padding: '12px', flex: '0 0 16.666%', maxWidth: '16.666%' }}>
-                                                    <Link href={`/osce/chapters?id=${category.id}`}>
+                                        {chapters && chapters.length > 0 ? (
+                                            chapters?.map((chapter, index) => (
+                                                <div className="col-md-4 col-sm-6 col-6" key={chapter.id} style={{ padding: '12px', flex: '0 0 16.666%', maxWidth: '16.666%' }}>
+                                                    <Link href={`/osce/category?id=${chapter.id}`}>
                                                         <div className="box" style={{ 
                                                             display: 'flex', 
                                                             alignItems: 'center', 
@@ -154,7 +146,7 @@ function page() {
                                                                 margin: 0,
                                                                 lineHeight: '1.2'
                                                             }}>
-                                                                {category.name}
+                                                                {chapter.name}
                                                             </h5>
                                                         </div>
                                                     </Link>
@@ -162,7 +154,7 @@ function page() {
                                             ))
                                         ) : (
                                             <div className="col-12 text-center py-5">
-                                                <p className="text-white">No OSCE categories found.</p>
+                                                <p className="text-white">No chapters found.</p>
                                             </div>
                                         )}
                                     </div>
@@ -176,7 +168,7 @@ function page() {
                             <div className="container">
                                 <div className="row">
                                     <div className="col-lg-12">
-                                        <h2 className="text-white">OSCE</h2>
+                                        <h2 className="text-white">{categoryName || 'OSCE'}</h2>
                                     </div>
                                 </div>
                             </div>
@@ -185,10 +177,10 @@ function page() {
                         <div className="Macaroni-middle" style={{ paddingTop: '20px' }}>
                             <div className="container">
                                 <div className="row">
-                                    {categories && categories.length > 0 ? (
-                                        categories?.map((category, index) => (
-                                            <div className="col-6 col-sm-6 mb-3" key={category.id}>
-                                                <Link href={`/osce/chapters?id=${category.id}`}>
+                                    {chapters && chapters.length > 0 ? (
+                                        chapters?.map((chapter, index) => (
+                                            <div className="col-6 col-sm-6 mb-3" key={chapter.id}>
+                                                <Link href={`/osce/category?id=${chapter.id}`}>
                                                     <div style={{
                                                         display: 'flex',
                                                         flexDirection: 'column',
@@ -216,7 +208,7 @@ function page() {
                                                                 fontWeight: '600',
                                                                 width: '100%'
                                                             }}>
-                                                                {category.name}
+                                                                {chapter.name}
                                                             </h6>
                                                         </div>
                                                     </div>
@@ -225,7 +217,7 @@ function page() {
                                         ))
                                     ) : (
                                         <div className="col-12 text-center py-5">
-                                            <p className="text-white">No OSCE categories found.</p>
+                                            <p className="text-white">No chapters found.</p>
                                         </div>
                                     )}
                                 </div>
