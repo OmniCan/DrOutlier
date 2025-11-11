@@ -16,6 +16,9 @@ function page() {
     const [notes, setNotes] = useState([])
     const [categoryName, setCategoryName] = useState('')
     const [bookmarkedNotes, setBookmarkedNotes] = useState({});
+    const [allChapters, setAllChapters] = useState([])
+    const [currentChapterIndex, setCurrentChapterIndex] = useState(-1)
+    const [parentCategoryId, setParentCategoryId] = useState(null)
     const router = useRouter()
     const searchParams = useSearchParams()
     const categoryId = searchParams.get('id')
@@ -73,6 +76,46 @@ function page() {
                 setBookmarkedNotes(bookmarksMap);
             }).catch((error) => {
                 console.error("Error fetching bookmarked notes:", error);
+            });
+            
+            // Fetch full category list to get parent_id and sibling chapters
+            axios.post(`${baseUrl}/api/note/list`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${cookies}`
+                }
+            }).then((listResponse) => {
+                const categories = listResponse?.data?.data?.datalist || [];
+                
+                // Find current category in all categories (including subcategories)
+                let currentCategory = null;
+                for (const cat of categories) {
+                    if (cat.id.toString() === categoryId.toString()) {
+                        currentCategory = cat;
+                        break;
+                    }
+                    if (cat.child) {
+                        currentCategory = cat.child.find(sub => sub.id.toString() === categoryId.toString());
+                        if (currentCategory) break;
+                    }
+                }
+                
+                if (currentCategory && currentCategory.parent_id && currentCategory.parent_id !== 0) {
+                    setParentCategoryId(currentCategory.parent_id);
+                    
+                    // Find parent category and get all chapters
+                    const parentCategory = categories.find(cat => cat.id.toString() === currentCategory.parent_id.toString());
+                    
+                    if (parentCategory && parentCategory.child) {
+                        const chapters = parentCategory.child || [];
+                        setAllChapters(chapters);
+                        
+                        // Find current chapter index
+                        const currentIndex = chapters.findIndex(ch => ch.id.toString() === categoryId.toString());
+                        setCurrentChapterIndex(currentIndex);
+                    }
+                }
+            }).catch((error) => {
+                console.error('Error fetching categories:', error);
             });
             
             setLoading(false);
@@ -208,6 +251,71 @@ function page() {
                                     </div>
                                 </div>
                             </div>
+                            
+                            {/* Chapter Navigation Buttons */}
+                            {allChapters.length > 0 && currentChapterIndex !== -1 && (
+                                <div className="container mt-5">
+                                    <div style={{
+                                        display: 'flex', 
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        padding: '0 15px'
+                                    }}>
+                                        {/* Previous Chapter Button */}
+                                        {currentChapterIndex > 0 ? (
+                                            <Link href={`/notes/category?id=${allChapters[currentChapterIndex - 1].id}`}>
+                                                <button style={{ 
+                                                    padding: '15px 30px',
+                                                    background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
+                                                    borderRadius: '12px',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    color: 'white',
+                                                    fontSize: '16px',
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: '600',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '10px'
+                                                }}>
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M15 19l-7-7 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                    </svg>
+                                                    <span className="d-none d-md-inline">Previous Chapter</span>
+                                                </button>
+                                            </Link>
+                                        ) : (
+                                            <div></div>
+                                        )}
+
+                                        {/* Next Chapter Button */}
+                                        {currentChapterIndex < allChapters.length - 1 && (
+                                            <Link href={`/notes/category?id=${allChapters[currentChapterIndex + 1].id}`}>
+                                                <button style={{ 
+                                                    padding: '15px 30px',
+                                                    background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
+                                                    borderRadius: '12px',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    color: 'white',
+                                                    fontSize: '16px',
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: '600',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '10px',
+                                                    marginLeft: 'auto'
+                                                }}>
+                                                    <span className="d-none d-md-inline">Next Chapter</span>
+                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M9 5l7 7-7 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                    </svg>
+                                                </button>
+                                            </Link>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </section>
 
@@ -306,6 +414,69 @@ function page() {
                                     )}
                                 </div>
                             </div>
+                            
+                            {/* Chapter Navigation Buttons - Mobile */}
+                            {allChapters.length > 0 && currentChapterIndex !== -1 && (
+                                <div className="container mt-4 mb-4">
+                                    <div style={{
+                                        display: 'flex', 
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        padding: '0 15px'
+                                    }}>
+                                        {/* Previous Chapter Button */}
+                                        {currentChapterIndex > 0 ? (
+                                            <Link href={`/notes/category?id=${allChapters[currentChapterIndex - 1].id}`}>
+                                                <button style={{ 
+                                                    padding: '12px 20px',
+                                                    background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
+                                                    borderRadius: '12px',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    color: 'white',
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: '600',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px'
+                                                }}>
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M15 19l-7-7 7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                    </svg>
+                                                </button>
+                                            </Link>
+                                        ) : (
+                                            <div></div>
+                                        )}
+
+                                        {/* Next Chapter Button */}
+                                        {currentChapterIndex < allChapters.length - 1 && (
+                                            <Link href={`/notes/category?id=${allChapters[currentChapterIndex + 1].id}`}>
+                                                <button style={{ 
+                                                    padding: '12px 20px',
+                                                    background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
+                                                    borderRadius: '12px',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    color: 'white',
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: '600',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                    marginLeft: 'auto'
+                                                }}>
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M9 5l7 7-7 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                    </svg>
+                                                </button>
+                                            </Link>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </section>
                 </div>

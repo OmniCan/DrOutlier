@@ -119,6 +119,9 @@ function page() {
                 setCategoryName('Notes');
             }
             
+            console.log('Category Info from notes:', categoryInfo);
+            console.log('Has parent_id?', categoryInfo?.parent_id);
+            
             // Fetch bookmarked notes
             const bookmarkFormData = new FormData();
             bookmarkFormData.append("user_id", userid);
@@ -138,31 +141,53 @@ function page() {
                 console.error("Error fetching bookmarked notes:", error);
             });
             
-            // If category has parent, fetch sibling chapters
-            if (categoryInfo && categoryInfo.parent_id && categoryInfo.parent_id !== 0) {
-                setParentCategoryId(categoryInfo.parent_id);
+            // Fetch full category list to get parent_id and sibling chapters
+            axios.post(`${baseUrl}/api/note/list`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${cookies}`
+                }
+            }).then((listResponse) => {
+                console.log('Note list response:', listResponse.data);
+                const categories = listResponse?.data?.data?.datalist || [];
                 
-                // Fetch all categories to find siblings
-                axios.post(`${baseUrl}/api/note/list`, {}, {
-                    headers: {
-                        'Authorization': `Bearer ${cookies}`
+                // Find current category in all categories (including subcategories)
+                let currentCategory = null;
+                for (const cat of categories) {
+                    if (cat.id.toString() === categoryId.toString()) {
+                        currentCategory = cat;
+                        break;
                     }
-                }).then((listResponse) => {
-                    const categories = listResponse?.data?.data?.datalist || [];
-                    const parentCategory = categories.find(cat => cat.id.toString() === categoryInfo.parent_id.toString());
+                    if (cat.child) {
+                        currentCategory = cat.child.find(sub => sub.id.toString() === categoryId.toString());
+                        if (currentCategory) break;
+                    }
+                }
+                
+                console.log('Current category found:', currentCategory);
+                console.log('Current category parent_id:', currentCategory?.parent_id);
+                
+                if (currentCategory && currentCategory.parent_id && currentCategory.parent_id !== 0) {
+                    setParentCategoryId(currentCategory.parent_id);
+                    
+                    // Find parent category and get all chapters
+                    const parentCategory = categories.find(cat => cat.id.toString() === currentCategory.parent_id.toString());
+                    
+                    console.log('Parent category:', parentCategory);
                     
                     if (parentCategory && parentCategory.child) {
                         const chapters = parentCategory.child || [];
+                        console.log('Chapters found:', chapters.length, chapters);
                         setAllChapters(chapters);
                         
                         // Find current chapter index
                         const currentIndex = chapters.findIndex(ch => ch.id.toString() === categoryId.toString());
+                        console.log('Current chapter index:', currentIndex);
                         setCurrentChapterIndex(currentIndex);
                     }
-                }).catch((error) => {
-                    console.error('Error fetching chapters:', error);
-                });
-            }
+                }
+            }).catch((error) => {
+                console.error('Error fetching categories:', error);
+            });
             
             // If noteId is provided in URL, find its index and set as current page
             if (noteId) {
