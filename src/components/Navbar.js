@@ -562,9 +562,9 @@ function Navbar() {
                             id="offcanvasDarkNavbar"
                             aria-labelledby="offcanvasDarkNavbarLabel"
                             style={{
-                                inline-size: '50%',
-                                maxinline-size: '300px',
-                                mininline-size: '250px'
+                                width: '50%',
+                                maxWidth: '300px',
+                                minWidth: '250px'
                             }}
                         >
                             <div className="offcanvas-body">
