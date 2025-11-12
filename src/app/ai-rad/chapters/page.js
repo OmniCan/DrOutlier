@@ -7,15 +7,17 @@ import Link from 'next/link';
 import axios from 'axios';
 import Cookies from 'js-cookie'
 import Loader from '@/components/Loader';
-import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function page() {
     const [userid, setUser] = useState('')
     const [loading, setLoading] = useState(false);
-    const [categories, setCategories] = useState([])
+    const [chapters, setChapters] = useState([])
+    const [categoryName, setCategoryName] = useState('')
     const router = useRouter()
+    const searchParams = useSearchParams()
+    const categoryId = searchParams.get('id')
 
     useEffect(() => {
         setLoading(true);
@@ -31,8 +33,14 @@ function page() {
     }, [])
 
     useEffect(() => {
+        if (!categoryId) {
+            console.log('No category ID found');
+            return;
+        }
+
         const cookies = Cookies.get('user-token');
-        console.log('Fetching AI-RAD categories from:', `${baseUrl}/api/category-munchie/list`);
+        
+        console.log('Fetching AI-RAD chapters for category:', categoryId);
         
         axios.post(`${baseUrl}/api/category-munchie/list`, {}, {
             headers: {
@@ -40,21 +48,30 @@ function page() {
             }
         }).then((response) => {
             console.log('AI-RAD Categories API Response:', response);
-            console.log('Categories Data:', response?.data);
-            console.log('Full data object:', response?.data?.data);
             
             // The API returns datalist directly, not datalist.data
             const allCategories = response?.data?.data?.datalist || [];
-            console.log('Extracted categories:', allCategories);
+            console.log('All categories:', allCategories);
             
-            setCategories(allCategories);
+            // Find the selected parent category
+            const selectedCategory = allCategories.find(cat => cat.id.toString() === categoryId.toString());
+            
+            console.log('Selected category:', selectedCategory);
+            
+            if (selectedCategory) {
+                setCategoryName(selectedCategory.name || 'Chapters');
+                setChapters(selectedCategory.child || []);
+            }
+            
             setLoading(false);
         }).catch((error) => {
-            console.error('Error fetching AI-RAD categories:', error);
-            console.error('Error response:', error.response);
+            console.error('Error fetching AI-RAD chapters:', error);
             setLoading(false);
-        })
-    }, [])
+        });
+    }, [categoryId])
+
+    // Generate color variations for chapters
+    const colors = ['0deg', '120deg', '240deg', '60deg', '180deg', '300deg'];
 
     return (
         <>
@@ -69,12 +86,12 @@ function page() {
                                         <div className="col-lg-6">
                                             <div className="content">
                                                 <h2 className="text-white mb-0">
-                                                    AI-RAD Categories
+                                                    {categoryName}
                                                 </h2>
                                             </div>
                                         </div>
                                         <div className="col-lg-6 text-end">
-                                            <h6 className="text-white mb-0">Select Category</h6>
+                                            <h6 className="text-white mb-0">Select Chapter</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -85,10 +102,10 @@ function page() {
                             <div className="row justify-content-center mt-4">
                                 <div className="col-lg-12">
                                     <div className="row g-4">
-                                        {categories && categories.length > 0 ? (
-                                            categories?.map((category, index) => (
-                                                <div className="col-md-4 col-sm-6 col-6" key={category.id} style={{ padding: '18px', flex: '0 0 20%', maxWidth: '20%' }}>
-                                                    <Link href={`/ai-rad/chapters?id=${category.id}`}>
+                                        {chapters && chapters.length > 0 ? (
+                                            chapters?.map((chapter, index) => (
+                                                <div className="col-md-4 col-sm-6 col-6" key={chapter.id} style={{ padding: '18px', flex: '0 0 20%', maxWidth: '20%' }}>
+                                                    <Link href={`/ai-rad/category?id=${chapter.id}`}>
                                                         <div className="box" style={{ 
                                                             display: 'flex', 
                                                             alignItems: 'center', 
@@ -108,7 +125,7 @@ function page() {
                                                                 style={{ 
                                                                     width: '100%', 
                                                                     height: '100%',
-                                                                    filter: `hue-rotate(${index * 60}deg)`
+                                                                    filter: `hue-rotate(${colors[index % colors.length]})`
                                                                 }}
                                                             />
                                                             <h6 style={{ 
@@ -123,14 +140,27 @@ function page() {
                                                                 width: '75%',
                                                                 wordWrap: 'break-word',
                                                                 lineHeight: '1.3'
-                                                            }}>{category.name}</h6>
+                                                            }}>{chapter.name}</h6>
                                                         </div>
                                                     </Link>
                                                 </div>
                                             ))
                                         ) : (
                                             <div className="col-12 text-center py-5">
-                                                <p className="text-white">No AI-RAD categories found.</p>
+                                                <p className="text-white">No chapters found in this category.</p>
+                                                <Link href="/ai-rad" style={{
+                                                    padding: '12px 30px',
+                                                    background: 'linear-gradient(150deg, #44A6C5 0%, #1E4FFD 100%)',
+                                                    borderRadius: '12px',
+                                                    color: 'white',
+                                                    textDecoration: 'none',
+                                                    fontSize: '16px',
+                                                    fontFamily: 'Poppins',
+                                                    fontWeight: '600',
+                                                    display: 'inline-block'
+                                                }}>
+                                                    Back to Categories
+                                                </Link>
                                             </div>
                                         )}
                                     </div>
@@ -143,12 +173,12 @@ function page() {
                         <div className="Macaroni-top">
                             <div className="container">
                                 <div className="row">
-                                    <Link href='/'>
+                                    <Link href='/ai-rad'>
                                         <div className="col-4">
                                             <i className="fa-solid fa-chevron-left" />
                                         </div>
                                         <div className="col-4 text-center">
-                                            <h6>AI-RAD</h6>
+                                            <h6>{categoryName}</h6>
                                         </div>
                                         <div className="col-4" />
                                     </Link>
@@ -159,10 +189,10 @@ function page() {
                         <div className="Macaroni-middle" style={{ paddingTop: '20px' }}>
                             <div className="container">
                                 <div className="row g-3">
-                                    {categories && categories.length > 0 ? (
-                                        categories?.map((category, index) => (
-                                            <div className="col-6" key={category.id}>
-                                                <Link href={`/ai-rad/chapters?id=${category.id}`}>
+                                    {chapters && chapters.length > 0 ? (
+                                        chapters?.map((chapter, index) => (
+                                            <div className="col-6" key={chapter.id}>
+                                                <Link href={`/ai-rad/category?id=${chapter.id}`}>
                                                     <div className="box" style={{ 
                                                         display: 'flex', 
                                                         flexDirection: 'column', 
@@ -181,7 +211,7 @@ function page() {
                                                             style={{ 
                                                                 width: '140px', 
                                                                 height: '140px',
-                                                                filter: `hue-rotate(${index * 60}deg)`
+                                                                filter: `hue-rotate(${colors[index % colors.length]})`
                                                             }}
                                                         />
                                                         <h6 style={{ 
@@ -191,14 +221,14 @@ function page() {
                                                             fontWeight: '600',
                                                             marginBottom: '0',
                                                             textAlign: 'center'
-                                                        }}>{category.name}</h6>
+                                                        }}>{chapter.name}</h6>
                                                     </div>
                                                 </Link>
                                             </div>
                                         ))
                                     ) : (
                                         <div className="col-12 text-center py-5">
-                                            <p className="text-white">No AI-RAD categories found.</p>
+                                            <p className="text-white">No chapters found in this category.</p>
                                         </div>
                                     )}
                                 </div>
