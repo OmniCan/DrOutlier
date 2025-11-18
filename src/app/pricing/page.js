@@ -2,23 +2,25 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import Cookies from 'js-cookie';
+import baseUrl from '@/Services/BaseUrl';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Loader from '@/components/Loader';
 
 /**
  * Razorpay Payment Integration
- * @param {object} plan - The selected plan object
- * @param {function} onSuccess - Callback function on successful payment
- * @param {function} onFailure - Callback function on payment failure
  */
-export const initiateRazorpayPayment = async (plan, onSuccess, onFailure) => {
+const initiateRazorpayPayment = async (plan, token, onSuccess, onFailure) => {
   try {
-    const token = localStorage.getItem('userToken');
-    
     if (!token) {
       throw new Error('Please login to continue');
     }
 
     // Create order
-    const orderResponse = await fetch('https://admin.droutlier.com/api/subscription/create-order', {
+    const orderResponse = await fetch(`${baseUrl}/api/subscription/create-order`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -55,7 +57,7 @@ export const initiateRazorpayPayment = async (plan, onSuccess, onFailure) => {
       handler: async function (response) {
         try {
           // Verify payment
-          const verifyResponse = await fetch('https://admin.droutlier.com/api/subscription/verify-payment', {
+          const verifyResponse = await fetch(`${baseUrl}/api/subscription/verify-payment`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -80,12 +82,8 @@ export const initiateRazorpayPayment = async (plan, onSuccess, onFailure) => {
           onFailure(error.message || 'Payment verification failed');
         }
       },
-      prefill: {
-        email: localStorage.getItem('userEmail') || '',
-        contact: localStorage.getItem('userPhone') || '',
-      },
       theme: {
-        color: '#3B82F6',
+        color: '#126E97',
       },
       modal: {
         ondismiss: function() {
@@ -102,29 +100,30 @@ export const initiateRazorpayPayment = async (plan, onSuccess, onFailure) => {
 };
 
 /**
- * Plans List Component
+ * Plans/Pricing Page Component
  */
 export default function PlansPage() {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    fetchPlans();
+    const userToken = Cookies.get('user-token');
+    if (userToken) {
+      setIsAuthenticated(true);
+      fetchPlans(userToken);
+    } else {
+      setIsAuthenticated(false);
+      setLoading(false);
+    }
   }, []);
 
-  const fetchPlans = async () => {
+  const fetchPlans = async (token) => {
     try {
-      const token = localStorage.getItem('userToken');
-      
-      if (!token) {
-        router.push('/login');
-        return;
-      }
-
-      const response = await fetch('https://admin.droutlier.com/api/subscription/plans', {
+      const response = await fetch(`${baseUrl}/api/subscription/plans`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -139,127 +138,262 @@ export default function PlansPage() {
       }
     } catch (error) {
       setError('Failed to load plans');
+      console.error('Error fetching plans:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const handlePurchase = async (plan) => {
+    const token = Cookies.get('user-token');
+
+    if (!token) {
+      toast.error('Please login to purchase a plan');
+      setTimeout(() => {
+        const myModal = new bootstrap.Modal(document.getElementById('myModal'));
+        myModal.show();
+      }, 500);
+      return;
+    }
+
     setProcessing(true);
 
     await initiateRazorpayPayment(
       plan,
+      token,
       (subscription) => {
         setProcessing(false);
-        // Show success message
-        alert(`Successfully subscribed to ${plan.name}!`);
-        // Redirect to dashboard or subscription page
-        router.push('/dashboard');
+        toast.success(`Successfully subscribed to ${plan.name}!`);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       },
       (error) => {
         setProcessing(false);
-        alert(`Payment failed: ${error}`);
+        toast.error(`Payment failed: ${error}`);
       }
     );
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <p className="text-red-500">{error}</p>
-          <button onClick={fetchPlans} className="mt-4 btn btn-primary">
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const showLoginModal = () => {
+    const myModal = new bootstrap.Modal(document.getElementById('myModal'));
+    myModal.show();
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Choose Your Plan</h1>
-        <p className="text-gray-600">Select the perfect plan for your learning journey</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {plans.map((plan) => (
-          <div
-            key={plan.id}
-            className={`rounded-lg shadow-lg p-6 ${
-              plan.is_featured ? 'border-2 border-blue-500 transform scale-105' : 'border border-gray-200'
-            }`}
-          >
-            {plan.is_featured && (
-              <div className="text-center mb-2">
-                <span className="inline-block bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
-                  Most Popular
-                </span>
-              </div>
-            )}
-
-            <h2 className="text-2xl font-bold mb-2">{plan.name}</h2>
-            <p className="text-gray-600 mb-4">{plan.description}</p>
-
-            <div className="mb-6">
-              <div className="flex items-baseline">
-                <span className="text-4xl font-bold">₹{plan.effective_price}</span>
-                <span className="text-gray-500 ml-2">/ {plan.duration_text}</span>
-              </div>
-              {plan.discount_price && (
-                <p className="text-sm text-gray-500 line-through">₹{plan.price}</p>
-              )}
+    <>
+      <Navbar />
+      <ToastContainer position="top-right" autoClose={3000} />
+      
+      <div className="main-wrapper">
+        <section style={{ minHeight: '80vh' }}>
+          <div className="container">
+            {/* Page Header */}
+            <div className="text-center mb-5">
+              <h1 className="text-white mb-3">Choose Your Plan</h1>
+              <p style={{ color: 'rgba(255, 255, 255, 0.70)', fontSize: '18px' }}>
+                Select the perfect plan for your radiology exam preparation
+              </p>
             </div>
 
-            <div className="mb-6">
-              <h3 className="font-semibold mb-2">Includes Access To:</h3>
-              <ul className="space-y-2">
-                {plan.modules.map((module) => (
-                  <li key={module.id} className="flex items-center">
-                    <i className={`${module.icon} mr-2 text-blue-500`}></i>
-                    <span>{module.name}</span>
-                  </li>
+            {loading ? (
+              <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
+                <Loader />
+              </div>
+            ) : error ? (
+              <div className="text-center" style={{ minHeight: '400px', paddingTop: '100px' }}>
+                <p className="text-danger mb-4">{error}</p>
+                <button 
+                  onClick={() => {
+                    const token = Cookies.get('user-token');
+                    if (token) fetchPlans(token);
+                  }} 
+                  className="loginBtn"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : !isAuthenticated ? (
+              <div className="text-center" style={{ minHeight: '400px', paddingTop: '100px' }}>
+                <h3 className="text-white mb-4">Please Login to View Plans</h3>
+                <button onClick={showLoginModal} className="loginBtn">
+                  Login Now
+                </button>
+              </div>
+            ) : plans.length === 0 ? (
+              <div className="text-center" style={{ minHeight: '400px', paddingTop: '100px' }}>
+                <h3 className="text-white">No Plans Available</h3>
+                <p style={{ color: 'rgba(255, 255, 255, 0.60)' }}>Please check back later</p>
+              </div>
+            ) : (
+              <div className="row justify-content-center">
+                {plans.map((plan) => (
+                  <div key={plan.id} className="col-lg-4 col-md-6 mb-4">
+                    <div 
+                      className="pricing-card" 
+                      style={{
+                        background: plan.is_featured ? 'linear-gradient(135deg, #126E97 0%, #0d5070 100%)' : '#282D41',
+                        borderRadius: '15px',
+                        padding: '30px',
+                        border: plan.is_featured ? '2px solid #126E97' : '1px solid rgba(255, 255, 255, 0.1)',
+                        transform: plan.is_featured ? 'scale(1.05)' : 'scale(1)',
+                        transition: 'all 0.3s ease',
+                        position: 'relative',
+                        height: '100%',
+                      }}
+                    >
+                      {plan.is_featured && (
+                        <div 
+                          style={{
+                            position: 'absolute',
+                            top: '-15px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            background: '#FFA500',
+                            color: '#fff',
+                            padding: '5px 20px',
+                            borderRadius: '20px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                          }}
+                        >
+                          MOST POPULAR
+                        </div>
+                      )}
+
+                      <div className="text-center mb-4">
+                        <h3 className="text-white mb-2" style={{ fontSize: '24px', fontWeight: '700' }}>
+                          {plan.name}
+                        </h3>
+                        <p style={{ color: 'rgba(255, 255, 255, 0.70)', fontSize: '14px', minHeight: '40px' }}>
+                          {plan.description}
+                        </p>
+                      </div>
+
+                      <div className="text-center mb-4">
+                        <div className="d-flex align-items-baseline justify-content-center">
+                          <span className="text-white" style={{ fontSize: '42px', fontWeight: '700' }}>
+                            ₹{plan.effective_price}
+                          </span>
+                          <span style={{ color: 'rgba(255, 255, 255, 0.60)', marginLeft: '10px' }}>
+                            / {plan.duration_text}
+                          </span>
+                        </div>
+                        {plan.discount_price && plan.discount_price > 0 && (
+                          <p style={{ color: 'rgba(255, 255, 255, 0.50)', textDecoration: 'line-through', fontSize: '16px' }}>
+                            ₹{plan.price}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="mb-4">
+                        <h5 className="text-white mb-3" style={{ fontSize: '16px', fontWeight: '600' }}>
+                          Includes Access To:
+                        </h5>
+                        <ul className="list-unstyled">
+                          {plan.modules.map((module) => (
+                            <li key={module.id} className="mb-2 d-flex align-items-center">
+                              <i className={`${module.icon || 'fas fa-check-circle'} me-2`} style={{ color: '#FFA500' }}></i>
+                              <span style={{ color: 'rgba(255, 255, 255, 0.80)' }}>{module.name}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      {plan.features && plan.features.length > 0 && (
+                        <div className="mb-4">
+                          <h5 className="text-white mb-3" style={{ fontSize: '16px', fontWeight: '600' }}>
+                            Features:
+                          </h5>
+                          <ul className="list-unstyled">
+                            {plan.features.map((feature, index) => (
+                              <li key={index} className="mb-2 d-flex align-items-start">
+                                <i className="fas fa-check me-2 mt-1" style={{ color: '#4CAF50' }}></i>
+                                <span style={{ color: 'rgba(255, 255, 255, 0.70)', fontSize: '14px' }}>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      <button
+                        onClick={() => handlePurchase(plan)}
+                        disabled={processing}
+                        className="w-100"
+                        style={{
+                          background: plan.is_featured ? '#FFA500' : '#126E97',
+                          color: '#fff',
+                          border: 'none',
+                          padding: '15px',
+                          borderRadius: '8px',
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          cursor: processing ? 'not-allowed' : 'pointer',
+                          opacity: processing ? 0.6 : 1,
+                          transition: 'all 0.3s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!processing) {
+                            e.target.style.transform = 'translateY(-2px)';
+                            e.target.style.boxShadow = '0 5px 15px rgba(18, 110, 151, 0.4)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = 'none';
+                        }}
+                      >
+                        {processing ? 'Processing...' : 'Subscribe Now'}
+                      </button>
+                    </div>
+                  </div>
                 ))}
-              </ul>
-            </div>
-
-            {plan.features && plan.features.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold mb-2">Features:</h3>
-                <ul className="space-y-2">
-                  {plan.features.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                      <i className="fas fa-check text-green-500 mr-2 mt-1"></i>
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
             )}
 
-            <button
-              onClick={() => handlePurchase(plan)}
-              disabled={processing}
-              className={`w-full py-3 px-6 rounded-lg font-semibold transition ${
-                plan.is_featured
-                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                  : 'bg-gray-200 hover:bg-gray-300 text-gray-800'
-              } ${processing ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {processing ? 'Processing...' : 'Subscribe Now'}
-            </button>
+            {/* Additional Info */}
+            {isAuthenticated && plans.length > 0 && (
+              <div className="row mt-5">
+                <div className="col-12 text-center">
+                  <div style={{
+                    background: '#282D41',
+                    borderRadius: '10px',
+                    padding: '30px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                  }}>
+                    <h4 className="text-white mb-3">Why Choose DrOutlier?</h4>
+                    <div className="row">
+                      <div className="col-md-4 mb-3">
+                        <i className="fas fa-graduation-cap mb-2" style={{ fontSize: '32px', color: '#126E97' }}></i>
+                        <h6 className="text-white">Expert Content</h6>
+                        <p style={{ color: 'rgba(255, 255, 255, 0.60)', fontSize: '14px' }}>
+                          Curated by radiology experts
+                        </p>
+                      </div>
+                      <div className="col-md-4 mb-3">
+                        <i className="fas fa-mobile-alt mb-2" style={{ fontSize: '32px', color: '#126E97' }}></i>
+                        <h6 className="text-white">Learn Anywhere</h6>
+                        <p style={{ color: 'rgba(255, 255, 255, 0.60)', fontSize: '14px' }}>
+                          Access on any device, anytime
+                        </p>
+                      </div>
+                      <div className="col-md-4 mb-3">
+                        <i className="fas fa-trophy mb-2" style={{ fontSize: '32px', color: '#126E97' }}></i>
+                        <h6 className="text-white">Exam Success</h6>
+                        <p style={{ color: 'rgba(255, 255, 255, 0.60)', fontSize: '14px' }}>
+                          Proven track record of success
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        ))}
+        </section>
       </div>
-    </div>
+
+      <Footer />
+    </>
   );
 }
