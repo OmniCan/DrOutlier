@@ -65,9 +65,12 @@ function Navbar() {
 
     const handleLogOut = () => {
         toast.success("Logout Successfull");
-        Cookies.remove('user-token')
-        router.push('/')
-        setcount(prv => prv + 1)
+        Cookies.remove('user-token');
+        Cookies.remove('user-id');
+        Cookies.remove('Login-user');
+        Cookies.remove('user-email');
+        router.push('/');
+        setcount(prv => prv + 1);
     }
 
 

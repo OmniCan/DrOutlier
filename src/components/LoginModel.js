@@ -92,10 +92,12 @@ function LoginModel() {
                 const userToken = response.data.data?.access_token;
                 const userId = response.data.data?.user?.id;
                 const Loginuser = response?.data?.data?.user?.firstname
+                const userEmail = response?.data?.data?.user?.email;
 
                 console.log(userId, 'User ID');
                 console.log(userToken, 'User Token');
                 console.log(Loginuser, 'Login User');
+                console.log(userEmail, 'User Email');
 
                 // Store user ID and token in cookies
 
@@ -103,6 +105,9 @@ function LoginModel() {
                     Cookies.set('Login-user', Loginuser);
                 }
 
+                if (userEmail) {
+                    Cookies.set('user-email', userEmail);
+                }
 
                 if (userId) {
                     Cookies.set('user-id', userId);
@@ -177,10 +182,15 @@ function LoginModel() {
                     // console.log(response?.data?.tokenResult)
                     const token = response?.data?.tokenResult
                     const userId = response?.data?.userFromDb?.id
+                    const userEmail = response?.data?.userFromDb?.email;
 
 
                     if (username) {
                         Cookies.set('Login-user', username);
+                    }
+
+                    if (userEmail) {
+                        Cookies.set('user-email', userEmail);
                     }
 
                     if (userId) {

@@ -38,9 +38,12 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const token = Cookies.get('user-token');
+    const userId = Cookies.get('user-id');
+    const username = Cookies.get('Login-user');
+    
     if (token) {
       setIsAuthenticated(true);
-      fetchUserData(token);
+      fetchUserData(token, userId, username);
       fetchCountries();
     } else {
       setIsAuthenticated(false);
@@ -48,11 +51,12 @@ export default function ProfilePage() {
     }
   }, []);
 
-  const fetchUserData = async (token) => {
+  const fetchUserData = async (token, userId, username) => {
     try {
+      // Try the API call
       const response = await axios.post(
         `${baseUrl}/api/user-data`,
-        {},
+        { user_id: userId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -60,19 +64,64 @@ export default function ProfilePage() {
         }
       );
       
-      if (response.data) {
-        setUserData(response.data.data);
+      // Check if we got valid user data from API
+      if (response.data && response.data.data && response.data.data.list !== null) {
+        const user = response.data.data.list || response.data.data;
+        setUserData(user);
         setProfileData({
-          firstname: response.data.data.firstname || '',
-          lastname: response.data.data.lastname || '',
-          mobile: response.data.data.mobile || '',
-          country_code: response.data.data.country_code || '+91',
+          firstname: user.firstname || username || '',
+          lastname: user.lastname || '',
+          mobile: user.mobile || '',
+          country_code: user.country_code || '+91',
           photo: null,
-          photoPreview: response.data.data.photo ? `${baseUrl}/${response.data.data.photo}` : null
+          photoPreview: user.image ? `${baseUrl}/${user.image}` : (user.avatar ? user.avatar : null)
+        });
+      } else {
+        // API returned null, use cookie data as fallback
+        const userEmail = Cookies.get('user-email') || Cookies.get('email') || '';
+        const fallbackUser = {
+          firstname: username || 'User',
+          lastname: '',
+          email: userEmail,
+          mobile: '',
+          country_code: '+91',
+          image: null,
+          created_at: null
+        };
+        setUserData(fallbackUser);
+        setProfileData({
+          firstname: username || '',
+          lastname: '',
+          mobile: '',
+          country_code: '+91',
+          photo: null,
+          photoPreview: null
         });
       }
     } catch (error) {
       console.error('Error fetching user data:', error);
+      
+      // Use cookie fallback on error too
+      const username = Cookies.get('Login-user');
+      const userEmail = Cookies.get('user-email') || Cookies.get('email') || '';
+      const fallbackUser = {
+        firstname: username || 'User',
+        lastname: '',
+        email: userEmail,
+        mobile: '',
+        country_code: '+91',
+        image: null,
+        created_at: null
+      };
+      setUserData(fallbackUser);
+      setProfileData({
+        firstname: username || '',
+        lastname: '',
+        mobile: '',
+        country_code: '+91',
+        photo: null,
+        photoPreview: null
+      });
     } finally {
       setLoading(false);
     }
@@ -120,34 +169,63 @@ export default function ProfilePage() {
 
     try {
       const userId = Cookies.get('user-id');
-      const formData = new FormData();
-      formData.append('user_id', userId);
-      formData.append('first_name', profileData.firstname);
-      formData.append('last_name', profileData.lastname);
-      formData.append('mobile', profileData.mobile);
-      formData.append('country_code', profileData.country_code);
-      
+      const token = Cookies.get('user-token');
+
+      // Create a clean payload with only allowed fields
+      const payload = {
+        user_id: userId,
+        firstname: profileData.firstname.trim(),
+        lastname: (profileData.lastname || '').trim(),
+        mobile: (profileData.mobile || '').trim(),
+        country_code: profileData.country_code
+      };
+
+      // If there's a photo, we need to use FormData
       if (profileData.photo) {
-        formData.append('photo', profileData.photo);
-      }
+        const formData = new FormData();
+        // Only append the exact fields we need
+        Object.keys(payload).forEach(key => {
+          formData.append(key, payload[key]);
+        });
+        formData.append('image', profileData.photo);
 
-      const response = await axios.post(`${baseUrl}/api/profile-update`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+        const response = await axios.post(`${baseUrl}/api/profile-update`, formData, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+            // Don't set Content-Type for FormData, let axios handle it
+          }
+        });
+
+        if (response.data.success) {
+          toast.success('Profile updated successfully!');
+          setEditingProfile(false);
+          const username = Cookies.get('Login-user');
+          fetchUserData(token, userId, username);
+        } else {
+          toast.error(response.data.message || 'Failed to update profile');
         }
-      });
-
-      if (response.data.success) {
-        toast.success('Profile updated successfully!');
-        setEditingProfile(false);
-        // Refresh user data
-        const token = Cookies.get('user-token');
-        fetchUserData(token);
       } else {
-        toast.error(response.data.message || 'Failed to update profile');
+        // Send as JSON when no photo
+        const response = await axios.post(`${baseUrl}/api/profile-update`, payload, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.data.success) {
+          toast.success('Profile updated successfully!');
+          setEditingProfile(false);
+          const username = Cookies.get('Login-user');
+          fetchUserData(token, userId, username);
+        } else {
+          toast.error(response.data.message || 'Failed to update profile');
+        }
       }
     } catch (error) {
-      toast.error('An error occurred while updating profile');
+      console.error('Profile update error:', error.response?.data || error.message);
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || 'An error occurred while updating profile';
+      toast.error(errorMsg);
     } finally {
       setSaving(false);
     }
@@ -171,10 +249,15 @@ export default function ProfilePage() {
 
     try {
       const userId = Cookies.get('user-id');
+      const token = Cookies.get('user-token');
       const response = await axios.post(`${baseUrl}/api/change-password`, {
         user_id: userId,
         old_password: passwordData.old_password,
         new_password: passwordData.new_password
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (response.data.success) {
@@ -439,7 +522,11 @@ export default function ProfilePage() {
                                   }}
                                 >
                                   {countries.map(country => (
-                                    <option key={country.id} value={country.dial_code}>
+                                    <option 
+                                      key={country.id} 
+                                      value={country.dial_code}
+                                      style={{ background: '#1B1E27', color: '#fff' }}
+                                    >
                                       {country.dial_code} - {country.name}
                                     </option>
                                   ))}
@@ -453,8 +540,6 @@ export default function ProfilePage() {
                                   value={profileData.mobile}
                                   onChange={handleProfileChange}
                                   placeholder="Enter mobile number"
-                                  pattern="[0-9]{10}"
-                                  title="Please enter a valid 10-digit mobile number"
                                   style={{
                                     background: '#1B1E27',
                                     border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -494,13 +579,14 @@ export default function ProfilePage() {
                             className="loginBtn"
                             onClick={() => {
                               setEditingProfile(false);
+                              const username = Cookies.get('Login-user');
                               setProfileData({
-                                firstname: userData.firstname || '',
-                                lastname: userData.lastname || '',
-                                mobile: userData.mobile || '',
-                                country_code: userData.country_code || '+91',
+                                firstname: userData?.firstname || username || '',
+                                lastname: userData?.lastname || '',
+                                mobile: userData?.mobile || '',
+                                country_code: userData?.country_code || '+91',
                                 photo: null,
-                                photoPreview: userData.photo ? `${baseUrl}/${userData.photo}` : null
+                                photoPreview: userData?.image ? `${baseUrl}/${userData.image}` : (userData?.avatar ? userData.avatar : null)
                               });
                             }}
                             style={{ background: '#6c757d' }}
@@ -521,7 +607,7 @@ export default function ProfilePage() {
                             borderRadius: '8px',
                             color: '#fff',
                           }}>
-                            {userData?.firstname || 'N/A'} {userData?.lastname || ''}
+                            {userData?.firstname ? `${userData.firstname}${userData.lastname ? ' ' + userData.lastname : ''}` : 'Not provided'}
                           </div>
                         </div>
 
@@ -549,7 +635,7 @@ export default function ProfilePage() {
                             borderRadius: '8px',
                             color: '#fff',
                           }}>
-                            {userData?.country_code} {userData?.mobile || 'Not provided'}
+                            {userData?.mobile ? `${userData.country_code || '+91'} ${userData.mobile}` : 'Not provided'}
                           </div>
                         </div>
 
