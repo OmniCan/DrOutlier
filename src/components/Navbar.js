@@ -202,12 +202,45 @@ function Navbar() {
                                         </div>
                                         <ul className="dropdown-menu dropdown-menu-end">
                                             <li>
+                                                <Link
+                                                    href="/subscription"
+                                                    className="dropdown-item"
+                                                    style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                                >
+                                                    <i className="fas fa-crown" style={{ color: '#126E97' }}></i>
+                                                    My Subscription
+                                                </Link>
+                                            </li>
+                                            <li><hr className="dropdown-divider" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} /></li>
+                                            <li>
+                                                <Link
+                                                    href="/profile"
+                                                    className="dropdown-item"
+                                                    style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                                >
+                                                    <i className="fas fa-user-circle" style={{ color: '#126E97' }}></i>
+                                                    Profile
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link
+                                                    href="/bookmarks"
+                                                    className="dropdown-item"
+                                                    style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                                >
+                                                    <i className="fas fa-bookmark" style={{ color: '#126E97' }}></i>
+                                                    Saved / Bookmarks
+                                                </Link>
+                                            </li>
+                                            <li><hr className="dropdown-divider" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} /></li>
+                                            <li>
                                                 <button
                                                     className="dropdown-item"
                                                     type="button"
-                                                    style={{ cursor: 'pointer', zIndex: 9999 }}
+                                                    style={{ cursor: 'pointer', zIndex: 9999, display: 'flex', alignItems: 'center', gap: '8px' }}
                                                     onClick={() => handleLogOut()}
                                                 >
+                                                    <i className="fas fa-sign-out-alt" style={{ color: '#FF5252' }}></i>
                                                     Log Out
                                                 </button>
                                             </li>
