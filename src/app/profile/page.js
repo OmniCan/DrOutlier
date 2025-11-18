@@ -198,9 +198,22 @@ export default function ProfilePage() {
 
         if (response.data.success) {
           toast.success('Profile updated successfully!');
+          
+          // Update userData state immediately with the new values
+          setUserData(prev => ({
+            ...prev,
+            firstname: payload.firstname,
+            lastname: payload.lastname,
+            mobile: payload.mobile,
+            country_code: payload.country_code
+          }));
+          
+          // Update Login-user cookie if firstname changed
+          if (payload.firstname) {
+            Cookies.set('Login-user', payload.firstname);
+          }
+          
           setEditingProfile(false);
-          const username = Cookies.get('Login-user');
-          fetchUserData(token, userId, username);
         } else {
           toast.error(response.data.message || 'Failed to update profile');
         }
@@ -215,9 +228,22 @@ export default function ProfilePage() {
 
         if (response.data.success) {
           toast.success('Profile updated successfully!');
+          
+          // Update userData state immediately with the new values
+          setUserData(prev => ({
+            ...prev,
+            firstname: payload.firstname,
+            lastname: payload.lastname,
+            mobile: payload.mobile,
+            country_code: payload.country_code
+          }));
+          
+          // Update Login-user cookie if firstname changed
+          if (payload.firstname) {
+            Cookies.set('Login-user', payload.firstname);
+          }
+          
           setEditingProfile(false);
-          const username = Cookies.get('Login-user');
-          fetchUserData(token, userId, username);
         } else {
           toast.error(response.data.message || 'Failed to update profile');
         }
