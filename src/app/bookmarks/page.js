@@ -38,13 +38,20 @@ export default function BookmarksPage() {
   const fetchAllBookmarks = async () => {
     try {
       const userId = Cookies.get('user-id');
+      const token = Cookies.get('user-token');
+      
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
       
       // Fetch all bookmark types in parallel
       const [notesRes, spottersRes, osceRes, quizRes] = await Promise.all([
-        axios.post(`${baseUrl}/api/note/get-note-bookmark`, { user_id: userId }),
-        axios.post(`${baseUrl}/api/spotters/get-bookmark`, { user_id: userId }),
-        axios.post(`${baseUrl}/api/osce/get-osce-bookmark`, { user_id: userId }),
-        axios.post(`${baseUrl}/api/quiz/bookmarks`, { user_id: userId })
+        axios.post(`${baseUrl}/api/note/get-note-bookmark`, { user_id: userId }, config),
+        axios.post(`${baseUrl}/api/spotters/get-bookmark`, { user_id: userId }, config),
+        axios.post(`${baseUrl}/api/osce/get-osce-bookmark`, { user_id: userId }, config),
+        axios.post(`${baseUrl}/api/quiz/bookmarks`, { user_id: userId }, config)
       ]);
 
       setBookmarks({
@@ -67,7 +74,14 @@ export default function BookmarksPage() {
   const removeBookmark = async (type, id) => {
     try {
       const userId = Cookies.get('user-id');
+      const token = Cookies.get('user-token');
       let endpoint = '';
+      
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
       
       switch(type) {
         case 'notes':
@@ -87,7 +101,7 @@ export default function BookmarksPage() {
       await axios.post(`${baseUrl}${endpoint}`, {
         user_id: userId,
         [type === 'notes' ? 'note_id' : type === 'osce' ? 'osce_id' : 'id']: id
-      });
+      }, config);
 
       // Refresh bookmarks
       fetchAllBookmarks();
