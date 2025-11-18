@@ -235,12 +235,13 @@ export default function SubscriptionPage() {
                     </div>
                   ) : (
                     <div className="table-responsive" style={{
-                      background: '#282D41',
                       borderRadius: '12px',
                       border: '1px solid rgba(255, 255, 255, 0.1)',
                       overflow: 'hidden',
                     }}>
-                      <table className="table mb-0">
+                      <table className="table mb-0" style={{
+                        background: '#282D41',
+                      }}>
                         <thead style={{ background: '#1B1E27' }}>
                           <tr>
                             <th className="text-white" style={{ 
@@ -313,43 +314,49 @@ export default function SubscriptionPage() {
                                 borderBottom: index < history.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
                                 transition: 'background 0.2s ease',
                               }}
-                              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 110, 151, 0.05)'}
-                              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                              onMouseEnter={(e) => {
+                                const cells = e.currentTarget.querySelectorAll('td');
+                                cells.forEach(cell => cell.style.background = 'rgba(18, 110, 151, 0.15)');
+                              }}
+                              onMouseLeave={(e) => {
+                                const cells = e.currentTarget.querySelectorAll('td');
+                                cells.forEach(cell => cell.style.background = '#282D41');
+                              }}
                             >
-                              <td style={{ padding: '18px 20px' }}>
+                              <td style={{ padding: '18px 20px', background: '#282D41' }}>
                                 <div className="d-flex align-items-center">
                                   <div style={{
                                     width: '36px',
                                     height: '36px',
-                                    background: 'rgba(18, 110, 151, 0.2)',
+                                    background: 'rgba(18, 110, 151, 0.3)',
                                     borderRadius: '8px',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     marginRight: '12px',
                                   }}>
-                                    <i className="fas fa-box" style={{ color: '#126E97', fontSize: '16px' }}></i>
+                                    <i className="fas fa-box" style={{ color: '#4FC3F7', fontSize: '16px' }}></i>
                                   </div>
                                   <div>
-                                    <div style={{ color: 'rgba(255, 255, 255, 0.90)', fontWeight: '500', fontSize: '15px' }}>
+                                    <div style={{ color: '#FFFFFF', fontWeight: '600', fontSize: '15px' }}>
                                       {subscription.plan_name}
                                     </div>
                                   </div>
                                 </div>
                               </td>
-                              <td style={{ padding: '18px 20px' }}>
+                              <td style={{ padding: '18px 20px', background: '#282D41' }}>
                                 <span style={{ 
                                   color: '#FFA500', 
                                   fontWeight: '700',
-                                  fontSize: '16px',
+                                  fontSize: '17px',
                                 }}>
                                   ₹{subscription.amount_paid}
                                 </span>
                               </td>
-                              <td style={{ padding: '18px 20px' }}>
+                              <td style={{ padding: '18px 20px', background: '#282D41' }}>
                                 {getStatusBadge(subscription.status)}
                               </td>
-                              <td style={{ padding: '18px 20px', color: 'rgba(255, 255, 255, 0.70)', fontSize: '14px' }}>
+                              <td style={{ padding: '18px 20px', background: '#282D41', color: '#FFFFFF', fontSize: '14px', fontWeight: '500' }}>
                                 {subscription.started_at 
                                   ? new Date(subscription.started_at).toLocaleDateString('en-GB', {
                                       day: '2-digit',
@@ -358,7 +365,7 @@ export default function SubscriptionPage() {
                                     })
                                   : '-'}
                               </td>
-                              <td style={{ padding: '18px 20px', color: 'rgba(255, 255, 255, 0.70)', fontSize: '14px' }}>
+                              <td style={{ padding: '18px 20px', background: '#282D41', color: '#FFFFFF', fontSize: '14px', fontWeight: '500' }}>
                                 {subscription.expires_at 
                                   ? new Date(subscription.expires_at).toLocaleDateString('en-GB', {
                                       day: '2-digit',
@@ -367,8 +374,8 @@ export default function SubscriptionPage() {
                                     })
                                   : '-'}
                               </td>
-                              <td style={{ padding: '18px 20px', color: 'rgba(255, 255, 255, 0.60)', fontSize: '14px' }}>
-                                <i className="far fa-calendar-alt me-2" style={{ color: 'rgba(255, 255, 255, 0.4)' }}></i>
+                              <td style={{ padding: '18px 20px', background: '#282D41', color: 'rgba(255, 255, 255, 0.80)', fontSize: '14px' }}>
+                                <i className="far fa-calendar-alt me-2" style={{ color: '#4FC3F7' }}></i>
                                 {new Date(subscription.created_at).toLocaleDateString('en-GB', {
                                   day: '2-digit',
                                   month: 'short',
