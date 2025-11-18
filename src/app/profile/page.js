@@ -64,9 +64,13 @@ export default function ProfilePage() {
         }
       );
       
+      console.log('API Response:', response.data);
+      
       // Check if we got valid user data from API
-      if (response.data && response.data.data && response.data.data.list !== null) {
-        const user = response.data.data.list || response.data.data;
+      if (response.data && response.data.status === 'success' && response.data.data && response.data.data.list) {
+        const user = response.data.data.list;
+        console.log('User data from API:', user);
+        
         setUserData(user);
         setProfileData({
           firstname: user.firstname || username || '',
@@ -77,6 +81,7 @@ export default function ProfilePage() {
           photoPreview: user.image ? `${baseUrl}/${user.image}` : (user.avatar ? user.avatar : null)
         });
       } else {
+        console.log('API returned null or invalid data, using fallback');
         // API returned null, use cookie data as fallback
         const userEmail = Cookies.get('user-email') || Cookies.get('email') || '';
         const fallbackUser = {
