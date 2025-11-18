@@ -46,26 +46,32 @@ export default function BookmarksPage() {
         }
       };
       
+      console.log('Fetching bookmarks with userId:', userId, 'token:', token ? 'exists' : 'missing');
+      
       // Fetch all bookmark types in parallel
-      const [notesRes, spottersRes, osceRes, quizRes] = await Promise.all([
+      const results = await Promise.allSettled([
         axios.post(`${baseUrl}/api/note/get-note-bookmark`, { user_id: userId }, config),
         axios.post(`${baseUrl}/api/spotters/get-bookmark`, { user_id: userId }, config),
         axios.post(`${baseUrl}/api/osce/get-osce-bookmark`, { user_id: userId }, config),
         axios.post(`${baseUrl}/api/quiz/bookmarks`, { user_id: userId }, config)
       ]);
 
+      console.log('Bookmark results:', results);
+
       setBookmarks({
-        notes: notesRes.data.data || [],
-        spotters: spottersRes.data.data || [],
-        osce: osceRes.data.data || [],
-        quizora: quizRes.data.data || [],
+        notes: results[0].status === 'fulfilled' ? (results[0].value.data.data || []) : [],
+        spotters: results[1].status === 'fulfilled' ? (results[1].value.data.data || []) : [],
+        osce: results[2].status === 'fulfilled' ? (results[2].value.data.data || []) : [],
+        quizora: results[3].status === 'fulfilled' ? (results[3].value.data.data || []) : [],
         aiRad: [], // Add when API available
         practicalEssentials: [],
         watchAndLearn: []
       });
     } catch (error) {
       console.error('Error fetching bookmarks:', error);
-      toast.error('Failed to load bookmarks');
+      console.error('Error details:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      toast.error(error.response?.data?.message || 'Failed to load bookmarks');
     } finally {
       setLoading(false);
     }
