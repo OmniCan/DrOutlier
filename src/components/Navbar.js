@@ -16,6 +16,7 @@ import { useGoogleLogin } from '@react-oauth/google/dist';
 import LoginModel from './LoginModel';
 import SignUpModel from './SignUpModel';
 import Forget from './ForgetPassword/Forget';
+import useNavigation from '@/hooks/useNavigation';
 
 
 
@@ -33,6 +34,7 @@ function Navbar() {
     const router = useRouter()
     const pathname = usePathname()
     const [Username, SetLoginUsername] = useState('UserName')
+    const { navigationItems, loading: navLoading } = useNavigation();
 
 
     useEffect(() => {
@@ -626,36 +628,21 @@ function Navbar() {
                                             Home{" "}
                                         </Link>
                                     </li>
-                                    <li className="nav-item active">
-                                        <Link className={`nav-link ${pathname?.startsWith('/spotters') ? 'active' : ''}`} onClick={hendleChecklogin} href="/spotters" data-bs-dismiss="offcanvas">
-                                            Spotters{" "}
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/notes') ? 'active' : ''}`} onClick={hendleChecklogin} href="/notes" data-bs-dismiss="offcanvas">
-                                            Notes{" "}
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/osce') ? 'active' : ''}`} onClick={hendleChecklogin} href="/osce" data-bs-dismiss="offcanvas">
-                                            OSCE{" "}
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/ai-rad') ? 'active' : ''}`} onClick={hendleChecklogin} href="/ai-rad" data-bs-dismiss="offcanvas">
-                                            AI-Rad
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/practical-essentials') ? 'active' : ''}`} onClick={hendleChecklogin} href="/practical-essentials" data-bs-dismiss="offcanvas">
-                                            Practical Essentials
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/watch-and-learn') ? 'active' : ''}`} onClick={hendleChecklogin} href="/watch-and-learn" data-bs-dismiss="offcanvas">
-                                            Watch &amp; Learn{" "}
-                                        </Link>
-                                    </li>
+                                    
+                                    {/* Dynamic Navigation Items from API - Mobile */}
+                                    {!navLoading && navigationItems.map((item) => (
+                                        <li key={item.id} className="nav-item">
+                                            <Link 
+                                                className={`nav-link ${pathname?.startsWith(item.url) ? 'active' : ''}`} 
+                                                onClick={hendleChecklogin} 
+                                                href={item.url}
+                                                data-bs-dismiss="offcanvas"
+                                            >
+                                                {item.icon && <i className={item.icon} style={{marginRight: '5px'}} />}
+                                                {item.title}
+                                            </Link>
+                                        </li>
+                                    ))}
 
                                     <li className="nav-item dropdown">
                                         <Link
@@ -758,41 +745,20 @@ function Navbar() {
                                             Home
                                         </Link>
                                     </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/spotters') ? 'active' : ''}`} onClick={hendleChecklogin} href="/spotters">
-                                            Spotters
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/notes') ? 'active' : ''}`} onClick={hendleChecklogin} href="/notes">
-                                            NOtes
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/osce') ? 'active' : ''}`} onClick={hendleChecklogin} href="/osce">
-                                            OSCE
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/ai-rad') ? 'active' : ''}`} onClick={hendleChecklogin} href="/ai-rad">
-                                            AI-Rad
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/practical-essentials') ? 'active' : ''}`} onClick={hendleChecklogin} href="/practical-essentials">
-                                            Practical Essentials
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/watch-and-learn') ? 'active' : ''}`} onClick={hendleChecklogin} href="/watch-and-learn">
-                                            Watch &amp; Learn
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className={`nav-link ${pathname?.startsWith('/quizora') ? 'active' : ''}`} onClick={hendleCheckloginNav} href="/quizora">
-                                            Quizora
-                                        </Link>
-                                    </li>
+                                    
+                                    {/* Dynamic Navigation Items from API */}
+                                    {!navLoading && navigationItems.map((item) => (
+                                        <li key={item.id} className="nav-item">
+                                            <Link 
+                                                className={`nav-link ${pathname?.startsWith(item.url) ? 'active' : ''}`} 
+                                                onClick={hendleChecklogin} 
+                                                href={item.url}
+                                            >
+                                                {item.icon && <i className={item.icon} style={{marginRight: '5px'}} />}
+                                                {item.title}
+                                            </Link>
+                                        </li>
+                                    ))}
 
 
 
