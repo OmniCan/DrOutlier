@@ -244,53 +244,58 @@ export default function SubscriptionPage() {
                       }}>
                         <thead style={{ background: '#1B1E27' }}>
                           <tr>
-                            <th className="text-white" style={{ 
+                            <th style={{ 
                               padding: '18px 20px', 
                               borderBottom: '2px solid rgba(255, 255, 255, 0.1)',
                               fontSize: '13px',
                               fontWeight: '600',
                               textTransform: 'uppercase',
-                              letterSpacing: '0.5px'
+                              letterSpacing: '0.5px',
+                              color: '#ffffff'
                             }}>
                               Plan
                             </th>
-                            <th className="text-white" style={{ 
+                            <th style={{ 
                               padding: '18px 20px', 
                               borderBottom: '2px solid rgba(255, 255, 255, 0.1)',
                               fontSize: '13px',
                               fontWeight: '600',
                               textTransform: 'uppercase',
-                              letterSpacing: '0.5px'
+                              letterSpacing: '0.5px',
+                              color: '#ffffff'
                             }}>
                               Amount
                             </th>
-                            <th className="text-white" style={{ 
+                            <th style={{ 
                               padding: '18px 20px', 
                               borderBottom: '2px solid rgba(255, 255, 255, 0.1)',
                               fontSize: '13px',
                               fontWeight: '600',
                               textTransform: 'uppercase',
-                              letterSpacing: '0.5px'
+                              letterSpacing: '0.5px',
+                              color: '#ffffff'
                             }}>
                               Status
                             </th>
-                            <th className="text-white" style={{ 
+                            <th style={{ 
                               padding: '18px 20px', 
                               borderBottom: '2px solid rgba(255, 255, 255, 0.1)',
                               fontSize: '13px',
                               fontWeight: '600',
                               textTransform: 'uppercase',
-                              letterSpacing: '0.5px'
+                              letterSpacing: '0.5px',
+                              color: '#ffffff'
                             }}>
                               Started
                             </th>
-                            <th className="text-white" style={{ 
+                            <th style={{ 
                               padding: '18px 20px', 
                               borderBottom: '2px solid rgba(255, 255, 255, 0.1)',
                               fontSize: '13px',
                               fontWeight: '600',
                               textTransform: 'uppercase',
-                              letterSpacing: '0.5px'
+                              letterSpacing: '0.5px',
+                              color: '#ffffff'
                             }}>
                               Expires
                             </th>
