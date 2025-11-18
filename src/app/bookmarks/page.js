@@ -58,11 +58,39 @@ export default function BookmarksPage() {
 
       console.log('Bookmark results:', results);
 
+      // Parse results and handle different response structures
+      const parseBookmarkData = (result, index) => {
+        if (result.status !== 'fulfilled') {
+          console.log(`API ${index} failed:`, result.reason?.response?.data || result.reason);
+          return [];
+        }
+        
+        const response = result.value.data;
+        console.log(`API ${index} response:`, response);
+        
+        // Handle different response structures
+        if (Array.isArray(response)) {
+          return response;
+        }
+        if (response.data) {
+          if (Array.isArray(response.data)) {
+            return response.data;
+          }
+          if (response.data.list && Array.isArray(response.data.list)) {
+            return response.data.list;
+          }
+        }
+        if (response.bookmarks && Array.isArray(response.bookmarks)) {
+          return response.bookmarks;
+        }
+        return [];
+      };
+
       setBookmarks({
-        notes: results[0].status === 'fulfilled' ? (results[0].value.data.data || []) : [],
-        spotters: results[1].status === 'fulfilled' ? (results[1].value.data.data || []) : [],
-        osce: results[2].status === 'fulfilled' ? (results[2].value.data.data || []) : [],
-        quizora: results[3].status === 'fulfilled' ? (results[3].value.data.data || []) : [],
+        notes: parseBookmarkData(results[0], 0),
+        spotters: parseBookmarkData(results[1], 1),
+        osce: parseBookmarkData(results[2], 2),
+        quizora: parseBookmarkData(results[3], 3),
         aiRad: [], // Add when API available
         practicalEssentials: [],
         watchAndLearn: []
@@ -71,7 +99,11 @@ export default function BookmarksPage() {
       console.error('Error fetching bookmarks:', error);
       console.error('Error details:', error.response?.data);
       console.error('Error status:', error.response?.status);
-      toast.error(error.response?.data?.message || 'Failed to load bookmarks');
+      
+      // Don't show error toast for 403 - it just means no access to that module
+      if (error.response?.status !== 403) {
+        toast.error(error.response?.data?.message || 'Failed to load bookmarks');
+      }
     } finally {
       setLoading(false);
     }
