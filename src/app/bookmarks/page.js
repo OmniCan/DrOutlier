@@ -228,26 +228,26 @@ export default function BookmarksPage() {
     
     switch(type) {
       case 'notes':
-        // Notes use 'category' field (from Blog model)
+        // Notes (Blog model) use 'category' field
         categoryId = item.category || 100;
         return `/notes/view?id=${categoryId}&noteId=${item.id}#page1`;
       case 'spotters':
-        // Spotters use 'parent_id' or 'category_id'
-        categoryId = item.parent_id || item.category_id || 100;
+        // Spotters use 'category' or 'category_id' field
+        categoryId = item.category || item.category_id || item.parent_id || 100;
         return `/spotters/view?id=${categoryId}&spotterId=${item.id}#page1`;
       case 'osce':
-        // OSCE use 'parent_id' or 'category_id'
-        categoryId = item.parent_id || item.category_id || 100;
+        // OSCE use 'category' field
+        categoryId = item.category || item.parent_id || item.category_id || 100;
         return `/osce/view?id=${categoryId}&osceId=${item.id}#page1`;
       case 'quizora':
         return `/quiz?id=${item.id}`;
       case 'aiRad':
-        // AI Rad (Munchies) use 'parent_id' or 'category_id'
-        categoryId = item.parent_id || item.category_id || 100;
+        // AI Rad (Munchie model) use 'category' field
+        categoryId = item.category || item.parent_id || item.category_id || 100;
         return `/ai-rad/view?id=${categoryId}&munchieId=${item.id}#page1`;
       case 'practicalEssentials':
-        // Practical Essentials (Basics) use 'parent_id' or 'category_id'
-        categoryId = item.parent_id || item.category_id || 100;
+        // Practical Essentials (Basic model) use 'category' field
+        categoryId = item.category || item.parent_id || item.category_id || 100;
         return `/practical-essentials/view?id=${categoryId}&basicId=${item.id}#page1`;
       case 'watchAndLearn':
         // Watch and Learn doesn't have individual view pages, link to main page
