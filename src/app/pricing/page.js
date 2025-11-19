@@ -180,6 +180,37 @@ export default function PlansPage() {
     myModal.show();
   };
 
+  // Dynamic column class based on number of plans
+  const getColumnClass = (totalPlans, index) => {
+    if (totalPlans === 1) {
+      return 'col-12';
+    } else if (totalPlans === 2) {
+      return 'col-lg-6 col-md-6';
+    } else if (totalPlans === 3) {
+      return 'col-lg-4 col-md-6';
+    } else if (totalPlans === 4) {
+      return 'col-lg-3 col-md-6';
+    } else if (totalPlans === 5) {
+      // First 4 items: 3 columns each, 5th item: full width
+      return index < 4 ? 'col-lg-3 col-md-6' : 'col-12';
+    } else if (totalPlans === 6) {
+      return 'col-lg-4 col-md-6';
+    } else if (totalPlans === 7) {
+      // First 4 items: 3 columns, next 3 items: 4 columns
+      return index < 4 ? 'col-lg-3 col-md-6' : 'col-lg-4 col-md-6';
+    } else if (totalPlans === 8) {
+      return 'col-lg-3 col-md-6';
+    } else {
+      // For 9+ items, use 3 columns
+      return 'col-lg-4 col-md-6';
+    }
+  };
+
+  // Check if we need a new row (for 5 items layout)
+  const shouldStartNewRow = (totalPlans, index) => {
+    return totalPlans === 5 && index === 4;
+  };
+
   return (
     <>
       <Navbar />
@@ -226,22 +257,26 @@ export default function PlansPage() {
                 <p style={{ color: 'rgba(255, 255, 255, 0.60)' }}>Please check back later</p>
               </div>
             ) : (
-              <div className="row justify-content-center">
-                {plans.map((plan) => (
-                  <div key={plan.id} className="col-lg-4 col-md-6 mb-4">
-                    <div 
-                      className="pricing-card" 
-                      style={{
-                        background: plan.is_featured ? 'linear-gradient(135deg, #126E97 0%, #0d5070 100%)' : '#282D41',
-                        borderRadius: '15px',
-                        padding: '30px',
-                        border: plan.is_featured ? '2px solid #126E97' : '1px solid rgba(255, 255, 255, 0.1)',
-                        transform: plan.is_featured ? 'scale(1.05)' : 'scale(1)',
-                        transition: 'all 0.3s ease',
-                        position: 'relative',
-                        height: '100%',
-                      }}
-                    >
+              <div className="row justify-content-center" style={{ rowGap: '30px' }}>
+                {plans.map((plan, index) => (
+                  <>
+                    {shouldStartNewRow(plans.length, index) && (
+                      <div key={`row-break-${index}`} className="w-100" style={{ marginBottom: '30px' }}></div>
+                    )}
+                    <div key={plan.id} className={`${getColumnClass(plans.length, index)} mb-4`}>
+                      <div 
+                        className="pricing-card" 
+                        style={{
+                          background: plan.is_featured ? 'linear-gradient(135deg, #126E97 0%, #0d5070 100%)' : '#282D41',
+                          borderRadius: '15px',
+                          padding: '30px',
+                          border: plan.is_featured ? '2px solid #126E97' : '1px solid rgba(255, 255, 255, 0.1)',
+                          transform: plan.is_featured ? 'scale(1.05)' : 'scale(1)',
+                          transition: 'all 0.3s ease',
+                          position: 'relative',
+                          height: '100%',
+                        }}
+                      >
                       {plan.is_featured && (
                         <div 
                           style={{
@@ -347,6 +382,7 @@ export default function PlansPage() {
                       </button>
                     </div>
                   </div>
+                  </>
                 ))}
               </div>
             )}
