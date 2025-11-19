@@ -22,7 +22,7 @@ export default function BookmarksPage() {
     practicalEssentials: [],
     watchAndLearn: []
   });
-  const [activeAccordion, setActiveAccordion] = useState('notes');
+  const [activeTab, setActiveTab] = useState('notes');
 
   useEffect(() => {
     const token = Cookies.get('user-token');
@@ -432,109 +432,57 @@ export default function BookmarksPage() {
               </div>
             ) : (
               <>
-                {/* Summary Cards */}
-                <div className="row mb-4">
-                  <div className="col-md-4 mb-3">
-                    <div style={{
-                      background: 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      textAlign: 'center'
-                    }}>
-                      <h2 className="text-white mb-1" style={{ fontSize: '36px', fontWeight: '700' }}>
-                        {Object.values(bookmarks).reduce((sum, arr) => sum + arr.length, 0)}
-                      </h2>
-                      <p className="text-white mb-0" style={{ fontSize: '14px', opacity: 0.9 }}>
-                        Total Bookmarks
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-md-4 mb-3">
-                    <div style={{
-                      background: 'linear-gradient(135deg, #2196F3 0%, #1976d2 100%)',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      textAlign: 'center'
-                    }}>
-                      <h2 className="text-white mb-1" style={{ fontSize: '36px', fontWeight: '700' }}>
-                        {Object.values(bookmarks).filter(arr => arr.length > 0).length}
-                      </h2>
-                      <p className="text-white mb-0" style={{ fontSize: '14px', opacity: 0.9 }}>
-                        Active Categories
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-md-4 mb-3">
-                    <div style={{
-                      background: 'linear-gradient(135deg, #FF9800 0%, #f57c00 100%)',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      textAlign: 'center'
-                    }}>
-                      <h2 className="text-white mb-1" style={{ fontSize: '36px', fontWeight: '700' }}>
-                        {Math.max(...Object.values(bookmarks).map(arr => arr.length))}
-                      </h2>
-                      <p className="text-white mb-0" style={{ fontSize: '14px', opacity: 0.9 }}>
-                        Most Saved
-                      </p>
-                    </div>
+                {/* Tabs Navigation */}
+                <div className="mb-4">
+                  <div className="d-flex gap-2 flex-wrap">
+                    {categories.map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className="btn"
+                        style={{
+                          background: activeTab === tab.id 
+                            ? tab.color 
+                            : 'rgba(255, 255, 255, 0.1)',
+                          color: '#fff',
+                          border: 'none',
+                          padding: '12px 24px',
+                          borderRadius: '8px',
+                          fontWeight: '500',
+                          transition: 'all 0.3s ease',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
+                        }}
+                      >
+                        <i className={tab.icon}></i>
+                        <span>{tab.label}</span>
+                        <span 
+                          style={{
+                            background: activeTab === tab.id ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.2)',
+                            padding: '2px 8px',
+                            borderRadius: '10px',
+                            fontSize: '12px',
+                            fontWeight: '600',
+                            marginLeft: '4px'
+                          }}
+                        >
+                          {tab.count}
+                        </span>
+                      </button>
+                    ))}
                   </div>
                 </div>
 
-                {/* Accordion */}
-                <div className="accordion" id="bookmarksAccordion">
-                  {categories.map((category, index) => (
-                    <div 
-                      key={category.id}
-                      className="mb-3"
-                      style={{
-                        background: '#282D41',
-                        borderRadius: '12px',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        overflow: 'hidden'
-                      }}
-                    >
-                      <h2 className="accordion-header">
-                        <button
-                          className={`accordion-button ${activeAccordion !== category.id ? 'collapsed' : ''}`}
-                          type="button"
-                          onClick={() => setActiveAccordion(activeAccordion === category.id ? '' : category.id)}
-                          style={{
-                            background: activeAccordion === category.id ? category.color : '#1B1E27',
-                            color: '#fff',
-                            border: 'none',
-                            padding: '20px 24px',
-                            fontSize: '18px',
-                            fontWeight: '600',
-                            boxShadow: 'none',
-                            transition: 'all 0.3s ease'
-                          }}
-                        >
-                          <i className={`${category.icon} me-3`} style={{ fontSize: '20px' }}></i>
-                          <span>{category.label}</span>
-                          <span 
-                            className="ms-auto me-3"
-                            style={{
-                              background: activeAccordion === category.id ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
-                              padding: '4px 12px',
-                              borderRadius: '12px',
-                              fontSize: '14px',
-                              fontWeight: '600'
-                            }}
-                          >
-                            {category.count}
-                          </span>
-                        </button>
-                      </h2>
-                      <div
-                        className={`accordion-collapse collapse ${activeAccordion === category.id ? 'show' : ''}`}
-                      >
-                        <div className="accordion-body" style={{ padding: '24px', background: '#282D41' }}>
-                          {renderCategoryContent(category)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                {/* Tab Content */}
+                <div style={{
+                  background: '#282D41',
+                  borderRadius: '15px',
+                  padding: '30px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  minHeight: '400px'
+                }}>
+                  {renderCategoryContent(categories.find(c => c.id === activeTab))}
                 </div>
 
                 {/* Info Box */}
@@ -551,7 +499,7 @@ export default function BookmarksPage() {
                       <p style={{ color: 'rgba(255, 255, 255, 0.70)', fontSize: '14px', marginBottom: 0 }}>
                         Click the bookmark icon <i className="fas fa-bookmark" style={{ color: '#FFA500' }}></i> on any note, spotter, 
                         OSCE case, or quiz question to save it for quick access later. All your bookmarked content will appear here 
-                        organized by category in accordion format.
+                        organized by category.
                       </p>
                     </div>
                   </div>
