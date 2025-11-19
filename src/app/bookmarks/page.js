@@ -325,12 +325,13 @@ export default function BookmarksPage() {
               style={{
                 position: 'relative',
                 display: 'flex',
-                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 textDecoration: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
+                width: '174px',
+                height: '182px'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-5px) scale(1.05)';
@@ -339,27 +340,40 @@ export default function BookmarksPage() {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
               }}
             >
-              {/* Lottie Animation */}
-              <DotLottieReact
-                src={category.animation}
-                loop
-                autoplay
-                style={{
-                  width: '174px',
-                  height: '182px',
-                  filter: category.animationFilter || 'none'
-                }}
-              />
+              {/* Lottie Animation as background */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                zIndex: 0
+              }}>
+                <DotLottieReact
+                  src={category.animation}
+                  loop
+                  autoplay
+                  style={{
+                    width: '174px',
+                    height: '182px',
+                    filter: category.animationFilter || 'none'
+                  }}
+                />
+              </div>
               
-              {/* Title below animation */}
+              {/* Title inside animation */}
               <h6 style={{
+                position: 'relative',
+                zIndex: 1,
                 color: '#fff',
                 fontSize: '14px',
                 fontWeight: '600',
                 textAlign: 'center',
-                marginTop: '10px',
                 wordBreak: 'break-word',
-                maxWidth: '174px'
+                maxWidth: '140px',
+                padding: '10px',
+                margin: 0,
+                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
               }}>
                 {(item.title || item.name || item.question || 'Untitled').length > 40 
                   ? `${(item.title || item.name || item.question || 'Untitled').substring(0, 40)}...` 
