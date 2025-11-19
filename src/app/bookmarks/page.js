@@ -221,6 +221,31 @@ export default function BookmarksPage() {
     }
   ];
 
+  // Helper function to generate correct URL based on type
+  const getViewUrl = (item, type) => {
+    const categoryId = item.category_id || item.parent_id || 100; // Fallback to 100 if no category
+    
+    switch(type) {
+      case 'notes':
+        return `/notes/view?id=${categoryId}&noteId=${item.id}#page1`;
+      case 'spotters':
+        return `/spotters/view?id=${categoryId}&spotterId=${item.id}#page1`;
+      case 'osce':
+        return `/osce/view?id=${categoryId}&osceId=${item.id}#page1`;
+      case 'quizora':
+        return `/quiz?id=${item.id}`;
+      case 'aiRad':
+        return `/ai-rad/view?id=${categoryId}&munchieId=${item.id}#page1`;
+      case 'practicalEssentials':
+        return `/practical-essentials/view?id=${categoryId}&basicId=${item.id}#page1`;
+      case 'watchAndLearn':
+        // Watch and Learn doesn't have individual view pages, link to main page
+        return `/watch-and-learn`;
+      default:
+        return `/${type}/${item.id}`;
+    }
+  };
+
   const renderBookmarkCard = (item, type) => {
     return (
       <div 
@@ -286,7 +311,7 @@ export default function BookmarksPage() {
           {/* Actions */}
           <div className="d-flex gap-2 ms-3">
             <Link 
-              href={`/${type}/${item.id}`}
+              href={getViewUrl(item, type)}
               className="btn btn-sm"
               style={{
                 background: categories.find(c => c.id === type)?.color,
