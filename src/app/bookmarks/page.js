@@ -223,20 +223,31 @@ export default function BookmarksPage() {
 
   // Helper function to generate correct URL based on type
   const getViewUrl = (item, type) => {
-    const categoryId = item.category_id || item.parent_id || 100; // Fallback to 100 if no category
+    // Different modules use different field names for category
+    let categoryId;
     
     switch(type) {
       case 'notes':
+        // Notes use 'category' field (from Blog model)
+        categoryId = item.category || 100;
         return `/notes/view?id=${categoryId}&noteId=${item.id}#page1`;
       case 'spotters':
+        // Spotters use 'parent_id' or 'category_id'
+        categoryId = item.parent_id || item.category_id || 100;
         return `/spotters/view?id=${categoryId}&spotterId=${item.id}#page1`;
       case 'osce':
+        // OSCE use 'parent_id' or 'category_id'
+        categoryId = item.parent_id || item.category_id || 100;
         return `/osce/view?id=${categoryId}&osceId=${item.id}#page1`;
       case 'quizora':
         return `/quiz?id=${item.id}`;
       case 'aiRad':
+        // AI Rad (Munchies) use 'parent_id' or 'category_id'
+        categoryId = item.parent_id || item.category_id || 100;
         return `/ai-rad/view?id=${categoryId}&munchieId=${item.id}#page1`;
       case 'practicalEssentials':
+        // Practical Essentials (Basics) use 'parent_id' or 'category_id'
+        categoryId = item.parent_id || item.category_id || 100;
         return `/practical-essentials/view?id=${categoryId}&basicId=${item.id}#page1`;
       case 'watchAndLearn':
         // Watch and Learn doesn't have individual view pages, link to main page
