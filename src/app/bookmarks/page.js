@@ -53,7 +53,10 @@ export default function BookmarksPage() {
         axios.post(`${baseUrl}/api/note/get-note-bookmark`, { user_id: userId }, config),
         axios.post(`${baseUrl}/api/spotters/get-bookmark`, { user_id: userId }, config),
         axios.post(`${baseUrl}/api/osce/get-osce-bookmark`, { user_id: userId }, config),
-        axios.post(`${baseUrl}/api/quiz/bookmarks`, { user_id: userId }, config)
+        axios.post(`${baseUrl}/api/quiz/bookmarks`, { user_id: userId }, config),
+        axios.post(`${baseUrl}/api/category-munchie/get-munchie-bookmark`, { user_id: userId }, config),
+        axios.post(`${baseUrl}/api/basic-category/get-basic-bookmark`, { user_id: userId }, config),
+        axios.post(`${baseUrl}/api/watch-and-learn-category/get-watch-bookmark`, { user_id: userId }, config)
       ]);
 
       console.log('Bookmark results:', results);
@@ -108,9 +111,9 @@ export default function BookmarksPage() {
         spotters: parseBookmarkData(results[1], 1),
         osce: parseBookmarkData(results[2], 2),
         quizora: parseBookmarkData(results[3], 3),
-        aiRad: [], // Add when API available
-        practicalEssentials: [],
-        watchAndLearn: []
+        aiRad: parseBookmarkData(results[4], 4),
+        practicalEssentials: parseBookmarkData(results[5], 5),
+        watchAndLearn: parseBookmarkData(results[6], 6)
       });
     } catch (error) {
       console.error('Error fetching bookmarks:', error);
