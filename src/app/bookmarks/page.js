@@ -257,105 +257,6 @@ export default function BookmarksPage() {
     }
   };
 
-  const renderBookmarkCard = (item, type) => {
-    return (
-      <div 
-        key={item.id} 
-        style={{
-          background: '#1B1E27',
-          borderRadius: '12px',
-          padding: '20px',
-          marginBottom: '16px',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          transition: 'all 0.3s ease'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = categories.find(c => c.id === type)?.color;
-          e.currentTarget.style.transform = 'translateY(-2px)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-          e.currentTarget.style.transform = 'translateY(0)';
-        }}
-      >
-        <div className="d-flex justify-content-between align-items-start">
-          <div style={{ flex: 1 }}>
-            {/* Title */}
-            <h5 className="text-white mb-2" style={{ fontSize: '18px', fontWeight: '600' }}>
-              <i className={`${categories.find(c => c.id === type)?.icon} me-2`} style={{ color: categories.find(c => c.id === type)?.color }}></i>
-              {item.title || item.name || item.question || 'Untitled'}
-            </h5>
-            
-            {/* Description/Content */}
-            {item.description && (
-              <p style={{ color: 'rgba(255, 255, 255, 0.70)', fontSize: '14px', marginBottom: '12px' }}>
-                {item.description.length > 150 ? `${item.description.substring(0, 150)}...` : item.description}
-              </p>
-            )}
-            
-            {/* Metadata */}
-            <div className="d-flex flex-wrap gap-3">
-              {item.category && (
-                <span style={{
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  padding: '4px 12px',
-                  borderRadius: '6px',
-                  fontSize: '12px',
-                  color: 'rgba(255, 255, 255, 0.80)'
-                }}>
-                  <i className="fas fa-folder me-1"></i>
-                  {item.category}
-                </span>
-              )}
-              {item.created_at && (
-                <span style={{
-                  fontSize: '12px',
-                  color: 'rgba(255, 255, 255, 0.50)'
-                }}>
-                  <i className="fas fa-clock me-1"></i>
-                  {new Date(item.created_at).toLocaleDateString()}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="d-flex gap-2 ms-3">
-            <Link 
-              href={getViewUrl(item, type)}
-              className="btn btn-sm"
-              style={{
-                background: categories.find(c => c.id === type)?.color,
-                color: '#fff',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '6px',
-                fontSize: '13px'
-              }}
-            >
-              <i className="fas fa-eye me-1"></i>
-              View
-            </Link>
-            <button
-              onClick={() => removeBookmark(type, item.id)}
-              className="btn btn-sm"
-              style={{
-                background: 'rgba(255, 82, 82, 0.2)',
-                color: '#FF5252',
-                border: '1px solid #FF5252',
-                padding: '8px 16px',
-                borderRadius: '6px',
-                fontSize: '13px'
-              }}
-            >
-              <i className="fas fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const renderCategoryContent = (category) => {
     const items = bookmarks[category.id];
     
@@ -369,16 +270,16 @@ export default function BookmarksPage() {
           border: '1px dashed rgba(255, 255, 255, 0.2)'
         }}>
           <div style={{
-            width: '60px',
-            height: '60px',
-            margin: '0 auto 16px',
+            width: '80px',
+            height: '80px',
+            margin: '0 auto 20px',
             background: `${category.color}33`,
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            <i className={category.icon} style={{ fontSize: '24px', color: category.color }}></i>
+            <i className={category.icon} style={{ fontSize: '32px', color: category.color }}></i>
           </div>
           <h5 className="text-white mb-2">No Saved {category.label} Yet</h5>
           <p style={{ color: 'rgba(255, 255, 255, 0.50)', fontSize: '14px' }}>
@@ -388,7 +289,112 @@ export default function BookmarksPage() {
       );
     }
 
-    return items.map(item => renderBookmarkCard(item, category.id));
+    return (
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', 
+        gap: '30px',
+        padding: '20px 0'
+      }}>
+        {items.map((item, index) => (
+          <div 
+            key={item.id}
+            style={{
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '15px'
+            }}
+          >
+            {/* Circular Shape */}
+            <Link 
+              href={getViewUrl(item, category.id)}
+              style={{
+                position: 'relative',
+                width: '160px',
+                height: '160px',
+                borderRadius: '50%',
+                background: category.color,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textDecoration: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: `0 10px 30px ${category.color}40, inset 0 -20px 40px rgba(0,0,0,0.3)`
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px) scale(1.05)';
+                e.currentTarget.style.boxShadow = `0 15px 40px ${category.color}60, inset 0 -20px 40px rgba(0,0,0,0.3)`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.boxShadow = `0 10px 30px ${category.color}40, inset 0 -20px 40px rgba(0,0,0,0.3)`;
+              }}
+            >
+              {/* Shadow effect */}
+              <div style={{
+                position: 'absolute',
+                bottom: '-15px',
+                left: '10%',
+                right: '10%',
+                height: '30px',
+                background: 'rgba(0, 0, 0, 0.4)',
+                borderRadius: '50%',
+                filter: 'blur(15px)',
+                zIndex: -1
+              }}></div>
+              
+              {/* Title inside circle */}
+              <span style={{
+                color: '#fff',
+                fontSize: '16px',
+                fontWeight: '600',
+                textAlign: 'center',
+                padding: '20px',
+                wordBreak: 'break-word',
+                lineHeight: '1.3',
+                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+              }}>
+                {(item.title || item.name || item.question || 'Untitled').length > 50 
+                  ? `${(item.title || item.name || item.question || 'Untitled').substring(0, 50)}...` 
+                  : (item.title || item.name || item.question || 'Untitled')}
+              </span>
+            </Link>
+
+            {/* Delete Button */}
+            <button
+              onClick={() => removeBookmark(category.id, item.id)}
+              style={{
+                background: 'rgba(255, 82, 82, 0.2)',
+                color: '#FF5252',
+                border: '1px solid #FF5252',
+                borderRadius: '50%',
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontSize: '14px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#FF5252';
+                e.currentTarget.style.color = '#fff';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 82, 82, 0.2)';
+                e.currentTarget.style.color = '#FF5252';
+              }}
+            >
+              <i className="fas fa-trash"></i>
+            </button>
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
