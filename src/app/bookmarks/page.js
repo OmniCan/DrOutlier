@@ -67,22 +67,38 @@ export default function BookmarksPage() {
         
         const response = result.value.data;
         console.log(`API ${index} response:`, response);
+        console.log(`API ${index} response.data:`, response.data);
         
         // Handle different response structures
         if (Array.isArray(response)) {
           return response;
         }
         if (response.data) {
+          // Check if data itself is an array
           if (Array.isArray(response.data)) {
             return response.data;
           }
+          // Check for nested list property
           if (response.data.list && Array.isArray(response.data.list)) {
             return response.data.list;
+          }
+          // Check for spotters property specifically
+          if (response.data.spotters && Array.isArray(response.data.spotters)) {
+            return response.data.spotters;
+          }
+          // Check for osce property
+          if (response.data.osce && Array.isArray(response.data.osce)) {
+            return response.data.osce;
+          }
+          // Check for notes property
+          if (response.data.notes && Array.isArray(response.data.notes)) {
+            return response.data.notes;
           }
         }
         if (response.bookmarks && Array.isArray(response.bookmarks)) {
           return response.bookmarks;
         }
+        console.log(`API ${index} - Could not parse data, returning empty array`);
         return [];
       };
 
