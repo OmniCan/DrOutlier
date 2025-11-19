@@ -9,6 +9,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 export default function BookmarksPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -175,6 +176,7 @@ export default function BookmarksPage() {
       label: 'Notes', 
       icon: 'fas fa-file-alt', 
       color: '#4CAF50',
+      animation: '/animantion/Green circle.json',
       count: bookmarks.notes.length
     },
     { 
@@ -182,6 +184,7 @@ export default function BookmarksPage() {
       label: 'Spotters', 
       icon: 'fas fa-image', 
       color: '#2196F3',
+      animation: '/animantion/Blue circle 2.json',
       count: bookmarks.spotters.length
     },
     { 
@@ -189,6 +192,8 @@ export default function BookmarksPage() {
       label: 'OSCE', 
       icon: 'fas fa-stethoscope', 
       color: '#FF9800',
+      animation: '/animantion/Blue circle 2.json',
+      animationFilter: 'hue-rotate(180deg)',
       count: bookmarks.osce.length
     },
     { 
@@ -196,6 +201,8 @@ export default function BookmarksPage() {
       label: 'Quizora', 
       icon: 'fas fa-question-circle', 
       color: '#9C27B0',
+      animation: '/animantion/green.json',
+      animationFilter: 'hue-rotate(240deg)',
       count: bookmarks.quizora.length
     },
     { 
@@ -203,6 +210,8 @@ export default function BookmarksPage() {
       label: 'AI-Rad', 
       icon: 'fas fa-brain', 
       color: '#00BCD4',
+      animation: '/animantion/green.json',
+      animationFilter: 'hue-rotate(180deg)',
       count: bookmarks.aiRad.length
     },
     { 
@@ -210,6 +219,8 @@ export default function BookmarksPage() {
       label: 'Practical Essentials', 
       icon: 'fas fa-flask', 
       color: '#E91E63',
+      animation: '/animantion/Green circle.json',
+      animationFilter: 'hue-rotate(290deg)',
       count: bookmarks.practicalEssentials.length
     },
     { 
@@ -217,6 +228,7 @@ export default function BookmarksPage() {
       label: 'Watch & Learn', 
       icon: 'fas fa-play-circle', 
       color: '#FF5722',
+      animation: '/animantion/Grey circle.json',
       count: bookmarks.watchAndLearn.length
     }
   ];
@@ -307,60 +319,52 @@ export default function BookmarksPage() {
               gap: '15px'
             }}
           >
-            {/* Circular Shape */}
+            {/* Lottie Animation Shape */}
             <Link 
               href={getViewUrl(item, category.id)}
               style={{
                 position: 'relative',
-                width: '160px',
-                height: '160px',
-                borderRadius: '50%',
-                background: category.color,
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 textDecoration: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                boxShadow: `0 10px 30px ${category.color}40, inset 0 -20px 40px rgba(0,0,0,0.3)`
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-5px) scale(1.05)';
-                e.currentTarget.style.boxShadow = `0 15px 40px ${category.color}60, inset 0 -20px 40px rgba(0,0,0,0.3)`;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = `0 10px 30px ${category.color}40, inset 0 -20px 40px rgba(0,0,0,0.3)`;
               }}
             >
-              {/* Shadow effect */}
-              <div style={{
-                position: 'absolute',
-                bottom: '-15px',
-                left: '10%',
-                right: '10%',
-                height: '30px',
-                background: 'rgba(0, 0, 0, 0.4)',
-                borderRadius: '50%',
-                filter: 'blur(15px)',
-                zIndex: -1
-              }}></div>
+              {/* Lottie Animation */}
+              <DotLottieReact
+                src={category.animation}
+                loop
+                autoplay
+                style={{
+                  width: '174px',
+                  height: '182px',
+                  filter: category.animationFilter || 'none'
+                }}
+              />
               
-              {/* Title inside circle */}
-              <span style={{
+              {/* Title below animation */}
+              <h6 style={{
                 color: '#fff',
-                fontSize: '16px',
+                fontSize: '14px',
                 fontWeight: '600',
                 textAlign: 'center',
-                padding: '20px',
+                marginTop: '10px',
                 wordBreak: 'break-word',
-                lineHeight: '1.3',
-                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                maxWidth: '174px'
               }}>
-                {(item.title || item.name || item.question || 'Untitled').length > 50 
-                  ? `${(item.title || item.name || item.question || 'Untitled').substring(0, 50)}...` 
+                {(item.title || item.name || item.question || 'Untitled').length > 40 
+                  ? `${(item.title || item.name || item.question || 'Untitled').substring(0, 40)}...` 
                   : (item.title || item.name || item.question || 'Untitled')}
-              </span>
+              </h6>
             </Link>
 
             {/* Delete Button */}
