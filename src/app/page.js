@@ -192,13 +192,7 @@ function page() {
                     radiology.
                   </p> */}
                   <p>
-                    Struggling to pass your MD, DNB, or DMRD exams?
-                    Welcome to Dr. Outlier—where we turn your exam panic into progress! From theory that reads like ancient
-                    Sanskrit to practicals that feel like a WWE showdown with your examiner, we’ve got you covered.
-                    This app is like your nerdy best friend who knows all the answers but doesn’t rub it in your face.
-                    Need to memorize? Check. Need to impress in practicals? Double-check.
-                    Need to fake confidence? Oh, we’ve mastered that too. So buckle up, future radiology rockstars—because with
-                    Dr. Outlier, failing is harder than passing!"
+                    Struggling with MD, DNB, or DMRD exams? Dr. Outlier is built to make preparation simpler and more effective. It breaks down complex theory into clear, usable concepts and helps you perform confidently in practical exams. Think of it as a reliable study partner that helps you remember better, answer smarter, and stay calm during exams. With focused content and exam-oriented guidance, Dr. Outlier makes passing feel achievable rather than overwhelming.
                   </p>
                   {/* <p>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
