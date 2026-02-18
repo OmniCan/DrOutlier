@@ -134,22 +134,39 @@ function TheoryNotesCategory() {
                         <div className="container">
                             <div className="row justify-content-center mt-4">
                                 <div className="col-lg-12">
-                                    <div className="row g-4">
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                         {items && items.length > 0 ? (
                                             items?.map((item, index) => (
-                                                <div className="col-md-4 col-sm-6 col-6" key={item.id} style={{ padding: '12px', flex: '0 0 16.666%', maxWidth: '16.666%' }}>
-                                                    <Link href={`/theory-notes/view?id=${categoryId}&itemId=${item.id}${parentCategoryId ? `&parentId=${parentCategoryId}` : ''}#page${index + 1}`}>
-                                                        <div className="box" style={{ 
-                                                            display: 'flex', 
-                                                            alignItems: 'center', 
-                                                            justifyContent: 'center', 
-                                                            textAlign: 'center', 
-                                                            borderRadius: '15px',
-                                                            transition: 'all 0.3s ease',
-                                                            cursor: 'pointer',
+                                                <Link key={item.id} href={`/theory-notes/view?id=${categoryId}&itemId=${item.id}${parentCategoryId ? `&parentId=${parentCategoryId}` : ''}#page${index + 1}`} style={{ textDecoration: 'none' }}>
+                                                    <div className="list-item" style={{ 
+                                                        display: 'flex', 
+                                                        alignItems: 'center', 
+                                                        padding: '20px 30px',
+                                                        background: 'rgba(255, 255, 255, 0.05)',
+                                                        backdropFilter: 'blur(10px)',
+                                                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                                                        borderRadius: '15px',
+                                                        transition: 'all 0.3s ease',
+                                                        cursor: 'pointer',
+                                                        position: 'relative',
+                                                        overflow: 'hidden'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                                                        e.currentTarget.style.transform = 'translateX(10px)';
+                                                        e.currentTarget.style.boxShadow = '0 8px 25px rgba(30, 79, 253, 0.3)';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                                                        e.currentTarget.style.transform = 'translateX(0)';
+                                                        e.currentTarget.style.boxShadow = 'none';
+                                                    }}>
+                                                        <div style={{ 
                                                             position: 'relative',
-                                                            width: '100%',
-                                                            aspectRatio: '1 / 1'
+                                                            width: '60px',
+                                                            height: '60px',
+                                                            flexShrink: 0,
+                                                            marginRight: '20px'
                                                         }}>
                                                             <DotLottieReact
                                                                 src="/animantion/Blue circle 2.json"
@@ -161,22 +178,23 @@ function TheoryNotesCategory() {
                                                                     filter: `hue-rotate(${colors[index % colors.length]})`
                                                                 }}
                                                             />
+                                                        </div>
+                                                        <div style={{ flex: 1 }}>
                                                             <h6 style={{ 
-                                                                position: 'absolute',
-                                                                top: '50%',
-                                                                left: '50%',
-                                                                transform: 'translate(-50%, -50%)',
                                                                 color: 'white',
-                                                                fontSize: '12px',
+                                                                fontSize: '18px',
                                                                 fontWeight: '600',
                                                                 margin: '0',
-                                                                width: '80%',
-                                                                wordWrap: 'break-word',
-                                                                lineHeight: '1.2'
+                                                                lineHeight: '1.4'
                                                             }}>{item.title}</h6>
                                                         </div>
-                                                    </Link>
-                                                </div>
+                                                        <div style={{ marginLeft: '20px', flexShrink: 0 }}>
+                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M9 18l6-6-6-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                </Link>
                                             ))
                                         ) : (
                                             <div className="col-12 text-center py-5">
