@@ -666,7 +666,7 @@ function Navbar() {
                                     </li>
                                     
                                     {/* Dynamic Navigation Items from API - Mobile */}
-                                    {!navLoading && navigationItems.map((item) => (
+                                    {!navLoading && Array.isArray(navigationItems) && navigationItems.map((item) => (
                                         <li key={item.id} className="nav-item">
                                             <Link 
                                                 className={`nav-link ${pathname?.startsWith(item.url) ? 'active' : ''}`} 
@@ -783,7 +783,7 @@ function Navbar() {
                                     </li>
                                     
                                     {/* Dynamic Navigation Items from API */}
-                                    {!navLoading && navigationItems.map((item) => (
+                                    {!navLoading && Array.isArray(navigationItems) && navigationItems.map((item) => (
                                         <li key={item.id} className="nav-item">
                                             <Link 
                                                 className={`nav-link ${pathname?.startsWith(item.url) ? 'active' : ''}`} 
