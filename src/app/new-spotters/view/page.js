@@ -381,11 +381,11 @@ function NewSpotterViewer() {
                     </div>
 
                     {currentItem ? (
-                        <div className="container-fluid px-0 px-lg-3">
-                            <div className="container px-0 px-lg-3">
+                        <div className="container container-fluid px-0 px-lg-3">
+                            <div className="container-fluid px-0 px-lg-3">
                                 <div style={{ 
-                                    background: 'white',
-                                    padding: '40px 0',
+                                    background: '#1B1E27',
+                                    padding: '20px  0px',
                                     borderRadius: '0'
                                 }}>
                                     {/* Main Viewer Container */}
@@ -400,7 +400,7 @@ function NewSpotterViewer() {
                                         height: '700px',
                                         maxHeight: '85vh'
                                     }}
-                                        className="mx-lg-5"
+                                        className="mx-lg-4"
                                     >
                                         {/* Left Sidebar - Chapter Navigation */}
                                         {sidebarOpen && allChapters.length > 0 && (
