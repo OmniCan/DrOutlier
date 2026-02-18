@@ -159,7 +159,7 @@ function NewExamCasesViewer() {
             if (itemsList.length > 0) {
                 // Set PDF URL for first item by default
                 if (itemsList[0].pdf_file) {
-                    const pdfPath = `${baseUrl}/assets/admin/images/new_exam_cases_pdf/${itemsList[0].pdf_file}`;
+                    const pdfPath = `${baseUrl}/assets/new_exam_cases_pdf/${itemsList[0].pdf_file}`;
                     const proxyUrl = `/api/proxy-pdf?url=${encodeURIComponent(pdfPath)}`;
                     setPdfUrl(proxyUrl);
                 }
@@ -178,7 +178,7 @@ function NewExamCasesViewer() {
                 if (itemIndex !== -1) {
                     setCurrentItemIndex(itemIndex);
                     if (itemsList[itemIndex].pdf_file) {
-                        const pdfPath = `${baseUrl}/assets/admin/images/new_exam_cases_pdf/${itemsList[itemIndex].pdf_file}`;
+                        const pdfPath = `${baseUrl}/assets/new_exam_cases_pdf/${itemsList[itemIndex].pdf_file}`;
                         const proxyUrl = `/api/proxy-pdf?url=${encodeURIComponent(pdfPath)}`;
                         setPdfUrl(proxyUrl);
                     }
@@ -324,7 +324,7 @@ function NewExamCasesViewer() {
     // Update PDF URL when current item changes
     useEffect(() => {
         if (currentItem && currentItem.pdf_file) {
-            const pdfPath = `${baseUrl}/assets/admin/images/new_exam_cases_pdf/${currentItem.pdf_file}`;
+            const pdfPath = `${baseUrl}/assets/new_exam_cases_pdf/${currentItem.pdf_file}`;
             console.log('Loading PDF from:', pdfPath);
             const proxyUrl = `/api/proxy-pdf?url=${encodeURIComponent(pdfPath)}`;
             console.log('Using proxy URL:', proxyUrl);
