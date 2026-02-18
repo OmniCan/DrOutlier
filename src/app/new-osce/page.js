@@ -260,7 +260,7 @@ function NewOsceCategories() {
                     </section>
 
                     <Footer />
-                </</div>
+                </div>
             ) : (
                 <Loader />
             )}
