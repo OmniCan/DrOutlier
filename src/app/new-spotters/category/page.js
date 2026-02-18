@@ -12,39 +12,39 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function NewSpottersCategory() {
     const [userid, setUser] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [items, setItems] = useState([])
     const [categoryName, setCategoryName] = useState('')
     const [allChapters, setAllChapters] = useState([])
     const [currentChapterIndex, setCurrentChapterIndex] = useState(-1)
     const [parentCategoryId, setParentCategoryId] = useState(null)
+    const [error, setError] = useState(null)
     const router = useRouter()
     const searchParams = useSearchParams()
     const categoryId = searchParams.get('id')
     const parentIdFromUrl = searchParams.get('parentId')
     
-    // Set parentCategoryId from URL if available
     useEffect(() => {
-        if (parentIdFromUrl) {
-            setParentCategoryId(parentIdFromUrl);
-        }
-    }, [parentIdFromUrl]);
-
-    useEffect(() => {
-        setLoading(true);
+        // Consolidated effect - check auth and fetch all data
         const IsUserExist = Cookies.get('user-token')
         if (!IsUserExist) {
             router.push('/')
+            return;
         }
-    }, []);
 
-    useEffect(() => {
         const user = Cookies.get('user-id');
-        setUser(user)
-    }, [])
+        if (user) {
+            setUser(user);
+        }
 
-    useEffect(() => {
+        // Set parentCategoryId from URL if available
+        if (parentIdFromUrl) {
+            setParentCategoryId(parentIdFromUrl);
+        }
+
         if (!categoryId) {
+            setLoading(false);
+            setError('Category ID not found');
             return;
         }
 
@@ -63,6 +63,7 @@ function NewSpottersCategory() {
             
             setItems(itemsList);
             setCategoryName(chapterName);
+            setError(null);
             
             // Use parentId from URL first, then try to get from items
             let parentId = parentIdFromUrl;
@@ -98,9 +99,10 @@ function NewSpottersCategory() {
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching items:', error);
+            setError(error.response?.data?.message || 'Failed to load items');
             setLoading(false);
         });
-    }, [categoryId])
+    }, [categoryId, parentIdFromUrl])
 
     const colors = ['0deg', '120deg', '240deg', '60deg', '180deg', '300deg'];
 

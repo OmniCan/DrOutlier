@@ -12,29 +12,31 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function page() {
     const [userid, setUser] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [chapters, setChapters] = useState([])
     const [categoryName, setCategoryName] = useState('')
+    const [error, setError] = useState(null)
     const router = useRouter()
     const searchParams = useSearchParams()
     const categoryId = searchParams.get('id')
 
     useEffect(() => {
-        setLoading(true);
+        // Consolidated effect - check auth and fetch data
         const IsUserExist = Cookies.get('user-token')
         if (!IsUserExist) {
             router.push('/')
+            return;
         }
-    }, []);
 
-    useEffect(() => {
         const user = Cookies.get('user-id');
-        setUser(user)
-    }, [])
+        if (user) {
+            setUser(user);
+        }
 
-    useEffect(() => {
         if (!categoryId) {
             console.log('No category ID found');
+            setLoading(false);
+            setError('Category ID not found');
             return;
         }
 
@@ -57,15 +59,18 @@ function page() {
                 const chaptersList = currentCategory.child || [];
                 setCategoryName(currentCategory.name || 'Chapters');
                 setChapters(chaptersList);
+                setError(null);
             } else {
                 console.log('Category not found');
                 setCategoryName('Chapters');
                 setChapters([]);
+                setError('Category not found');
             }
             
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching chapters:', error);
+            setError(error.response?.data?.message || 'Failed to load chapters');
             setLoading(false);
         });
     }, [categoryId])

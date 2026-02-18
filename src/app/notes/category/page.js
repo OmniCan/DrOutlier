@@ -12,32 +12,37 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function page() {
     const [userid, setUser] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [notes, setNotes] = useState([])
     const [categoryName, setCategoryName] = useState('')
     const [bookmarkedNotes, setBookmarkedNotes] = useState({});
     const [allChapters, setAllChapters] = useState([])
     const [currentChapterIndex, setCurrentChapterIndex] = useState(-1)
     const [parentCategoryId, setParentCategoryId] = useState(null)
+    const [error, setError] = useState(null)
     const router = useRouter()
     const searchParams = useSearchParams()
     const categoryId = searchParams.get('id')
 
     useEffect(() => {
-        setLoading(true);
+        // Consolidated effect - check auth and fetch all data
         const IsUserExist = Cookies.get('user-token')
         if (!IsUserExist) {
             router.push('/')
+            return;
         }
-    }, []);
 
-    useEffect(() => {
         const user = Cookies.get('user-id');
-        setUser(user)
-    }, [])
+        if (!user) {
+            setLoading(false);
+            setError('User not found');
+            return;
+        }
+        setUser(user);
 
-    useEffect(() => {
-        if (!categoryId || !userid) {
+        if (!categoryId) {
+            setLoading(false);
+            setError('Category ID not found');
             return;
         }
 
@@ -51,6 +56,7 @@ function page() {
         }).then((categoryResponse) => {
             const notesList = categoryResponse?.data?.data?.notes?.data || [];
             setNotes(notesList);
+            setError(null);
             
             // Get category name from the first note if available
             if (notesList.length > 0 && notesList[0].category) {
@@ -61,7 +67,7 @@ function page() {
             
             // Fetch bookmarked notes
             const bookmarkFormData = new FormData();
-            bookmarkFormData.append("user_id", userid);
+            bookmarkFormData.append("user_id", user);
             
             axios.post(`${baseUrl}/api/note/get-note-bookmark`, bookmarkFormData, {
                 headers: {
@@ -121,9 +127,10 @@ function page() {
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching notes:', error);
+            setError(error.response?.data?.message || 'Failed to load notes');
             setLoading(false);
         });
-    }, [categoryId, userid])
+    }, [categoryId])
 
 
     // Generate color variations for notes (similar to categories)

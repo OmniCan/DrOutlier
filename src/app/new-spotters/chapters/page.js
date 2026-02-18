@@ -12,29 +12,31 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function NewSpottersChapters() {
     const [userid, setUser] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [chapters, setChapters] = useState([])
     const [categoryName, setCategoryName] = useState('')
+    const [error, setError] = useState(null)
     const router = useRouter()
     const searchParams = useSearchParams()
     const categoryId = searchParams.get('id')
 
     useEffect(() => {
-        setLoading(true);
+        // Consolidated effect - check auth and fetch data
         const IsUserExist = Cookies.get('user-token')
         if (!IsUserExist) {
             router.push('/')
+            return;
         }
-    }, []);
 
-    useEffect(() => {
         const user = Cookies.get('user-id');
-        setUser(user)
-    }, [])
+        if (user) {
+            setUser(user);
+        }
 
-    useEffect(() => {
         if (!categoryId) {
             console.log('No category ID found');
+            setLoading(false);
+            setError('Category ID not found');
             return;
         }
 
@@ -54,9 +56,11 @@ function NewSpottersChapters() {
             const chaptersList = response?.data?.data?.chapters || [];
             setCategoryName(response?.data?.data?.category_name || 'Chapters');
             setChapters(chaptersList);
+            setError(null);
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching New Spotters chapters:', error);
+            setError(error.response?.data?.message || 'Failed to load chapters');
             setLoading(false);
         });
     }, [categoryId])

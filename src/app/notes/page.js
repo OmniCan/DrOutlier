@@ -12,24 +12,24 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function page() {
     const [userid, setUser] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [categories, setCategories] = useState([])
+    const [error, setError] = useState(null)
     const router = useRouter()
 
     useEffect(() => {
-        setLoading(true);
+        // Consolidated effect - check auth and fetch data in one go
         const IsUserExist = Cookies.get('user-token')
         if (!IsUserExist) {
             router.push('/')
+            return;
         }
-    }, []);
 
-    useEffect(() => {
         const user = Cookies.get('user-id');
-        setUser(user)
-    }, [])
+        if (user) {
+            setUser(user);
+        }
 
-    useEffect(() => {
         const cookies = Cookies.get('user-token');
         console.log('Fetching note categories from:', `${baseUrl}/api/note/list`);
         
@@ -42,10 +42,12 @@ function page() {
             console.log('Categories Data:', response?.data);
             console.log('Categories Array:', response?.data?.data?.datalist);
             setCategories(response?.data?.data?.datalist || [])
+            setError(null);
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching note categories:', error);
             console.error('Error response:', error.response);
+            setError(error.response?.data?.message || 'Failed to load categories');
             setLoading(false);
         })
     }, [])
