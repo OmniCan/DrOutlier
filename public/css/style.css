@@ -550,8 +550,6 @@ section {
 .box:hover {
     transform: translateY(-10px) scale(1.02);
     box-shadow: 0 15px 40px rgba(30, 199, 253, 0.3), 0 0 30px rgba(30, 79, 253, 0.2);
-    border-color: rgba(30, 199, 253, 0.3);
-    background: rgba(255, 255, 255, 0.08);
 }
 
 .box > div {
