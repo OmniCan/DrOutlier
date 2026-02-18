@@ -3,6 +3,7 @@ import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 import React, { useEffect, useState } from 'react'
 import baseUrl from '@/Services/BaseUrl';
+import ApiCache from '@/Services/ApiCache';
 import Link from 'next/link';
 import axios from 'axios';
 import Cookies from 'js-cookie'
@@ -30,6 +31,18 @@ function NewSpottersCategories() {
             setUser(user);
         }
 
+        // Check cache first
+        const cacheKey = `new-spotters-categories-${user}`;
+        const cachedData = ApiCache.get(cacheKey);
+        
+        if (cachedData) {
+            console.log('Using cached New Spotters categories');
+            setCategories(cachedData);
+            setError(null);
+            setLoading(false);
+            return;
+        }
+        
         const cookies = Cookies.get('user-token');
         console.log('Fetching New Spotters categories from:', `${baseUrl}/api/new-spotters/categories`);
         
@@ -39,12 +52,25 @@ function NewSpottersCategories() {
             }
         }).then((response) => {
             console.log('New Spotters Categories API Response:', response);
-            setCategories(response?.data?.data || [])
+            const categories = response?.data?.data || [];
+            setCategories(categories);
+            
+            // Cache the result
+            ApiCache.set(cacheKey, categories);
             setError(null);
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching New Spotters categories:', error);
-            setError(error.response?.data?.message || 'Failed to load categories');
+            
+            let errorMessage = 'Failed to load categories';
+            
+            if (error.response?.status === 429) {
+                errorMessage = 'Too many requests. Please wait a moment and try again.';
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+            
+            setError(errorMessage);
             setLoading(false);
         })
     }, [])

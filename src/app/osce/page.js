@@ -3,6 +3,7 @@ import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 import React, { useEffect, useState } from 'react'
 import baseUrl from '@/Services/BaseUrl';
+import ApiCache from '@/Services/ApiCache';
 import Link from 'next/link';
 import axios from 'axios';
 import Cookies from 'js-cookie'
@@ -33,6 +34,18 @@ function page() {
         }
 
         setUser(user);
+        
+        // Check cache first
+        const cacheKey = `osce-categories-${user}`;
+        const cachedData = ApiCache.get(cacheKey);
+        
+        if (cachedData) {
+            console.log('Using cached OSCE categories');
+            setCategories(cachedData.categories);
+            setError(null);
+            setLoading(false);
+            return;
+        }
         
         // Fetch categories
         const cookies = Cookies.get('user-token');
@@ -67,7 +80,11 @@ function page() {
                     return cat.parent_id === 0 || cat.parent_id === '0' || cat.parent_id === null || !cat.parent_id;
                 });
                 console.log('Filtered Parent Categories:', parentCategories);
-                setCategories(parentCategories.length > 0 ? parentCategories : categoriesList);
+                const finalCategories = parentCategories.length > 0 ? parentCategories : categoriesList;
+                setCategories(finalCategories);
+                
+                // Cache the result
+                ApiCache.set(cacheKey, { categories: finalCategories });
                 setError(null);
             } else {
                 console.log('No categories found or categoriesList is not an array');
@@ -78,7 +95,18 @@ function page() {
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching OSCE categories:', error);
-            setError(error.response?.data?.message || 'Failed to load categories. Please try again.');
+            
+            let errorMessage = 'Failed to load categories. Please try again.';
+            
+            if (error.response?.status === 429) {
+                errorMessage = 'Too many requests. Please wait a moment and try again.';
+            } else if (error.response?.status === 403) {
+                errorMessage = 'Access denied. Please check your subscription or permissions.';
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+            
+            setError(errorMessage);
             setCategories([]);
             setLoading(false);
         });

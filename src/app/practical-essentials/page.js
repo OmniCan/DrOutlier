@@ -3,6 +3,7 @@ import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 import React, { useEffect, useState } from 'react'
 import baseUrl from '@/Services/BaseUrl';
+import ApiCache from '@/Services/ApiCache';
 import Link from 'next/link';
 import axios from 'axios';
 import Cookies from 'js-cookie'
@@ -31,6 +32,18 @@ function page() {
             setUser(user);
         }
 
+        // Check cache first
+        const cacheKey = `practical-essentials-categories-${user}`;
+        const cachedData = ApiCache.get(cacheKey);
+        
+        if (cachedData) {
+            console.log('Using cached Practical Essentials categories');
+            setCategories(cachedData);
+            setError(null);
+            setLoading(false);
+            return;
+        }
+        
         const cookies = Cookies.get('user-token');
         console.log('Fetching Practical Essentials categories from:', `${baseUrl}/api/basic-category/list`);
         
@@ -47,12 +60,24 @@ function page() {
             console.log('Extracted categories:', allCategories);
             
             setCategories(allCategories);
+            
+            // Cache the result
+            ApiCache.set(cacheKey, allCategories);
             setError(null);
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching Practical Essentials categories:', error);
             console.error('Error response:', error.response);
-            setError(error.response?.data?.message || 'Failed to load categories');
+            
+            let errorMessage = 'Failed to load categories';
+            
+            if (error.response?.status === 429) {
+                errorMessage = 'Too many requests. Please wait a moment and try again.';
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+            
+            setError(errorMessage);
             setLoading(false);
         })
     }, [])

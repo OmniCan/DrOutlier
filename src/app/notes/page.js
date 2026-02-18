@@ -3,6 +3,7 @@ import Footer from '@/components/Footer'
 import Navbar from '@/components/Navbar'
 import React, { useEffect, useState } from 'react'
 import baseUrl from '@/Services/BaseUrl';
+import ApiCache from '@/Services/ApiCache';
 import Link from 'next/link';
 import axios from 'axios';
 import Cookies from 'js-cookie'
@@ -30,6 +31,18 @@ function page() {
             setUser(user);
         }
 
+        // Check cache first
+        const cacheKey = `note-categories-${user}`;
+        const cachedData = ApiCache.get(cacheKey);
+        
+        if (cachedData) {
+            console.log('Using cached note categories');
+            setCategories(cachedData);
+            setError(null);
+            setLoading(false);
+            return;
+        }
+        
         const cookies = Cookies.get('user-token');
         console.log('Fetching note categories from:', `${baseUrl}/api/note/list`);
         
@@ -41,13 +54,26 @@ function page() {
             console.log('Note Categories API Response:', response);
             console.log('Categories Data:', response?.data);
             console.log('Categories Array:', response?.data?.data?.datalist);
-            setCategories(response?.data?.data?.datalist || [])
+            const categories = response?.data?.data?.datalist || [];
+            setCategories(categories);
+            
+            // Cache the result
+            ApiCache.set(cacheKey, categories);
             setError(null);
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching note categories:', error);
             console.error('Error response:', error.response);
-            setError(error.response?.data?.message || 'Failed to load categories');
+            
+            let errorMessage = 'Failed to load categories';
+            
+            if (error.response?.status === 429) {
+                errorMessage = 'Too many requests. Please wait a moment and try again.';
+            } else if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            }
+            
+            setError(errorMessage);
             setLoading(false);
         })
     }, [])
