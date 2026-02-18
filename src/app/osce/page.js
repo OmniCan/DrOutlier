@@ -12,26 +12,29 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function page() {
     const [userid, setUser] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [categories, setCategories] = useState([])
+    const [error, setError] = useState(null)
     const router = useRouter()
 
     useEffect(() => {
-        setLoading(true);
+        // Check auth and fetch data in one effect to avoid race conditions
         const IsUserExist = Cookies.get('user-token')
         if (!IsUserExist) {
             router.push('/')
+            return;
         }
-    }, []);
 
-    useEffect(() => {
         const user = Cookies.get('user-id');
-        setUser(user)
-    }, [])
+        if (!user) {
+            setLoading(false);
+            setError('User not found');
+            return;
+        }
 
-    useEffect(() => {
-        if (!userid) return;
-
+        setUser(user);
+        
+        // Fetch categories
         const cookies = Cookies.get('user-token');
         
         axios.post(`${baseUrl}/api/osce/list`, {}, {
@@ -40,26 +43,17 @@ function page() {
             }
         }).then((response) => {
             console.log('OSCE API Full Response:', response?.data);
-            console.log('Response data object:', response?.data?.data);
-            console.log('Response data type:', typeof response?.data?.data);
-            console.log('Response data keys:', response?.data?.data ? Object.keys(response?.data?.data) : 'null');
             
             // Backend returns paginated data: { status, data: { current_page, data: [...], last_page, etc } }
             const paginatedData = response?.data?.data;
             let categoriesList = [];
             
             if (paginatedData) {
-                console.log('Paginated data exists');
-                console.log('Has data property?', 'data' in paginatedData);
-                console.log('Is data an array?', Array.isArray(paginatedData.data));
-                
                 // Check if it's a paginated response (has 'data' property with array)
                 if (paginatedData.data && Array.isArray(paginatedData.data)) {
                     categoriesList = paginatedData.data;
-                    console.log('Using paginatedData.data');
                 } else if (Array.isArray(paginatedData)) {
                     categoriesList = paginatedData;
-                    console.log('Using paginatedData directly (array)');
                 }
             }
             
@@ -74,17 +68,21 @@ function page() {
                 });
                 console.log('Filtered Parent Categories:', parentCategories);
                 setCategories(parentCategories.length > 0 ? parentCategories : categoriesList);
+                setError(null);
             } else {
                 console.log('No categories found or categoriesList is not an array');
                 setCategories([]);
+                setError('No categories found');
             }
             
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching OSCE categories:', error);
+            setError(error.response?.data?.message || 'Failed to load categories. Please try again.');
+            setCategories([]);
             setLoading(false);
         });
-    }, [userid])
+    }, [])
 
     // Color variations for categories
     const colors = ['0deg', '120deg', '240deg', '60deg', '180deg', '300deg'];
@@ -162,7 +160,25 @@ function page() {
                                             ))
                                         ) : (
                                             <div className="col-12 text-center py-5">
-                                                <p className="text-white">No OSCE categories found.</p>
+                                                {error ? (
+                                                    <div>
+                                                        <p className="text-white mb-3">{error}</p>
+                                                        <button 
+                                                            onClick={() => window.location.reload()} 
+                                                            className="btn btn-primary"
+                                                            style={{
+                                                                background: 'linear-gradient(92.48deg, #44A6C5 3.13%, #1E4FFD 100%)',
+                                                                border: 'none',
+                                                                padding: '10px 24px',
+                                                                borderRadius: '12px'
+                                                            }}
+                                                        >
+                                                            Retry
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-white">No OSCE categories found.</p>
+                                                )}
                                             </div>
                                         )}
                                     </div>
@@ -225,7 +241,27 @@ function page() {
                                         ))
                                     ) : (
                                         <div className="col-12 text-center py-5">
-                                            <p className="text-white">No OSCE categories found.</p>
+                                            {error ? (
+                                                <div>
+                                                    <p className="text-white mb-3">{error}</p>
+                                                    <button 
+                                                        onClick={() => window.location.reload()} 
+                                                        className="btn btn-primary"
+                                                        style={{
+                                                            background: 'linear-gradient(92.48deg, #44A6C5 3.13%, #1E4FFD 100%)',
+                                                            border: 'none',
+                                                            padding: '10px 24px',
+                                                            borderRadius: '12px'
+                                                        }}
+                                                    >
+                                                        Retry
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <p className="text-white">No OSCE categories found.</p>
+                                            )}
+                                        </div>
+                                    )}
                                         </div>
                                     )}
                                 </div>

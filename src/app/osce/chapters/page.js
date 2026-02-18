@@ -12,30 +12,35 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 function page() {
     const [userid, setUser] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [chapters, setChapters] = useState([])
     const [categoryName, setCategoryName] = useState('')
+    const [error, setError] = useState(null)
     const router = useRouter()
     const searchParams = useSearchParams()
 
     useEffect(() => {
-        setLoading(true);
+        // Check auth and fetch data in one effect to avoid race conditions
         const IsUserExist = Cookies.get('user-token')
         if (!IsUserExist) {
             router.push('/')
+            return;
         }
-    }, []);
 
-    useEffect(() => {
         const user = Cookies.get('user-id');
-        setUser(user)
-    }, [])
-
-    useEffect(() => {
-        if (!userid) return;
+        if (!user) {
+            setLoading(false);
+            setError('User not found');
+            return;
+        }
+        setUser(user);
 
         const categoryId = searchParams.get('id');
-        if (!categoryId) return;
+        if (!categoryId) {
+            setLoading(false);
+            setError('Category ID not found');
+            return;
+        }
 
         const cookies = Cookies.get('user-token');
         
@@ -68,15 +73,20 @@ function page() {
                 console.log('Child Categories:', childCategories);
                 console.log('Number of chapters:', childCategories.length);
                 setChapters(childCategories);
+                setError(null);
             } else {
                 console.error('Category not found for ID:', categoryId);
+                setError('Category not found');
+                setChapters([]);
             }
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching OSCE chapters:', error);
+            setError(error.response?.data?.message || 'Failed to load chapters. Please try again.');
+            setChapters([]);
             setLoading(false);
         });
-    }, [userid, searchParams])
+    }, [searchParams])
 
     // Color variations for chapters
     const colors = ['0deg', '120deg', '240deg', '60deg', '180deg', '300deg'];

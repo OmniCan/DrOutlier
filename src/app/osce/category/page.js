@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 
 function page() {
     const [userid, setUser] = useState('')
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [osces, setOsces] = useState([])
     const [categoryName, setCategoryName] = useState('')
     const [bookmarkedOsces, setBookmarkedOsces] = useState({})
@@ -23,34 +23,33 @@ function page() {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [totalOsces, setTotalOsces] = useState(0)
+    const [error, setError] = useState(null)
     const router = useRouter()
     const searchParams = useSearchParams()
 
-    useEffect(() => {
-        setLoading(true);
-        const IsUserExist = Cookies.get('user-token')
-        if (!IsUserExist) {
-            router.push('/')
-        }
-    }, []);
-
-    useEffect(() => {
-        const user = Cookies.get('user-id');
-        setUser(user)
-    }, [])
-
     // Function to fetch OSCE items with pagination
-    const fetchOsceItems = (page = 1) => {
-        const categoryId = searchParams.get('id');
-        if (!categoryId || !userid) return;
+    const fetchOsceItems = (page = 1, userId = null, categoryId = null) => {
+        const uid = userId || userid;
+        const catId = categoryId || searchParams.get('id');
+        
+        if (!catId || !uid) {
+            setLoading(false);
+            setError('Missing required parameters');
+            return;
+        }
 
         const cookies = Cookies.get('user-token');
+        if (!cookies) {
+            router.push('/');
+            return;
+        }
         
         const formData = new FormData();
-        formData.append('category_id', categoryId);
+        formData.append('category_id', catId);
         formData.append('page', page);
         
         setLoading(true);
+        setError(null);
         
         axios.post(`${baseUrl}/api/osce/category-osce`, formData, {
             headers: {
@@ -79,24 +78,42 @@ function page() {
             setLoading(false);
         }).catch((error) => {
             console.error('Error fetching OSCE items:', error);
+            setError(error.response?.data?.message || 'Failed to load OSCE items');
             setLoading(false);
         });
     };
 
     useEffect(() => {
-        if (!userid) return;
+        // Consolidated effect - check auth and fetch all data
+        const IsUserExist = Cookies.get('user-token')
+        if (!IsUserExist) {
+            router.push('/')
+            return;
+        }
+
+        const user = Cookies.get('user-id');
+        if (!user) {
+            setLoading(false);
+            setError('User not found');
+            return;
+        }
+        setUser(user);
 
         const categoryId = searchParams.get('id');
-        if (!categoryId) return;
+        if (!categoryId) {
+            setLoading(false);
+            setError('Category ID not found');
+            return;
+        }
 
         const cookies = Cookies.get('user-token');
         
         // Fetch OSCE items
-        fetchOsceItems(1);
+        fetchOsceItems(1, user, categoryId);
 
         // Fetch bookmarked OSCEs
         const bookmarkFormData = new FormData();
-        bookmarkFormData.append('user_id', userid);
+        bookmarkFormData.append('user_id', user);
         
         axios.post(`${baseUrl}/api/osce/get-osce-bookmark`, bookmarkFormData, {
             headers: {
@@ -166,7 +183,7 @@ function page() {
             console.error('Error fetching categories for navigation:', error);
         });
 
-    }, [userid, searchParams])
+    }, [searchParams])
 
     const saveOsce = (osceId) => {
         const cookies = Cookies.get('user-token');
