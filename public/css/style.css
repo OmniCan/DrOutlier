@@ -258,8 +258,21 @@ section {
 }
 
 .footer-wrapper {
-    background: #101421;
-    padding-top: 40px;
+    background: linear-gradient(180deg, #0a0d15 0%, #101421 100%);
+    padding-top: 60px;
+    border-top: 1px solid rgba(30, 199, 253, 0.1);
+    position: relative;
+}
+
+.footer-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #1EC7FD 50%, transparent 100%);
+    opacity: 0.5;
 }
 
 .social-media-wrapper {
@@ -274,14 +287,28 @@ section {
     margin-right: 20px;
 }
 
-.googlePayBtn {
+.googlePayBtn,
+.link-btn.appstore,
+.link-btn {
     align-items: center;
-    border-radius: 4.75px;
-    background: #0e0d0d !important;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    background-color: #0e0d0d !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.googlePayBtn:hover,
+.link-btn.appstore:hover,
+.link-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: #1EC7FD !important;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(30, 199, 253, 0.3);
 }
 
 .googlePayBtn img {
@@ -316,6 +343,40 @@ section {
 
 .social-media ul li {
     margin-right: 15px;
+    transition: transform 0.3s ease;
+}
+
+.social-media ul li:hover {
+    transform: translateY(-5px);
+}
+
+.social-media ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.social-media ul li a:hover {
+    background: linear-gradient(135deg, #1EC7FD 0%, #44A6C5 100%);
+    border-color: #1EC7FD;
+    box-shadow: 0 5px 20px rgba(30, 199, 253, 0.4);
+}
+
+.social-media ul li a img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.social-media ul li a:hover img {
+    transform: scale(1.1);
 }
 
 .footer-menu ul {
@@ -328,14 +389,35 @@ section {
 }
 
 .footer-menu ul li a {
-    color: rgba(255, 255, 255, 0.50);
+    color: rgba(255, 255, 255, 0.70);
     font-family: Poppins;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
     text-transform: uppercase;
     text-decoration: none;
     display: inline-block;
     position: relative;
+    transition: all 0.3s ease;
+    padding: 5px 0;
+}
+
+.footer-menu ul li a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #1EC7FD 0%, #44A6C5 100%);
+    transition: width 0.3s ease;
+}
+
+.footer-menu ul li a:hover {
+    color: #1EC7FD;
+}
+
+.footer-menu ul li a:hover::after {
+    width: 100%;
 }
 
 .footer-menu ul li:not(:last-child) {
@@ -343,9 +425,10 @@ section {
 }
 
 .footer-wrapper .copyRight {
-    border-top: 1px solid rgba(255, 255, 255, 0.20);
-    margin-top: 30px;
-    padding: 15px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 40px;
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .footer-menu ul li:not(:first-child) a:before {
@@ -372,12 +455,29 @@ section {
 }
 
 .footer-wrapper .copyRight ul li a {
-    color: rgba(255, 255, 255, 0.40);
+    color: rgba(255, 255, 255, 0.50);
     font-family: Poppins;
     font-size: 14px;
     font-weight: 400;
     text-decoration: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.footer-wrapper .copyRight ul li a:hover {
+    color: #1EC7FD;
+    transform: translateX(3px);
+}
+
+.footer-wrapper .copyRight ul li a i {
+    font-size: 16px;
+    transition: transform 0.3s ease;
+}
+
+.footer-wrapper .copyRight ul li a:hover i {
+    transform: scale(1.2);
 }
 
 .header-menu {
@@ -421,30 +521,112 @@ section {
 
 .box {
     position: relative;
+    border-radius: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    overflow: hidden;
+    margin-bottom: 20px;
 }
 
-.box h6 {
+.box::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
+    width: 100%;
     height: 100%;
-    justify-content: center;
+    background: linear-gradient(135deg, rgba(30, 199, 253, 0.1) 0%, rgba(68, 166, 197, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 0;
+}
+
+.box:hover::before {
+    opacity: 1;
+}
+
+.box:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(30, 199, 253, 0.3), 0 0 30px rgba(30, 79, 253, 0.2);
+    border-color: rgba(30, 199, 253, 0.3);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.box > div {
+    position: relative;
+    z-index: 1;
+}
+
+.box h6 {
+    position: relative;
     color: #FFF;
     text-align: center;
-    font-family: "Nunito Sans";
-    font-size: 14px;
-    font-weight: 800;
+    font-family: "Poppins", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.box:hover h6 {
+    transform: scale(1.05);
+    color: #1EC7FD;
 }
 
 .box img {
     width: 100%;
 }
 
-.macaroni-sign-wrap .image h6 {
-    color: rgba(0, 0, 0, 0.60);
+.footer-logo {
+    margin-bottom: 20px;
+}
+
+.footer-logo img {
+    max-width: 200px;
+    filter: drop-shadow(0 4px 15px rgba(30, 199, 253, 0.2));
+    transition: all 0.3s ease;
+}
+
+.footer-logo a:hover img {
+    filter: drop-shadow(0 6px 20px rgba(30, 199, 253, 0.4));
+    transform: scale(1.05);
+}
+
+.main-wrapper section {
+    padding: 60px 0;
+}
+
+.main-wrapper .content h1 {
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.3;
+    background: linear-gradient(135deg, #FFFFFF 0%, #1EC7FD 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.main-wrapper .content p {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.main-wrapper .image img {
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .macaroni-sign-wrap .content h6 {
@@ -1240,6 +1422,51 @@ section.inner-list-wrapper {
         font-size: 15px;
     }
 
+    .main-wrapper .content h1 {
+        font-size: 28px;
+    }
+
+    .main-wrapper .content p {
+        font-size: 15px;
+    }
+
+    .box {
+        margin-bottom: 15px;
+        padding: 15px;
+    }
+
+    .box h6 {
+        font-size: 13px;
+    }
+
+    .footer-menu ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .footer-menu ul li:not(:last-child) {
+        margin-right: 0;
+    }
+
+    .footer-menu ul li:not(:first-child) a:before {
+        display: none;
+    }
+
+    .social-media-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .social-media {
+        margin-right: 0;
+    }
+
+    .play-app {
+        justify-content: center;
+    }
+
 
 
 
@@ -1469,6 +1696,69 @@ section.inner-list-wrapper {
         right: 10px;
         top: 10px;
         font-size: 18px;
+    }
+
+    .main-wrapper .content h1 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .main-wrapper .content p {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .box {
+        margin-bottom: 12px;
+        padding: 12px;
+        border-radius: 15px;
+    }
+
+    .box h6 {
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .box:hover {
+        transform: translateY(-5px) scale(1.01);
+    }
+
+    .footer-wrapper {
+        padding-top: 40px;
+    }
+
+    .footer-menu ul li a {
+        font-size: 13px;
+    }
+
+    .footer-wrapper .copyRight {
+        margin-top: 30px;
+        padding: 15px 0;
+    }
+
+    .footer-wrapper .copyRight ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .footer-wrapper .copyRight ul li:not(:last-child) {
+        margin-right: 0;
+    }
+
+    .footer-wrapper .copyRight p {
+        text-align: center;
+    }
+
+    .social-media ul li a {
+        width: 40px;
+        height: 40px;
+    }
+
+    .social-media ul li a img {
+        width: 20px;
+        height: 20px;
     }
 
     .navbar-nav .dropdown-menu {

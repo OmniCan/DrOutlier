@@ -142,19 +142,19 @@ function Footer() {
                             <div className="footer-menu">
                                 <ul>
                                     <li>
-                                        <Link href="/spotters" onClick={hendleChecklogin} >Spotters</Link>
+                                        <Link href="/new-spotters" onClick={hendleChecklogin} >Spotters</Link>
                                     </li>
                                     <li>
-                                        <Link href="notes" onClick={hendleChecklogin} >NOtes</Link>
+                                        <Link href="/theory-notes" onClick={hendleChecklogin} >Notes</Link>
                                     </li>
                                     <li>
-                                        <Link href="/osce" onClick={hendleChecklogin} >OSCE</Link>
+                                        <Link href="/new-osce" onClick={hendleChecklogin} >OSCE</Link>
                                     </li>
                                     <li>
-                                        <Link href="/ai-rad" onClick={hendleChecklogin} >AI-Rad</Link>
+                                        <Link href="/new-exam-cases" onClick={hendleChecklogin} >AI-Rad</Link>
                                     </li>
                                     <li>
-                                        <Link href="/practical-essentials" onClick={hendleChecklogin} >Practical Essentials</Link>
+                                        <Link href="/new-table-viva" onClick={hendleChecklogin} >Practical Essentials</Link>
                                     </li>
                                     <li>
                                         <Link href="/watch-and-learn" onClick={hendleChecklogin} >Watch &amp; Learn</Link>

@@ -203,7 +203,7 @@ function page() {
                   <div className="col-lg-10 m-auto">
                     <div className="row">
                       <div className="col-lg-4 col-6">
-                        <Link onClick={hendleChecklogin} href='/spotters'>
+                        <Link onClick={hendleChecklogin} href='/new-spotters'>
 
                           <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
                             <DotLottieReact
@@ -219,7 +219,7 @@ function page() {
 
                       </div>
                       <div className="col-lg-4 col-6">
-                        <Link onClick={hendleChecklogin} href='/notes'>
+                        <Link onClick={hendleChecklogin} href='/theory-notes'>
 
                           <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
                             {/* <img
@@ -240,7 +240,7 @@ function page() {
 
                       </div>
                       <div className="col-lg-4 col-6">
-                        <Link onClick={hendleChecklogin} href='/osce'>
+                        <Link onClick={hendleChecklogin} href='/new-osce'>
 
                           <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
                             {/* <img
@@ -265,7 +265,7 @@ function page() {
 
                       </div>
                       <div className="col-lg-4 col-6">
-                        <Link onClick={hendleChecklogin} href='/ai-rad'>
+                        <Link onClick={hendleChecklogin} href='/new-exam-cases'>
 
                           <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
                             {/* <img
@@ -294,7 +294,7 @@ function page() {
                         </Link>
                       </div>
                       <div className="col-lg-4 col-6">
-                        <Link onClick={hendleChecklogin} href='/practical-essentials'>
+                        <Link onClick={hendleChecklogin} href='/new-table-viva'>
 
                           <div className="box" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%' }}>
 
