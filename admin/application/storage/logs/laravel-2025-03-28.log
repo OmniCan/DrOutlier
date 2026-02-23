@@ -1,0 +1,42 @@
+[2025-03-28 10:08:35] production.INFO: Detected N+1 Query  
+[2025-03-28 10:08:35] production.INFO: Model: App\Models\QuizaroQuiz
+Relation: App\Models\QuizResponse
+Num-Called: 9
+Call-Stack:
+#14 /app/Http/Controllers/Api/QuizController.php:48
+#15 /vendor/laravel/framework/src/Illuminate/Routing/Controller.php:54
+#16 /vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php:43
+#17 /vendor/laravel/framework/src/Illuminate/Routing/Route.php:259
+#18 /vendor/laravel/framework/src/Illuminate/Routing/Route.php:205
+#19 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:806
+#20 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:144
+#21 /app/Http/Middleware/Cors.php:29
+#22 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#23 /vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+#24 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#25 /vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php:159
+#26 /vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php:125
+#27 /vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php:87
+#28 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#29 /vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php:57
+#30 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#31 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:119
+#32 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:805
+#33 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:784
+#34 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:748
+#35 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:737
+#36 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+#37 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:144
+#38 /vendor/beyondcode/laravel-query-detector/src/QueryDetectorMiddleware.php:33
+#39 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#40 /vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php:66
+#41 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#42 /app/Http/Middleware/Cors.php:29
+#43 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#44 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+#45 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
+#46 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#47 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+#48 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:40
+#49 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+  

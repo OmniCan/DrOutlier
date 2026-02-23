@@ -1,0 +1,173 @@
+[2024-05-07 10:31:02] production.INFO: Detected N+1 Query  
+[2024-05-07 10:31:02] production.INFO: Model: App\Models\Donation
+Relation: user
+Num-Called: 5
+Call-Stack:
+#20 /storage/framework/views/481fff38ec1021a0ba42facfd52d6fc4.php:21
+#22 /vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+#23 /vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:58
+#24 /vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:72
+#25 /vendor/laravel/framework/src/Illuminate/View/View.php:207
+#26 /vendor/laravel/framework/src/Illuminate/View/View.php:190
+#27 /vendor/laravel/framework/src/Illuminate/View/View.php:159
+#28 /vendor/laravel/framework/src/Illuminate/Http/Response.php:69
+#29 /vendor/laravel/framework/src/Illuminate/Http/Response.php:35
+#30 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:918
+#31 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:885
+#32 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:805
+#33 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:144
+#34 /app/Http/Middleware/RedirectIfNotAdmin.php:22
+#35 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#36 /app/Http/Middleware/LanguageMiddleware.php:21
+#37 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#38 /vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+#39 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#40 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:78
+#41 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#42 /vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:49
+#43 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#44 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:121
+#45 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:64
+#46 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#47 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:37
+#48 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#49 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:67
+  
+[2024-05-07 10:31:02] production.INFO: Model: App\Models\Donation
+Relation: receiver
+Num-Called: 5
+Call-Stack:
+#20 /storage/framework/views/481fff38ec1021a0ba42facfd52d6fc4.php:22
+#22 /vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+#23 /vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:58
+#24 /vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:72
+#25 /vendor/laravel/framework/src/Illuminate/View/View.php:207
+#26 /vendor/laravel/framework/src/Illuminate/View/View.php:190
+#27 /vendor/laravel/framework/src/Illuminate/View/View.php:159
+#28 /vendor/laravel/framework/src/Illuminate/Http/Response.php:69
+#29 /vendor/laravel/framework/src/Illuminate/Http/Response.php:35
+#30 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:918
+#31 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:885
+#32 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:805
+#33 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:144
+#34 /app/Http/Middleware/RedirectIfNotAdmin.php:22
+#35 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#36 /app/Http/Middleware/LanguageMiddleware.php:21
+#37 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#38 /vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+#39 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#40 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:78
+#41 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#42 /vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:49
+#43 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#44 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:121
+#45 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:64
+#46 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#47 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:37
+#48 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#49 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:67
+  
+[2024-05-07 10:31:08] production.INFO: Detected N+1 Query  
+[2024-05-07 10:31:08] production.INFO: Model: App\Models\Donation
+Relation: user
+Num-Called: 5
+Call-Stack:
+#20 /storage/framework/views/481fff38ec1021a0ba42facfd52d6fc4.php:21
+#22 /vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+#23 /vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:58
+#24 /vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:72
+#25 /vendor/laravel/framework/src/Illuminate/View/View.php:207
+#26 /vendor/laravel/framework/src/Illuminate/View/View.php:190
+#27 /vendor/laravel/framework/src/Illuminate/View/View.php:159
+#28 /vendor/laravel/framework/src/Illuminate/Http/Response.php:69
+#29 /vendor/laravel/framework/src/Illuminate/Http/Response.php:35
+#30 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:918
+#31 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:885
+#32 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:805
+#33 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:144
+#34 /app/Http/Middleware/RedirectIfNotAdmin.php:22
+#35 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#36 /app/Http/Middleware/LanguageMiddleware.php:21
+#37 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#38 /vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+#39 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#40 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:78
+#41 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#42 /vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:49
+#43 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#44 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:121
+#45 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:64
+#46 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#47 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:37
+#48 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#49 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:67
+  
+[2024-05-07 10:31:08] production.INFO: Model: App\Models\Donation
+Relation: receiver
+Num-Called: 5
+Call-Stack:
+#20 /storage/framework/views/481fff38ec1021a0ba42facfd52d6fc4.php:22
+#22 /vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+#23 /vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:58
+#24 /vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:72
+#25 /vendor/laravel/framework/src/Illuminate/View/View.php:207
+#26 /vendor/laravel/framework/src/Illuminate/View/View.php:190
+#27 /vendor/laravel/framework/src/Illuminate/View/View.php:159
+#28 /vendor/laravel/framework/src/Illuminate/Http/Response.php:69
+#29 /vendor/laravel/framework/src/Illuminate/Http/Response.php:35
+#30 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:918
+#31 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:885
+#32 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:805
+#33 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:144
+#34 /app/Http/Middleware/RedirectIfNotAdmin.php:22
+#35 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#36 /app/Http/Middleware/LanguageMiddleware.php:21
+#37 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#38 /vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+#39 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#40 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:78
+#41 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#42 /vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:49
+#43 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#44 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:121
+#45 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:64
+#46 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#47 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:37
+#48 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#49 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:67
+  
+[2024-05-07 10:32:30] production.INFO: Detected N+1 Query  
+[2024-05-07 10:32:30] production.INFO: Model: App\Models\Donation
+Relation: receiver
+Num-Called: 5
+Call-Stack:
+#20 /storage/framework/views/481fff38ec1021a0ba42facfd52d6fc4.php:22
+#22 /vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+#23 /vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:58
+#24 /vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:72
+#25 /vendor/laravel/framework/src/Illuminate/View/View.php:207
+#26 /vendor/laravel/framework/src/Illuminate/View/View.php:190
+#27 /vendor/laravel/framework/src/Illuminate/View/View.php:159
+#28 /vendor/laravel/framework/src/Illuminate/Http/Response.php:69
+#29 /vendor/laravel/framework/src/Illuminate/Http/Response.php:35
+#30 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:918
+#31 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:885
+#32 /vendor/laravel/framework/src/Illuminate/Routing/Router.php:805
+#33 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:144
+#34 /app/Http/Middleware/RedirectIfNotAdmin.php:22
+#35 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#36 /app/Http/Middleware/LanguageMiddleware.php:21
+#37 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#38 /vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+#39 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#40 /vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:78
+#41 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#42 /vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:49
+#43 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#44 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:121
+#45 /vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:64
+#46 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#47 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:37
+#48 /vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:183
+#49 /vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:67
+  
