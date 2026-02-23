@@ -738,9 +738,29 @@ function TheoryNotesViewer() {
                                                                     renderAnnotationLayer={true}
                                                                 />
                                                             </Document>
+                                                        ) : currentItem && currentItem.description ? (
+                                                            // Display text description if no PDF but description exists
+                                                            <div style={{ 
+                                                                color: 'white', 
+                                                                padding: '40px',
+                                                                maxWidth: '900px',
+                                                                margin: '0 auto',
+                                                                textAlign: 'left',
+                                                                overflowY: 'auto',
+                                                                height: '100%'
+                                                            }}>
+                                                                <div 
+                                                                    style={{
+                                                                        fontSize: '16px',
+                                                                        lineHeight: '1.8',
+                                                                        fontFamily: 'Poppins'
+                                                                    }}
+                                                                    dangerouslySetInnerHTML={{ __html: currentItem.description }}
+                                                                />
+                                                            </div>
                                                         ) : (
                                                             <div style={{ color: 'white', textAlign: 'center' }}>
-                                                                <p>No PDF available</p>
+                                                                <p>No content available</p>
                                                             </div>
                                                         )}
                                                     </div>
@@ -883,6 +903,40 @@ function TheoryNotesViewer() {
                                                             <path d="M13.83 6.42001C13.6313 6.20675 13.5231 5.92468 13.5283 5.63323C13.5334 5.34178 13.6515 5.0637 13.8576 4.85758C14.0637 4.65146 14.3418 4.53339 14.6332 4.52825C14.9247 4.52311 15.2068 4.63129 15.42 4.83001L20.67 10.08C20.8807 10.291 20.999 10.5769 20.999 10.875C20.999 11.1731 20.8807 11.4591 20.67 11.67L15.42 16.92C15.2068 17.1187 14.9247 17.2269 14.6332 17.2218C14.3418 17.2166 14.0637 17.0986 13.8576 16.8924C13.6515 16.6863 13.5334 16.4082 13.5283 16.1168C13.5231 15.8253 13.6313 15.5433 13.83 15.33L17.16 12H11.625C9.93426 12 8.31275 12.6717 7.11721 13.8672C5.92166 15.0628 5.25001 16.6843 5.25001 18.375C5.25001 18.6734 5.13149 18.9595 4.92051 19.1705C4.70953 19.3815 4.42338 19.5 4.12501 19.5C3.82664 19.5 3.5405 19.3815 3.32952 19.1705C3.11854 18.9595 3.00001 18.6734 3.00001 18.375C3.00001 17.2424 3.22311 16.1208 3.65655 15.0744C4.09 14.0279 4.72531 13.0771 5.52622 12.2762C6.32712 11.4753 7.27794 10.84 8.32437 10.4066C9.3708 9.97311 10.4924 9.75001 11.625 9.75001H17.16L13.83 6.42001Z" fill="#FEFFFF"/>
                                                         </svg>
                                                     </button>
+                                                </div>
+                                            )}
+
+                                            {/* Text Description Section - Shows below PDF controls when description exists */}
+                                            {currentItem && currentItem.description && pdfUrl && (
+                                                <div style={{
+                                                    background: '#1B1E27',
+                                                    padding: '30px 40px',
+                                                    color: 'white',
+                                                    borderTop: '1px solid rgba(255,255,255,0.1)',
+                                                    maxHeight: '400px',
+                                                    overflowY: 'auto',
+                                                    flexShrink: 0
+                                                }}
+                                                className="hide-scrollbar"
+                                                >
+                                                    <h3 style={{
+                                                        fontSize: '20px',
+                                                        fontFamily: 'Poppins',
+                                                        fontWeight: '600',
+                                                        marginBottom: '20px',
+                                                        color: '#44A6C5'
+                                                    }}>
+                                                        Description
+                                                    </h3>
+                                                    <div 
+                                                        style={{
+                                                            fontSize: '15px',
+                                                            lineHeight: '1.8',
+                                                            fontFamily: 'Poppins',
+                                                            color: 'rgba(255,255,255,0.9)'
+                                                        }}
+                                                        dangerouslySetInnerHTML={{ __html: currentItem.description }}
+                                                    />
                                                 </div>
                                             )}
 
