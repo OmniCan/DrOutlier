@@ -37,6 +37,19 @@ function Navbar() {
     const { navigationItems, loading: navLoading } = useNavigation();
 
 
+    // Initialize Bootstrap components on mount
+    useEffect(() => {
+        // Dynamically import Bootstrap JS only on client side
+        if (typeof window !== 'undefined') {
+            import('bootstrap/dist/js/bootstrap.bundle.min.js').then((bootstrap) => {
+                // Store bootstrap globally for use throughout the component
+                window.bootstrap = bootstrap;
+            }).catch(err => {
+                console.error('Error loading Bootstrap:', err);
+            });
+        }
+    }, []);
+
     useEffect(() => {
         const IsUserExist = Cookies.get('user-token')
         const Username = Cookies.get('Login-user')
@@ -600,175 +613,699 @@ function Navbar() {
                             id="offcanvasDarkNavbar"
                             aria-labelledby="offcanvasDarkNavbarLabel"
                             style={{
-                                width: '50%',
-                                maxWidth: '300px',
-                                minWidth: '250px'
+                                width: '85%',
+                                maxWidth: '320px',
+                                minWidth: '280px',
+                                background: 'linear-gradient(180deg, #1B1E27 0%, #0F1116 100%)',
+                                boxShadow: '-4px 0 20px rgba(0, 0, 0, 0.5)'
                             }}
                         >
-                            <div className="offcanvas-body">
-                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 className="mb-0" style={{ color: 'white' }}>Menu</h6>
-                                    <button
-                                        type="button"
-                                        className="btn-close btn-close-white"
-                                        data-bs-dismiss="offcanvas"
-                                        aria-label="Close"
-                                        style={{
-                                            fontSize: '24px',
-                                            opacity: 1,
-                                            filter: 'brightness(0) invert(1)'
-                                        }}
-                                    >
-                                        <i className="fa-solid fa-xmark" style={{ fontSize: '24px', color: 'white' }} />
-                                    </button>
+                            <div className="offcanvas-header" style={{
+                                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                                padding: '20px 24px'
+                            }}>
+                                <div style={{ width: '100%' }}>
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 className="mb-0" style={{ 
+                                            color: 'white', 
+                                            fontSize: '18px',
+                                            fontWeight: '600',
+                                            fontFamily: 'Poppins'
+                                        }}>Menu</h5>
+                                        <button
+                                            type="button"
+                                            className="btn-close btn-close-white"
+                                            data-bs-dismiss="offcanvas"
+                                            aria-label="Close"
+                                            style={{
+                                                fontSize: '14px',
+                                                opacity: 0.8,
+                                                transition: 'opacity 0.2s ease'
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.opacity = '1'}
+                                            onMouseLeave={(e) => e.target.style.opacity = '0.8'}
+                                        />
+                                    </div>
+                                    <div className="heading-wrap">
+                                        <h6 style={{
+                                            color: 'rgba(255, 255, 255, 0.7)',
+                                            fontSize: '13px',
+                                            fontWeight: '400',
+                                            margin: 0,
+                                            fontFamily: 'Poppins'
+                                        }}>
+                                            Welcome to <span style={{ color: '#44A6C5', fontWeight: '600' }}>Dr Outlier Radiology</span>
+                                        </h6>
+                                    </div>
                                 </div>
-                                <div className="heading-wrap">
-                                    <h5 className="mt-2">
-                                        Welcome to
-                                        <span>
-                                            Dr Outlier <strong>Radiology</strong>
-                                        </span>
-                                    </h5>
-                                </div>
-                                <ul className="navbar-nav justify-content-end flex-grow-1 d-block d-md-none">
-
+                            </div>
+                            <div className="offcanvas-body" style={{ padding: '16px 0' }}>
+                                {/* Login/Logout Button - Mobile */}
+                                <div className="d-block d-md-none px-4 mb-3">
                                     {!isAuthenticated ? (
-                                        <>
-                                            <button
-                                                className="btn btn-link LogoutBtn"
-                                                onClick={() => ShowLogin()}
-                                                style={{ backgroundColor: 'green' }}
-                                            >
-                                                Login
-                                            </button>
-
-                                        </>
-
+                                        <button
+                                            className="btn w-100"
+                                            onClick={() => ShowLogin()}
+                                            style={{ 
+                                                background: 'linear-gradient(92.48deg, #44A6C5 3.13%, #1E4FFD 100%)',
+                                                color: 'white',
+                                                borderRadius: '10px',
+                                                padding: '10px 20px',
+                                                fontSize: '15px',
+                                                fontWeight: '500',
+                                                border: 'none',
+                                                fontFamily: 'Poppins',
+                                                transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.transform = 'translateY(-2px)';
+                                                e.target.style.boxShadow = '0 4px 12px rgba(68, 166, 197, 0.4)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.transform = 'translateY(0)';
+                                                e.target.style.boxShadow = 'none';
+                                            }}
+                                        >
+                                            <i className="fa-solid fa-right-to-bracket me-2" />
+                                            Login
+                                        </button>
                                     ) : (
-                                        <>
-                                            <button
-                                                className="btn btn-link LogoutBtn"
-                                                onClick={() => handleLogOut()}>
-
-                                                LogOut
-                                            </button>
-
-                                        </>
-
-
+                                        <button
+                                            className="btn w-100"
+                                            onClick={() => handleLogOut()}
+                                            style={{ 
+                                                background: 'rgba(255, 59, 48, 0.1)',
+                                                color: '#FF3B30',
+                                                borderRadius: '10px',
+                                                padding: '10px 20px',
+                                                fontSize: '15px',
+                                                fontWeight: '500',
+                                                border: '1px solid rgba(255, 59, 48, 0.3)',
+                                                fontFamily: 'Poppins',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.background = 'rgba(255, 59, 48, 0.2)';
+                                                e.target.style.borderColor = 'rgba(255, 59, 48, 0.5)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.background = 'rgba(255, 59, 48, 0.1)';
+                                                e.target.style.borderColor = 'rgba(255, 59, 48, 0.3)';
+                                            }}
+                                        >
+                                            <i className="fa-solid fa-right-from-bracket me-2" />
+                                            Logout
+                                        </button>
                                     )}
+                                </div>
 
-
-                                    <li className="nav-item active">
-                                        <Link className={`nav-link ${pathname === '/' ? 'active' : ''}`} onClick={hendleChecklogin} href="/" data-bs-dismiss="offcanvas">
-                                            Home{" "}
+                                {/* Mobile Navigation */}
+                                <ul className="navbar-nav d-block d-md-none" style={{ padding: '0 12px' }}>
+                                    <li className="nav-item" style={{ marginBottom: '4px' }}>
+                                        <Link 
+                                            className={`nav-link ${pathname === '/' ? 'active' : ''}`} 
+                                            onClick={hendleChecklogin} 
+                                            href="/" 
+                                            data-bs-dismiss="offcanvas"
+                                            style={{
+                                                color: pathname === '/' ? '#44A6C5' : 'rgba(255, 255, 255, 0.85)',
+                                                padding: '12px 16px',
+                                                borderRadius: '10px',
+                                                fontSize: '15px',
+                                                fontWeight: pathname === '/' ? '600' : '400',
+                                                background: pathname === '/' ? 'rgba(68, 166, 197, 0.15)' : 'transparent',
+                                                transition: 'all 0.2s ease',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                fontFamily: 'Poppins'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                if (pathname !== '/') {
+                                                    e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+                                                    e.target.style.color = 'white';
+                                                }
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                if (pathname !== '/') {
+                                                    e.target.style.background = 'transparent';
+                                                    e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                }
+                                            }}
+                                        >
+                                            <i className="fa-solid fa-house" style={{ marginRight: '12px', fontSize: '16px' }} />
+                                            Home
                                         </Link>
                                     </li>
                                     
                                     {/* Dynamic Navigation Items from API - Mobile */}
-                                    {!navLoading && Array.isArray(navigationItems) && navigationItems.map((item) => (
-                                        <li key={item.id} className="nav-item">
-                                            <Link 
-                                                className={`nav-link ${pathname?.startsWith(item.url) ? 'active' : ''}`} 
-                                                onClick={hendleChecklogin} 
-                                                href={item.url}
-                                                data-bs-dismiss="offcanvas"
-                                            >
-                                                {item.icon && <i className={item.icon} style={{marginRight: '5px'}} />}
-                                                {item.title}
-                                            </Link>
-                                        </li>
-                                    ))}
+                                    {!navLoading && Array.isArray(navigationItems) && navigationItems.map((item) => {
+                                        const isActive = pathname?.startsWith(item.url);
+                                        return (
+                                            <li key={item.id} className="nav-item" style={{ marginBottom: '4px' }}>
+                                                <Link 
+                                                    className={`nav-link ${isActive ? 'active' : ''}`} 
+                                                    onClick={hendleChecklogin} 
+                                                    href={item.url}
+                                                    data-bs-dismiss="offcanvas"
+                                                    style={{
+                                                        color: isActive ? '#44A6C5' : 'rgba(255, 255, 255, 0.85)',
+                                                        padding: '12px 16px',
+                                                        borderRadius: '10px',
+                                                        fontSize: '15px',
+                                                        fontWeight: isActive ? '600' : '400',
+                                                        background: isActive ? 'rgba(68, 166, 197, 0.15)' : 'transparent',
+                                                        transition: 'all 0.2s ease',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        fontFamily: 'Poppins'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        if (!isActive) {
+                                                            e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+                                                            e.target.style.color = 'white';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (!isActive) {
+                                                            e.target.style.background = 'transparent';
+                                                            e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                        }
+                                                    }}
+                                                >
+                                                    {item.icon && <i className={item.icon} style={{marginRight: '12px', fontSize: '16px'}} />}
+                                                    {item.title}
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
 
-                                    <li className="nav-item dropdown">
+                                    {/* Saved Dropdown - Mobile */}
+                                    <li className="nav-item dropdown" style={{ marginTop: '8px', marginBottom: '4px' }}>
                                         <Link
                                             className="nav-link dropdown-toggle"
                                             href="#"
                                             role="button"
                                             data-bs-toggle="dropdown"
+                                            style={{
+                                                color: 'rgba(255, 255, 255, 0.85)',
+                                                padding: '12px 16px',
+                                                borderRadius: '10px',
+                                                fontSize: '15px',
+                                                fontWeight: '400',
+                                                background: 'transparent',
+                                                transition: 'all 0.2s ease',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                fontFamily: 'Poppins'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.target.style.background = 'rgba(255, 255, 255, 0.05)';
+                                                e.target.style.color = 'white';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.target.style.background = 'transparent';
+                                                e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                            }}
                                         >
-                                            {" "}
-                                            Saved{" "}
+                                            <span>
+                                                <i className="fa-solid fa-bookmark" style={{marginRight: '12px', fontSize: '16px'}} />
+                                                Saved
+                                            </span>
                                         </Link>
-                                        <ul className="dropdown-menu">
+                                        <ul className="dropdown-menu" style={{
+                                            background: '#252A3A',
+                                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                                            borderRadius: '10px',
+                                            padding: '8px',
+                                            marginTop: '4px'
+                                        }}>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/spotters/save-spootters" data-bs-dismiss="offcanvas">
+                                                <Link 
+                                                    className="dropdown-item" 
+                                                    onClick={hendleChecklogin} 
+                                                    href="/spotters/save-spootters" 
+                                                    data-bs-dismiss="offcanvas"
+                                                    style={{
+                                                        color: 'rgba(255, 255, 255, 0.85)',
+                                                        padding: '10px 14px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Poppins',
+                                                        transition: 'all 0.2s ease'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                        e.target.style.color = '#44A6C5';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.background = 'transparent';
+                                                        e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-image" style={{marginRight: '10px', fontSize: '14px'}} />
                                                     Saved Spotters
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/notes/save-notes" data-bs-dismiss="offcanvas">
-                                                    Saved Notes{" "}
+                                                <Link 
+                                                    className="dropdown-item" 
+                                                    onClick={hendleChecklogin} 
+                                                    href="/notes/save-notes" 
+                                                    data-bs-dismiss="offcanvas"
+                                                    style={{
+                                                        color: 'rgba(255, 255, 255, 0.85)',
+                                                        padding: '10px 14px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Poppins',
+                                                        transition: 'all 0.2s ease'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                        e.target.style.color = '#44A6C5';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.background = 'transparent';
+                                                        e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-book" style={{marginRight: '10px', fontSize: '14px'}} />
+                                                    Saved Notes
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/osce/save-osce" data-bs-dismiss="offcanvas">
-                                                    Saved OSCE{" "}
+                                                <Link 
+                                                    className="dropdown-item" 
+                                                    onClick={hendleChecklogin} 
+                                                    href="/osce/save-osce" 
+                                                    data-bs-dismiss="offcanvas"
+                                                    style={{
+                                                        color: 'rgba(255, 255, 255, 0.85)',
+                                                        padding: '10px 14px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Poppins',
+                                                        transition: 'all 0.2s ease'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                        e.target.style.color = '#44A6C5';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.background = 'transparent';
+                                                        e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-stethoscope" style={{marginRight: '10px', fontSize: '14px'}} />
+                                                    Saved OSCE
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/ai-rad/save-ai-rad" data-bs-dismiss="offcanvas">
-                                                    Saved AI-Rad{" "}
+                                                <Link 
+                                                    className="dropdown-item" 
+                                                    onClick={hendleChecklogin} 
+                                                    href="/ai-rad/save-ai-rad" 
+                                                    data-bs-dismiss="offcanvas"
+                                                    style={{
+                                                        color: 'rgba(255, 255, 255, 0.85)',
+                                                        padding: '10px 14px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Poppins',
+                                                        transition: 'all 0.2s ease'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                        e.target.style.color = '#44A6C5';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.background = 'transparent';
+                                                        e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-brain" style={{marginRight: '10px', fontSize: '14px'}} />
+                                                    Saved AI-Rad
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/practical-essentials/save-practical-essentials" data-bs-dismiss="offcanvas">
-                                                    Saved Practical Essentials{" "}
+                                                <Link 
+                                                    className="dropdown-item" 
+                                                    onClick={hendleChecklogin} 
+                                                    href="/practical-essentials/save-practical-essentials" 
+                                                    data-bs-dismiss="offcanvas"
+                                                    style={{
+                                                        color: 'rgba(255, 255, 255, 0.85)',
+                                                        padding: '10px 14px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Poppins',
+                                                        transition: 'all 0.2s ease'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                        e.target.style.color = '#44A6C5';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.background = 'transparent';
+                                                        e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-clipboard-check" style={{marginRight: '10px', fontSize: '14px'}} />
+                                                    Saved Practical Essentials
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/watch-and-learn/save-watch-and-lern" data-bs-dismiss="offcanvas">
-                                                    Saved Watch &amp; Learn{" "}
+                                                <Link 
+                                                    className="dropdown-item" 
+                                                    onClick={hendleChecklogin} 
+                                                    href="/watch-and-learn/save-watch-and-lern" 
+                                                    data-bs-dismiss="offcanvas"
+                                                    style={{
+                                                        color: 'rgba(255, 255, 255, 0.85)',
+                                                        padding: '10px 14px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Poppins',
+                                                        transition: 'all 0.2s ease'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                        e.target.style.color = '#44A6C5';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.background = 'transparent';
+                                                        e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-video" style={{marginRight: '10px', fontSize: '14px'}} />
+                                                    Saved Watch &amp; Learn
                                                 </Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item" onClick={hendleChecklogin} href="/quizora" data-bs-dismiss="offcanvas">
-                                                    Saved Quizzes{' '}
+                                                <Link 
+                                                    className="dropdown-item" 
+                                                    onClick={hendleChecklogin} 
+                                                    href="/quizora" 
+                                                    data-bs-dismiss="offcanvas"
+                                                    style={{
+                                                        color: 'rgba(255, 255, 255, 0.85)',
+                                                        padding: '10px 14px',
+                                                        borderRadius: '8px',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Poppins',
+                                                        transition: 'all 0.2s ease'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                        e.target.style.color = '#44A6C5';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.target.style.background = 'transparent';
+                                                        e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    }}
+                                                >
+                                                    <i className="fa-solid fa-question-circle" style={{marginRight: '10px', fontSize: '14px'}} />
+                                                    Saved Quizzes
                                                 </Link>
                                             </li>
                                         </ul>
                                     </li>
                                 </ul>
-                                <ul className="navbar-nav justify-content-end flex-grow-1 d-none d-md-block">
-                                    <li className="nav-item active">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/spotters/save-spootters">
-                                            Saved Spotters <i className="fa-solid fa-chevron-right" />
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/notes/save-notes">
-                                            Saved Notes <i className="fa-solid fa-chevron-right" />
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/osce/save-osce">
-                                            Saved OSCE <i className="fa-solid fa-chevron-right" />
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/ai-rad/save-ai-rad">
-                                            Saved AI-Rad <i className="fa-solid fa-chevron-right" />
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/practical-essentials/save-practical-essentials">
-                                            Saved Practical Essentials{" "}
-                                            <i className="fa-solid fa-chevron-right" />
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/watch-and-learn/save-watch-and-lern">
-                                            Saved Watch &amp; Learn{" "}
-                                            <i className="fa-solid fa-chevron-right" />
-                                        </Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link className="nav-link" onClick={hendleChecklogin} href="/quizora">
-                                            Saved Quizzes{' '}
-                                            <i className="fa-solid fa-chevron-right" />
-                                        </Link>
-                                    </li>
-                                </ul>
+
+                                {/* Desktop Navigation - Saved Items */}
+                                <div className="d-none d-md-block">
+                                    <div style={{ 
+                                        padding: '0 16px',
+                                        marginTop: '16px',
+                                        marginBottom: '12px'
+                                    }}>
+                                        <h6 style={{
+                                            color: 'rgba(255, 255, 255, 0.5)',
+                                            fontSize: '12px',
+                                            fontWeight: '600',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '0.5px',
+                                            fontFamily: 'Poppins'
+                                        }}>
+                                            Saved Items
+                                        </h6>
+                                    </div>
+                                    <ul className="navbar-nav" style={{ padding: '0 12px' }}>
+                                        <li className="nav-item" style={{ marginBottom: '4px' }}>
+                                            <Link 
+                                                className="nav-link" 
+                                                onClick={hendleChecklogin} 
+                                                href="/spotters/save-spootters"
+                                                style={{
+                                                    color: 'rgba(255, 255, 255, 0.85)',
+                                                    padding: '12px 16px',
+                                                    borderRadius: '10px',
+                                                    fontSize: '15px',
+                                                    fontWeight: '400',
+                                                    background: 'transparent',
+                                                    transition: 'all 0.2s ease',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    fontFamily: 'Poppins'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                    e.target.style.color = '#44A6C5';
+                                                    e.target.querySelector('i').style.transform = 'translateX(4px)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'transparent';
+                                                    e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    e.target.querySelector('i').style.transform = 'translateX(0)';
+                                                }}
+                                            >
+                                                <span>
+                                                    <i className="fa-solid fa-image" style={{marginRight: '12px', fontSize: '16px'}} />
+                                                    Saved Spotters
+                                                </span>
+                                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '14px', transition: 'transform 0.2s ease' }} />
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item" style={{ marginBottom: '4px' }}>
+                                            <Link 
+                                                className="nav-link" 
+                                                onClick={hendleChecklogin} 
+                                                href="/notes/save-notes"
+                                                style={{
+                                                    color: 'rgba(255, 255, 255, 0.85)',
+                                                    padding: '12px 16px',
+                                                    borderRadius: '10px',
+                                                    fontSize: '15px',
+                                                    fontWeight: '400',
+                                                    background: 'transparent',
+                                                    transition: 'all 0.2s ease',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    fontFamily: 'Poppins'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                    e.target.style.color = '#44A6C5';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(4px)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'transparent';
+                                                    e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(0)';
+                                                }}
+                                            >
+                                                <span>
+                                                    <i className="fa-solid fa-book" style={{marginRight: '12px', fontSize: '16px'}} />
+                                                    Saved Notes
+                                                </span>
+                                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '14px', transition: 'transform 0.2s ease' }} />
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item" style={{ marginBottom: '4px' }}>
+                                            <Link 
+                                                className="nav-link" 
+                                                onClick={hendleChecklogin} 
+                                                href="/osce/save-osce"
+                                                style={{
+                                                    color: 'rgba(255, 255, 255, 0.85)',
+                                                    padding: '12px 16px',
+                                                    borderRadius: '10px',
+                                                    fontSize: '15px',
+                                                    fontWeight: '400',
+                                                    background: 'transparent',
+                                                    transition: 'all 0.2s ease',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    fontFamily: 'Poppins'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                    e.target.style.color = '#44A6C5';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(4px)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'transparent';
+                                                    e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(0)';
+                                                }}
+                                            >
+                                                <span>
+                                                    <i className="fa-solid fa-stethoscope" style={{marginRight: '12px', fontSize: '16px'}} />
+                                                    Saved OSCE
+                                                </span>
+                                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '14px', transition: 'transform 0.2s ease' }} />
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item" style={{ marginBottom: '4px' }}>
+                                            <Link 
+                                                className="nav-link" 
+                                                onClick={hendleChecklogin} 
+                                                href="/ai-rad/save-ai-rad"
+                                                style={{
+                                                    color: 'rgba(255, 255, 255, 0.85)',
+                                                    padding: '12px 16px',
+                                                    borderRadius: '10px',
+                                                    fontSize: '15px',
+                                                    fontWeight: '400',
+                                                    background: 'transparent',
+                                                    transition: 'all 0.2s ease',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    fontFamily: 'Poppins'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                    e.target.style.color = '#44A6C5';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(4px)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'transparent';
+                                                    e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(0)';
+                                                }}
+                                            >
+                                                <span>
+                                                    <i className="fa-solid fa-brain" style={{marginRight: '12px', fontSize: '16px'}} />
+                                                    Saved AI-Rad
+                                                </span>
+                                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '14px', transition: 'transform 0.2s ease' }} />
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item" style={{ marginBottom: '4px' }}>
+                                            <Link 
+                                                className="nav-link" 
+                                                onClick={hendleChecklogin} 
+                                                href="/practical-essentials/save-practical-essentials"
+                                                style={{
+                                                    color: 'rgba(255, 255, 255, 0.85)',
+                                                    padding: '12px 16px',
+                                                    borderRadius: '10px',
+                                                    fontSize: '15px',
+                                                    fontWeight: '400',
+                                                    background: 'transparent',
+                                                    transition: 'all 0.2s ease',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    fontFamily: 'Poppins'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                    e.target.style.color = '#44A6C5';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(4px)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'transparent';
+                                                    e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(0)';
+                                                }}
+                                            >
+                                                <span>
+                                                    <i className="fa-solid fa-clipboard-check" style={{marginRight: '12px', fontSize: '16px'}} />
+                                                    Saved Practical Essentials
+                                                </span>
+                                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '14px', transition: 'transform 0.2s ease' }} />
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item" style={{ marginBottom: '4px' }}>
+                                            <Link 
+                                                className="nav-link" 
+                                                onClick={hendleChecklogin} 
+                                                href="/watch-and-learn/save-watch-and-lern"
+                                                style={{
+                                                    color: 'rgba(255, 255, 255, 0.85)',
+                                                    padding: '12px 16px',
+                                                    borderRadius: '10px',
+                                                    fontSize: '15px',
+                                                    fontWeight: '400',
+                                                    background: 'transparent',
+                                                    transition: 'all 0.2s ease',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    fontFamily: 'Poppins'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                    e.target.style.color = '#44A6C5';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(4px)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'transparent';
+                                                    e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(0)';
+                                                }}
+                                            >
+                                                <span>
+                                                    <i className="fa-solid fa-video" style={{marginRight: '12px', fontSize: '16px'}} />
+                                                    Saved Watch &amp; Learn
+                                                </span>
+                                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '14px', transition: 'transform 0.2s ease' }} />
+                                            </Link>
+                                        </li>
+                                        <li className="nav-item" style={{ marginBottom: '4px' }}>
+                                            <Link 
+                                                className="nav-link" 
+                                                onClick={hendleChecklogin} 
+                                                href="/quizora"
+                                                style={{
+                                                    color: 'rgba(255, 255, 255, 0.85)',
+                                                    padding: '12px 16px',
+                                                    borderRadius: '10px',
+                                                    fontSize: '15px',
+                                                    fontWeight: '400',
+                                                    background: 'transparent',
+                                                    transition: 'all 0.2s ease',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    fontFamily: 'Poppins'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.target.style.background = 'rgba(68, 166, 197, 0.15)';
+                                                    e.target.style.color = '#44A6C5';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(4px)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.target.style.background = 'transparent';
+                                                    e.target.style.color = 'rgba(255, 255, 255, 0.85)';
+                                                    e.target.querySelector('i.fa-chevron-right').style.transform = 'translateX(0)';
+                                                }}
+                                            >
+                                                <span>
+                                                    <i className="fa-solid fa-question-circle" style={{marginRight: '12px', fontSize: '16px'}} />
+                                                    Saved Quizzes
+                                                </span>
+                                                <i className="fa-solid fa-chevron-right" style={{ fontSize: '14px', transition: 'transform 0.2s ease' }} />
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </nav >

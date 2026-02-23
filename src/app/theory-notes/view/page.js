@@ -35,7 +35,7 @@ function TheoryNotesViewer() {
 
     // PDF viewer state
     const [pdfUrl, setPdfUrl] = useState('');
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
     const [scale, setScale] = useState(1.1);
@@ -347,6 +347,17 @@ function TheoryNotesViewer() {
                     100% { transform: rotate(360deg); }
                 }
                 
+                @keyframes slideInLeft {
+                    0% { 
+                        transform: translateX(-100%);
+                        opacity: 0;
+                    }
+                    100% { 
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                
                 .hide-scrollbar::-webkit-scrollbar {
                     display: none;
                 }
@@ -412,7 +423,9 @@ function TheoryNotesViewer() {
                                                 flexDirection: 'column',
                                                 justifyContent: 'flex-start',
                                                 alignItems: 'flex-start',
-                                                display: 'flex'
+                                                display: 'flex',
+                                                animation: 'slideInLeft 0.3s ease-out',
+                                                borderRight: '1px solid rgba(255, 255, 255, 0.1)'
                                             }}
                                                 className="d-none d-lg-flex"
                                             >
@@ -622,16 +635,32 @@ function TheoryNotesViewer() {
                                                     onClick={() => setSidebarOpen(!sidebarOpen)}
                                                     style={{
                                                         padding: '8px 12px',
-                                                        background: 'white',
+                                                        background: sidebarOpen ? 'linear-gradient(92.48deg, #44A6C5 3.13%, #1E4FFD 100%)' : 'white',
                                                         borderRadius: '12px',
-                                                        border: '1px solid rgba(255, 255, 255, 0.60)',
+                                                        border: sidebarOpen ? '1px solid #44A6C5' : '1px solid rgba(255, 255, 255, 0.60)',
                                                         cursor: 'pointer',
-                                                        transition: 'all 0.3s ease'
+                                                        transition: 'all 0.3s ease',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center'
                                                     }}
                                                     className="d-none d-lg-flex"
+                                                    title={sidebarOpen ? "Close Sidebar" : "Open Sidebar"}
+                                                    onMouseEnter={(e) => {
+                                                        if (!sidebarOpen) {
+                                                            e.currentTarget.style.background = 'rgba(68, 166, 197, 0.1)';
+                                                            e.currentTarget.style.borderColor = '#44A6C5';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (!sidebarOpen) {
+                                                            e.currentTarget.style.background = 'white';
+                                                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.60)';
+                                                        }
+                                                    }}
                                                 >
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M3 12H21M3 6H21M3 18H21" stroke="#1E1E1E" strokeWidth="2" strokeLinecap="round"/>
+                                                        <path d="M3 12H21M3 6H21M3 18H21" stroke={sidebarOpen ? "#FFFFFF" : "#1E1E1E"} strokeWidth="2" strokeLinecap="round"/>
                                                     </svg>
                                                 </div>
                                                 
