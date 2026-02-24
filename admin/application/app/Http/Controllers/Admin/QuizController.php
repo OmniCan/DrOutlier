@@ -42,7 +42,7 @@ class QuizController extends Controller
     }
     public function create(){
         $pageTitle = 'Add Quiz';
-        $categories = QuizaroQuiz::all();
+        $categories = QuizaroQuiz::with('category')->get();
         return view('admin.quiz.create', compact('pageTitle', 'categories'));
     }
 
@@ -104,7 +104,7 @@ class QuizController extends Controller
     {
         $pageTitle = 'Update Quiz';
         $question = Question::with('answers')->findOrFail($id);
-        $categories = QuizaroQuiz::all();
+        $categories = QuizaroQuiz::with('category')->get();
         return view('admin.quiz.edit', compact('pageTitle', 'question', 'categories'));
     }
     

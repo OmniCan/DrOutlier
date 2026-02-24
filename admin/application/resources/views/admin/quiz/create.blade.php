@@ -19,7 +19,7 @@
                                             <option value="" selected disabled>@lang('Select Quiz')</option>
                                             @foreach($categories as $category)
                                             <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}
+                                                {{ $category->name }}@if($category->category) ({{ $category->category->name }})@endif
                                             </option>
                                             @endforeach
                                         </select>
