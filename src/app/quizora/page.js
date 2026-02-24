@@ -506,8 +506,7 @@ const Page = () => {
                                                           ) : (
                                                             <span><i className="fa-solid fa-play" style={{ marginRight: '8px' }} />Start Quiz</span>
                                                           )}
-                                                          </Link>
-                                                        </div>
+                                                        </Link>
                                                       </div>
                                                     </div>
                                                   </div>
@@ -582,9 +581,7 @@ const Page = () => {
                                                     ) : (
                                                       <span><i className="fa-solid fa-play" style={{ marginRight: '8px' }} />Start Quiz</span>
                                                     )}
-                                                      </Link>
-                                                    </div>
-                                                  </div>
+                                                  </Link>
                                                 </div>
                                               </div>
                                             </div>
