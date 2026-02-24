@@ -62,7 +62,7 @@ class NewExamCasesApiController extends Controller
 
             // Add first item ID for each chapter for direct navigation
             $chapters = $chapters->map(function ($chapter) {
-                $firstItem = NewExamCase::where('category', $chapter->id)
+                $firstItem = NewExamCases::where('category', $chapter->id)
                     ->orderBy('sort_order', 'ASC')
                     ->first();
                 
