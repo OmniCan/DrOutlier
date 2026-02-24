@@ -319,6 +319,8 @@ const Page = () => {
                     </div>
                   </div>
                 </div>
+                                      <div className="col-lg-4" style={{ lineHeight: '24px' }}>
+
                 <div className="container">
                   <div
                     className="macaroni-sign-wrap p-4"
