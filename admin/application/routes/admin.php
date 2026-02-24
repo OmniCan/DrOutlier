@@ -554,6 +554,14 @@ Route::middleware('admin')->group(function () {
         Route::post('/update/{id}', 'update')->name('update');
         Route::post('/delete/{id}', 'delete')->name('delete');
         Route::post('/update-sort-order', 'UpdateSortOrder')->name('update-sort-order');
+        
+        // Bulk upload routes
+        Route::get('/bulk-upload', 'bulkUpload')->name('bulk-upload');
+        Route::get('/download-template', 'downloadTemplate')->name('download-template');
+        Route::get('/get-quiz-list', 'getQuizList')->name('get-quiz-list');
+        Route::post('/parse-bulk-questions', 'parseBulkQuestions')->name('parse-bulk-questions');
+        Route::post('/submit-bulk-questions', 'submitBulkQuestions')->name('submit-bulk-questions');
+        
         Route::get('/data', 'quiz');
         Route::get('/data', 'questionData');
     });

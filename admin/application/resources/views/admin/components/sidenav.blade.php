@@ -143,6 +143,12 @@
                         <span class="menu-title">@lang('Questions')</span>
                     </a>
                 </li>
+                <li class="sidebar-menu-item {{ menuActive('admin.quiz.bulk-upload') }}">
+                    <a href="{{ route('admin.quiz.bulk-upload') }}" class="nav-link ">
+                        <i class="menu-icon las la-cloud-upload-alt"></i>
+                        <span class="menu-title">@lang('Bulk Upload')</span>
+                    </a>
+                </li>
 
 
 

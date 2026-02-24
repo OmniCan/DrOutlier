@@ -331,6 +331,186 @@ class QuizController extends Controller
             return back()->withNotify($notify);
         }
     }
+
+    // Bulk Question Upload Methods
+    public function bulkUpload()
+    {
+        $pageTitle = 'Bulk Question Upload';
+        return view('admin.quiz.bulk-upload', compact('pageTitle'));
+    }
+
+    public function downloadTemplate()
+    {
+        try {
+            $importer = new \App\Services\BulkQuestionImporter();
+            $spreadsheet = $importer->generateTemplate();
+
+            $filename = 'quiz-questions-template-' . date('Y-m-d') . '.xlsx';
+
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="' . $filename . '"');
+            header('Cache-Control: max-age=0');
+
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $writer->save('php://output');
+            exit;
+        } catch (\Exception $e) {
+            $notify[] = ['error', 'Failed to generate template: ' . $e->getMessage()];
+            return back()->withNotify($notify);
+        }
+    }
+
+    public function getQuizList()
+    {
+        try {
+            $quizzes = QuizaroQuiz::with('category')
+                ->orderBy('name', 'ASC')
+                ->get()
+                ->map(function($quiz) {
+                    return [
+                        'id' => $quiz->id,
+                        'name' => $quiz->name,
+                        'category' => $quiz->category ? $quiz->category->name : 'No Category'
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'quizzes' => $quizzes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function parseBulkQuestions(Request $request)
+    {
+        try {
+            $request->validate([
+                'excel_file' => 'required|file|mimes:xlsx,xls|max:10240',
+                'quiz_id' => 'required|exists:quizaro_quiz,id'
+            ]);
+
+            $file = $request->file('excel_file');
+            $quizId = $request->quiz_id;
+
+            $importer = new \App\Services\BulkQuestionImporter();
+            $result = $importer->parseExcelFile($file->getRealPath());
+
+            if (!$result['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to parse Excel file',
+                    'errors' => $result['errors']
+                ], 400);
+            }
+
+            // Store in session for later submission
+            session([
+                'bulk_upload_data' => [
+                    'quiz_id' => $quizId,
+                    'questions' => $result['questions'],
+                    'timestamp' => time()
+                ]
+            ]);
+
+            $validCount = count(array_filter($result['questions'], function($q) {
+                return empty($q['errors']);
+            }));
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'total' => count($result['questions']),
+                    'valid' => $validCount,
+                    'invalid' => count($result['questions']) - $validCount,
+                    'questions' => $result['questions'],
+                    'errors' => $result['errors'],
+                    'warnings' => $result['warnings']
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function submitBulkQuestions(Request $request)
+    {
+        try {
+            $uploadData = session('bulk_upload_data');
+
+            if (!$uploadData) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No upload data found. Please upload file again.'
+                ], 400);
+            }
+
+            $quizId = $uploadData['quiz_id'];
+            $questions = $request->questions ?? $uploadData['questions'];
+
+            $insertedCount = 0;
+            $errorCount = 0;
+
+            foreach ($questions as $questionData) {
+                // Skip questions with errors
+                if (!empty($questionData['errors'])) {
+                    $errorCount++;
+                    continue;
+                }
+
+                try {
+                    // Insert question
+                    $question = new Question();
+                    $question->quiz_id = $quizId;
+                    $question->question_text = $questionData['question_text'];
+                    $question->content = $questionData['explanation'] ?? '';
+                    $question->image = $questionData['question_image'];
+                    $question->sort_order = $questionData['sort_order'] ?? 0;
+                    $question->status = 1;
+                    $question->save();
+
+                    // Insert options/answers
+                    foreach ($questionData['options'] as $option) {
+                        $answer = new Answer();
+                        $answer->question_id = $question->id;
+                        $answer->option_text = $option['option_text'];
+                        $answer->explanation = $questionData['explanation'] ?? '';
+                        $answer->is_correct = $option['is_correct'];
+                        $answer->save();
+                    }
+
+                    $insertedCount++;
+                } catch (\Exception $e) {
+                    error_log("Failed to insert question: " . $e->getMessage());
+                    $errorCount++;
+                }
+            }
+
+            // Clear session data
+            session()->forget('bulk_upload_data');
+
+            return response()->json([
+                'success' => true,
+                'message' => "$insertedCount questions uploaded successfully",
+                'data' => [
+                    'inserted' => $insertedCount,
+                    'errors' => $errorCount
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     
 
 }
