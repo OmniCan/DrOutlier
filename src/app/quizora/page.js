@@ -22,7 +22,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState([])
   const [savedAllData, setSavedAllData] = useState([])
-  const [status, setStatus] = useState('')
+  const [status, setStatus] = useState('') // Default to empty string for "All" tab
   const [result, setResult] = useState()
   const [resultQuiz, setResultQuiz] = useState()
   const [quizType, setQuizType] = useState('status')
@@ -40,12 +40,12 @@ const Page = () => {
       if (saved) {
         setStatus('saved')
         setQuizType('saved')
-        // getDataSaved()
         setTimeout(() => {
           sessionStorage.removeItem('is_saved')
         }, 1000);
       } else {
-        // getData()
+        // Load All quizzes by default
+        getData()
       }
     }
   }, []);
@@ -122,7 +122,223 @@ const Page = () => {
       {!loading ? (
         <div className="inner-page">
           <div className="Quiz-wrapper">
-            <div className="top-tab-list">
+            <style jsx>{`
+              .modern-tabs {
+                background: linear-gradient(180deg, #1B1E27 0%, #0F1116 100%);
+                padding: 30px 0 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+              }
+              .modern-tabs .nav-tabs {
+                border: none;
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+              }
+              .modern-tabs .nav-item {
+                margin: 0;
+              }
+              .modern-tabs .nav-link {
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                color: rgba(255, 255, 255, 0.7);
+                padding: 12px 28px;
+                font-size: 15px;
+                font-weight: 500;
+                font-family: 'Poppins', sans-serif;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                position: relative;
+                overflow: hidden;
+              }
+              .modern-tabs .nav-link:hover {
+                background: rgba(68, 166, 197, 0.15);
+                color: #44A6C5;
+                border-color: rgba(68, 166, 197, 0.3);
+                transform: translateY(-2px);
+              }
+              .modern-tabs .nav-link.active {
+                background: linear-gradient(92.48deg, #44A6C5 3.13%, #1E4FFD 100%);
+                border-color: #44A6C5;
+                color: white;
+                box-shadow: 0 4px 15px rgba(68, 166, 197, 0.4);
+                font-weight: 600;
+              }
+              .quiz-content-area {
+                background: #0F1116;
+                min-height: 70vh;
+                padding: 40px 0;
+              }
+              .modern-quiz-card {
+                background: linear-gradient(135deg, rgba(27, 30, 39, 0.95) 0%, rgba(15, 17, 22, 0.95) 100%);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                padding: 25px;
+                margin-bottom: 20px;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+              }
+              .modern-quiz-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 4px;
+                height: 100%;
+                background: linear-gradient(180deg, #44A6C5, #1E4FFD);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+              }
+              .modern-quiz-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 30px rgba(68, 166, 197, 0.2);
+                border-color: rgba(68, 166, 197, 0.3);
+              }
+              .modern-quiz-card:hover::before {
+                opacity: 1;
+              }
+              .quiz-category-title {
+                color: #44A6C5;
+                font-size: 22px;
+                font-weight: 700;
+                font-family: 'Poppins', sans-serif;
+                margin-bottom: 25px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid rgba(68, 166, 197, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+              }
+              .quiz-category-title::before {
+                content: '';
+                width: 6px;
+                height: 30px;
+                background: linear-gradient(180deg, #44A6C5, #1E4FFD);
+                border-radius: 3px;
+              }
+              .quiz-number-badge {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                width: 45px;
+                height: 45px;
+                background: linear-gradient(135deg, #44A6C5, #1E4FFD);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 18px;
+                color: white;
+                box-shadow: 0 4px 15px rgba(68, 166, 197, 0.3);
+                font-family: 'Poppins', sans-serif;
+              }
+              .quiz-image-container {
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                transition: transform 0.3s ease;
+              }
+              .quiz-image-container:hover {
+                transform: scale(1.05);
+              }
+              .quiz-status-badge {
+                padding: 8px 18px;
+                border-radius: 25px;
+                font-size: 13px;
+                font-weight: 600;
+                font-family: 'Poppins', sans-serif;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 15px;
+                border: none;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              }
+              .quiz-status-badge.unattempted {
+                background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 152, 0, 0.1));
+                color: #FFA726;
+                border: 1px solid rgba(255, 152, 0, 0.3);
+              }
+              .quiz-status-badge.completed {
+                background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(76, 175, 80, 0.1));
+                color: #66BB6A;
+                border: 1px solid rgba(76, 175, 80, 0.3);
+              }
+              .quiz-status-badge.paused {
+                background: linear-gradient(135deg, rgba(68, 166, 197, 0.2), rgba(68, 166, 197, 0.1));
+                color: #44A6C5;
+                border: 1px solid rgba(68, 166, 197, 0.3);
+              }
+              .quiz-title {
+                color: white;
+                font-size: 20px;
+                font-weight: 600;
+                font-family: 'Poppins', sans-serif;
+                margin-bottom: 10px;
+                line-height: 1.4;
+              }
+              .quiz-questions-label {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 15px;
+                font-family: 'Poppins', sans-serif;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              }
+              .quiz-questions-label::before {
+                content: '📝';
+                font-size: 18px;
+              }
+              .quiz-action-btn {
+                background: linear-gradient(92.48deg, #44A6C5 3.13%, #1E4FFD 100%);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                padding: 14px 28px;
+                font-size: 15px;
+                font-weight: 600;
+                font-family: 'Poppins', sans-serif;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin-bottom: 10px;
+                box-shadow: 0 4px 15px rgba(68, 166, 197, 0.3);
+              }
+              .quiz-action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(68, 166, 197, 0.4);
+              }
+              .quiz-result-btn {
+                background: linear-gradient(135deg, #FFA726, #FB8C00);
+                color: white;
+                border: none;
+                border-radius: 12px;
+                padding: 14px 28px;
+                font-size: 15px;
+                font-weight: 600;
+                font-family: 'Poppins', sans-serif;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin-bottom: 10px;
+                box-shadow: 0 4px 15px rgba(255, 167, 38, 0.3);
+              }
+              .quiz-result-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(255, 167, 38, 0.4);
+              }
+              .no-data-message {
+                text-align: center;
+                padding: 60px 20px;
+                color: rgba(255, 255, 255, 0.5);
+                font-size: 18px;
+                font-family: 'Poppins', sans-serif;
+              }
+            `}</style>
+            <div className="modern-tabs">
               <div className="container">
                 <div className="row">
                   <div className="col-lg-12">
@@ -130,81 +346,66 @@ const Page = () => {
                       <li className="nav-item" role="presentation">
                         <a
                           className={`nav-link ${status === '' ? 'active' : ''}`}
-                          // id="all-tab"
-                          data-bs-toggle="tab"
-                          // href="#all"
-                          // role="tab"
                           aria-controls="all"
-                          aria-selected="true"
+                          aria-selected={status === ''}
                           onClick={() => setStatus('')}
                         >
+                          <i className="fa-solid fa-list-ul" style={{ marginRight: '8px' }} />
                           All
                         </a>
                       </li>
                       <li className="nav-item" role="presentation">
                         <a
                           className={`nav-link ${status === 'paused' ? 'active' : ''}`}
-                          // id="paused-tab"
-                          data-bs-toggle="tab"
-                          // href="#paused"
-                          // role="tab"
                           aria-controls="paused"
-                          aria-selected="false"
+                          aria-selected={status === 'paused'}
                           onClick={() => setStatus('paused')}
                         >
+                          <i className="fa-solid fa-pause" style={{ marginRight: '8px' }} />
                           Paused
                         </a>
                       </li>
                       <li className="nav-item" role="presentation">
                         <a
                           className={`nav-link ${status === 'completed' ? 'active' : ''}`}
-                          // id="completed-tab"
-                          data-bs-toggle="tab"
-                          // href="#completed"
-                          // role="tab"
                           aria-controls="completed"
-                          aria-selected="false"
+                          aria-selected={status === 'completed'}
                           onClick={() => setStatus('completed')}
                         >
+                          <i className="fa-solid fa-circle-check" style={{ marginRight: '8px' }} />
                           Completed
                         </a>
                       </li>
                       <li className="nav-item" role="presentation">
                         <a
                           className={`nav-link ${status === 'unattempted' ? 'active' : ''}`}
-                          // id="unattempted-tab"
-                          data-bs-toggle="tab"
-                          // href="#unattempted"
-                          // role="tab"
                           aria-controls="unattempted"
-                          aria-selected="false"
+                          aria-selected={status === 'unattempted'}
                           onClick={() => setStatus('unattempted')}
                         >
+                          <i className="fa-solid fa-hourglass-start" style={{ marginRight: '8px' }} />
                           Unattempted
                         </a>
                       </li>
                       <li className="nav-item" role="presentation">
                         <a
                           className={`nav-link ${status === 'free' ? 'active' : ''}`}
-                          // id="free-tab"
-                          data-bs-toggle="tab"
-                          // href="#free"
-                          // role="tab"
                           aria-controls="free"
-                          aria-selected="false"
+                          aria-selected={status === 'free'}
                           onClick={() => setStatus('free')}
                         >
+                          <i className="fa-solid fa-gift" style={{ marginRight: '8px' }} />
                           Free
                         </a>
                       </li>
                       <li className="nav-item" role="presentation">
                         <a
                           className={`nav-link ${status === 'saved' ? 'active' : ''}`}
-                          data-bs-toggle="tab"
                           aria-controls="saved"
-                          aria-selected="false"
+                          aria-selected={status === 'saved'}
                           onClick={() => setStatus('saved')}
                         >
+                          <i className="fa-solid fa-bookmark" style={{ marginRight: '8px' }} />
                           Saved
                         </a>
                       </li>
@@ -213,11 +414,11 @@ const Page = () => {
                 </div>
               </div>
             </div>
-            <div className="top-tab-content-wrap">
+            <div className="quiz-content-area">
               <div className="container">
                 <div className="row">
                   <div className="col-lg-12">
-                    <section className="top-tab-content bg-white  p-4">
+                    <section style={{ padding: '0' }}>
                       <div className="tab-content" id="myTabContent">
                         <div
                           className="tab-pane fade show active"
@@ -225,10 +426,11 @@ const Page = () => {
                           role="tabpanel"
                           aria-labelledby="all-tab"
                         >
-                          {allData?.length === 0 ? (
-                            <>
-                              No Data
-                            </>
+                          {allData?.length === 0 && savedAllData?.length === 0 ? (
+                            <div className="no-data-message">
+                              <i className="fa-solid fa-inbox" style={{ fontSize: '48px', marginBottom: '20px', display: 'block', opacity: 0.3 }} />
+                              <div>No quizzes found</div>
+                            </div>
                           ) : (
                             <>
                               {loading ? (
@@ -240,64 +442,70 @@ const Page = () => {
                                       {allData?.map(category => (
                                         <Fragment key={category?.id}>
                                           {category?.quizzes?.length && (
-                                            <div key={category?.id} className="quiz-wrap mb-5">
-                                              <p className="text">
+                                            <div key={category?.id} style={{ marginBottom: '50px' }}>
+                                              <h3 className="quiz-category-title">
                                                 {category?.name}
-                                              </p>
+                                              </h3>
                                               {category?.quizzes?.map((quiz, i) => (
-                                                <div key={quiz?.id} className="quiz-box-wrap">
-                                                  <div className="quiz-box mb-3">
-                                                    <span className="number">{i + 1}</span>
-                                                    <div className="row align-items-center">
-                                                      <div className="col-lg-2 col-md-3">
-                                                        <div className="image">
-                                                          <img
-                                                            src={quiz?.image_url ? quiz?.image_url : "/images/quiz.webp"}
-                                                            className="img-fluid"
-                                                            alt=""
-                                                          />
-                                                        </div>
+                                                <div key={quiz?.id} className="modern-quiz-card">
+                                                  <span className="quiz-number-badge">{i + 1}</span>
+                                                  <div className="row align-items-center" style={{ paddingLeft: '70px' }}>
+                                                    <div className="col-lg-2 col-md-3 col-sm-12 mb-3 mb-md-0">
+                                                      <div className="quiz-image-container">
+                                                        <img
+                                                          src={quiz?.image_url ? quiz?.image_url : "/images/quiz.webp"}
+                                                          className="img-fluid"
+                                                          alt={quiz?.name}
+                                                          style={{ width: '100%', height: 'auto', display: 'block' }}
+                                                        />
                                                       </div>
-                                                      <div className="col-lg-8 col-md-6">
-                                                        <div className="content">
+                                                    </div>
+                                                    <div className="col-lg-7 col-md-5 col-sm-12 mb-3 mb-md-0">
+                                                      <div>
+                                                        {quiz?.quiz_status === 0 ? (
+                                                          <span className="quiz-status-badge unattempted">
+                                                            <i className="fa-solid fa-hourglass-start" />
+                                                            Unattempted
+                                                          </span>
+                                                        ) : quiz?.quiz_status === 1 ? (
+                                                          <span className="quiz-status-badge completed">
+                                                            <i className="fa-solid fa-circle-check" />
+                                                            Completed
+                                                          </span>
+                                                        ) : quiz?.quiz_status === 2 ? (
+                                                          <span className="quiz-status-badge paused">
+                                                            <i className="fa-solid fa-pause" />
+                                                            Paused
+                                                          </span>
+                                                        ) : (
+                                                          <span className="quiz-status-badge">{status}</span>
+                                                        )}
+                                                        <h5 className="quiz-title">
+                                                          {quiz?.name}
+                                                        </h5>
+                                                        <span className="quiz-questions-label">
+                                                          {quiz?.quiz_status === 2 ? `${quiz?.total_questions - quiz?.unattemptedQuestionsCount}/` : ''}{quiz?.total_questions}{" "}{quiz?.total_questions > 1 ? 'Questions' : 'Question'}
+                                                        </span>
+                                                      </div>
+                                                    </div>
+                                                    <div className="col-lg-3 col-md-4 col-sm-12">
+                                                      <div>
+                                                        {quiz?.quiz_status === 1 ? (
+                                                          <button onClick={() => getResult(quiz.id, quiz)} className="quiz-result-btn">
+                                                            <i className="fa-solid fa-chart-pie" style={{ marginRight: '8px' }} />
+                                                            See Result
+                                                          </button>
+                                                        ) : null}
+                                                        <Link href={`/quiz?id=${quiz?.id}`} className="quiz-action-btn" style={{ textDecoration: 'none', display: 'block' }}>
                                                           {quiz?.quiz_status === 0 ? (
-                                                            <button className="btn BtnUnattempted">
-                                                              Unattempted
-                                                            </button>
+                                                            <span><i className="fa-solid fa-play" style={{ marginRight: '8px' }} />Start Quiz</span>
                                                           ) : quiz?.quiz_status === 1 ? (
-                                                            <button className="btn BtnCompleted">
-                                                              Completed <i class="fa-regular fa-circle-check"></i>
-                                                            </button>
+                                                            <span><i className="fa-solid fa-rotate-right" style={{ marginRight: '8px' }} />Start Again</span>
                                                           ) : quiz?.quiz_status === 2 ? (
-                                                            <button className="btn BtnPaused">Paused</button>
+                                                            <span><i className="fa-solid fa-forward" style={{ marginRight: '8px' }} />Continue</span>
                                                           ) : (
-                                                            <button className="btn BtnPaused">{status}</button>
+                                                            <span><i className="fa-solid fa-play" style={{ marginRight: '8px' }} />Start Quiz</span>
                                                           )}
-                                                          <h5>
-                                                            {quiz?.name}
-                                                          </h5>
-                                                          <span className="questions">{quiz?.quiz_status === 2 ? `${quiz?.total_questions - quiz?.unattemptedQuestionsCount}/` : null}{quiz?.total_questions}{" "}{quiz?.total_questions > 1 ? 'Questions' : 'Question'}</span>
-                                                        </div>
-                                                      </div>
-                                                      <div className="col-lg-2 col-md-3">
-                                                        <div className="button-wrap">
-                                                          {quiz?.quiz_status === 1 ? (
-                                                            <span onClick={() => getResult(quiz.id, quiz)} className="btn btnQuiz result-btn">
-                                                              See Result
-                                                            </span>
-                                                          ) : null}
-                                                        </div>
-                                                        <div className="button-wrap">
-                                                          <Link href={`/quiz?id=${quiz?.id}`} className="btn btnQuiz">
-                                                            {quiz?.quiz_status === 0 ? (
-                                                              <span>Start Quiz</span>
-                                                            ) : quiz?.quiz_status === 1 ? (
-                                                              <span>Start Quiz Again</span>
-                                                            ) : quiz?.quiz_status === 2 ? (
-                                                              <span>Continue</span>
-                                                            ) : (
-                                                              <span>Start Quiz</span>
-                                                            )}
                                                           </Link>
                                                         </div>
                                                       </div>
@@ -315,61 +523,65 @@ const Page = () => {
                                     <>
                                       {savedAllData?.map((quiz, i) => (
                                         <Fragment key={quiz?.id}>
-                                          <div key={quiz?.id} className="quiz-wrap mb-5">
-                                            <div key={quiz?.id} className="quiz-box-wrap">
-                                              <div className="quiz-box mb-3">
-                                                <span className="number">{i + 1}</span>
-                                                <div className="row align-items-center">
-                                                  <div className="col-lg-2 col-md-3">
-                                                    <div className="image">
-                                                      <img
-                                                        onClick={() => console.log(quiz)}
-                                                        src={quiz?.image_url ? quiz?.image_url : "/images/quiz.webp"}
-                                                        className="img-fluid"
-                                                        alt=""
-                                                      />
-                                                    </div>
-                                                  </div>
-                                                  <div className="col-lg-8 col-md-6">
-                                                    <div className="content">
-                                                      {quiz?.quiz_status === 0 ? (
-                                                        <button className="btn BtnUnattempted">
-                                                          Unattempted
-                                                        </button>
-                                                      ) : quiz?.quiz_status === 1 ? (
-                                                        <button className="btn BtnCompleted">
-                                                          Completed <i class="fa-regular fa-circle-check"></i>
-                                                        </button>
-                                                      ) : quiz?.quiz_status === 2 ? (
-                                                        <button className="btn BtnPaused">Paused</button>
-                                                      ) : (
-                                                        <button className="btn BtnPaused">{status}</button>
-                                                      )}
-                                                      <h5>
-                                                        {quiz?.quiz?.name}
-                                                      </h5>
-                                                      <span className="questions">{quiz?.quiz_status === 2 ? `${quiz?.total_questions - quiz?.unattemptedQuestionsCount}/` : null}{quiz?.total_questions}{" "}{quiz?.total_questions > 1 ? 'Questions' : 'Question'}</span>
-                                                    </div>
-                                                  </div>
-                                                  <div className="col-lg-2 col-md-3">
-                                                    <div className="button-wrap">
-                                                      {quiz?.quiz_status === 1 ? (
-                                                        <span onClick={() => getResult(quiz.id, quiz)} className="btn btnQuiz result-btn">
-                                                          See Result
-                                                        </span>
-                                                      ) : null}
-                                                    </div>
-                                                    <div className="button-wrap">
-                                                      <Link href={`/quiz?id=${quiz?.quiz?.id}`} className="btn btnQuiz">
-                                                        {quiz?.quiz_status === 0 ? (
-                                                          <span>Start Quiz</span>
-                                                        ) : quiz?.quiz_status === 1 ? (
-                                                          <span>Start Quiz Again</span>
-                                                        ) : quiz?.quiz_status === 2 ? (
-                                                          <span>Continue</span>
-                                                        ) : (
-                                                          <span>Start Quiz</span>
-                                                        )}
+                                          <div className="modern-quiz-card">
+                                            <span className="quiz-number-badge">{i + 1}</span>
+                                            <div className="row align-items-center" style={{ paddingLeft: '70px' }}>
+                                              <div className="col-lg-2 col-md-3 col-sm-12 mb-3 mb-md-0">
+                                                <div className="quiz-image-container">
+                                                  <img
+                                                    src={quiz?.image_url ? quiz?.image_url : "/images/quiz.webp"}
+                                                    className="img-fluid"
+                                                    alt={quiz?.quiz?.name}
+                                                    style={{ width: '100%', height: 'auto', display: 'block' }}
+                                                  />
+                                                </div>
+                                              </div>
+                                              <div className="col-lg-7 col-md-5 col-sm-12 mb-3 mb-md-0">
+                                                <div>
+                                                  {quiz?.quiz_status === 0 ? (
+                                                    <span className="quiz-status-badge unattempted">
+                                                      <i className="fa-solid fa-hourglass-start" />
+                                                      Unattempted
+                                                    </span>
+                                                  ) : quiz?.quiz_status === 1 ? (
+                                                    <span className="quiz-status-badge completed">
+                                                      <i className="fa-solid fa-circle-check" />
+                                                      Completed
+                                                    </span>
+                                                  ) : quiz?.quiz_status === 2 ? (
+                                                    <span className="quiz-status-badge paused">
+                                                      <i className="fa-solid fa-pause" />
+                                                      Paused
+                                                    </span>
+                                                  ) : (
+                                                    <span className="quiz-status-badge">{status}</span>
+                                                  )}
+                                                  <h5 className="quiz-title">
+                                                    {quiz?.quiz?.name}
+                                                  </h5>
+                                                  <span className="quiz-questions-label">
+                                                    {quiz?.quiz_status === 2 ? `${quiz?.total_questions - quiz?.unattemptedQuestionsCount}/` : ''}{quiz?.total_questions}{" "}{quiz?.total_questions > 1 ? 'Questions' : 'Question'}
+                                                  </span>
+                                                </div>
+                                              </div>
+                                              <div className="col-lg-3 col-md-4 col-sm-12">
+                                                <div>
+                                                  {quiz?.quiz_status === 1 ? (
+                                                    <button onClick={() => getResult(quiz.id, quiz)} className="quiz-result-btn">
+                                                      <i className="fa-solid fa-chart-pie" style={{ marginRight: '8px' }} />
+                                                      See Result
+                                                    </button>
+                                                  ) : null}
+                                                  <Link href={`/quiz?id=${quiz?.quiz?.id}`} className="quiz-action-btn" style={{ textDecoration: 'none', display: 'block' }}>
+                                                    {quiz?.quiz_status === 0 ? (
+                                                      <span><i className="fa-solid fa-play" style={{ marginRight: '8px' }} />Start Quiz</span>
+                                                    ) : quiz?.quiz_status === 1 ? (
+                                                      <span><i className="fa-solid fa-rotate-right" style={{ marginRight: '8px' }} />Start Again</span>
+                                                    ) : quiz?.quiz_status === 2 ? (
+                                                      <span><i className="fa-solid fa-forward" style={{ marginRight: '8px' }} />Continue</span>
+                                                    ) : (
+                                                      <span><i className="fa-solid fa-play" style={{ marginRight: '8px' }} />Start Quiz</span>
+                                                    )}
                                                       </Link>
                                                     </div>
                                                   </div>
