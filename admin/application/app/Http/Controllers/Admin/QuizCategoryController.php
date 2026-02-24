@@ -42,7 +42,7 @@ class QuizCategoryController extends Controller
                             $user->where('name', 'like', "%$search%");
                       });
         }
-        return  $categories->where('status',1)->paginate(getPaginate());
+        return  $categories->withCount('quizzes')->where('status',1)->paginate(getPaginate());
     }
 
     public function create(){

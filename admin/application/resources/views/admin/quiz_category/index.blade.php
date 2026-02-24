@@ -19,6 +19,7 @@
                             <tr> 
                                 <th>@lang('Image')</th>
                                 <th>@lang('Category Name')</th>
+                                <th>@lang('Quizzes')</th>
                                 <th>@lang('Status')</th>
                                 <th>@lang('Action')</th>
                             </tr>
@@ -31,10 +32,15 @@
                                     </td>
                                     <td>{{ $category->name }}</td>
                                     <td>
+                                        <span class="badge badge--info">
+                                            <i class="las la-clipboard-list"></i> {{ $category->quizzes_count }} {{ $category->quizzes_count == 1 ? 'Quiz' : 'Quizzes' }}
+                                        </span>
+                                    </td>
+                                    <td>
                                         @if($category->status == 1)
-                                            <span class="">@lang('Active')</span>
+                                            <span class="badge badge--success">@lang('Active')</span>
                                         @else
-                                            <span class="">@lang('Inactive')</span>
+                                            <span class="badge badge--warning">@lang('Inactive')</span>
                                         @endif
                                     </td>
                                     <td>
@@ -44,7 +50,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center">No Categories Found!</td>
+                                    <td colspan="5" class="text-center">No Categories Found!</td>
                                 </tr>
                             @endif
                         </tbody>
