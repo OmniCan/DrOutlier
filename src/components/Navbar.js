@@ -1005,7 +1005,7 @@ function Navbar() {
                                             <li>
                                                 <Link 
                                                     className="dropdown-item" 
-                                                    onClick={hendleChecklogin} 
+                                                    onClick={hendleCheckloginNav} 
                                                     href="/quizora" 
                                                     data-bs-dismiss="offcanvas"
                                                     style={{
@@ -1271,7 +1271,7 @@ function Navbar() {
                                         <li className="nav-item" style={{ marginBottom: '4px' }}>
                                             <Link 
                                                 className="nav-link" 
-                                                onClick={hendleChecklogin} 
+                                                onClick={hendleCheckloginNav} 
                                                 href="/quizora"
                                                 style={{
                                                     color: 'rgba(255, 255, 255, 0.85)',
