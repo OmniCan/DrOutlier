@@ -506,15 +506,21 @@ li.page-item a {
     list-style: none;
     padding: 10px 0;
     margin: 0;
-    /* flex-direction: row-reverse; */
     justify-content: end;
-
+    align-items: center;
+    gap: 5px;
 }
 
-
+.pagination .page-item.active a {
+    background: rgba(255, 255, 255, 0.20) !important;
+    color: #fff !important;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
 
 .pagination .page-link:hover {
     color: #fff;
+    background: rgba(255, 255, 255, 0.10) !important;
 }
 
 .macaroni-sign-inner {
@@ -528,23 +534,45 @@ li.page-item a {
 
 .pagination .page-link {
     display: inline-block;
-    padding: 5px 10px;
+    padding: 8px 14px;
     text-decoration: none;
-    margin: 0 5px;
-    border-radius: 3px;
+    margin: 0;
+    border-radius: 6px;
     font-family: Poppins;
     font-size: 15px;
     font-weight: 500;
     background: transparent !important;
-    color: rgba(255, 255, 255, 0.50) !important;
+    color: rgba(255, 255, 255, 0.60) !important;
+    transition: all 0.3s ease;
 }
 
-.pagination .page-link.prev {
-    color: rgba(255, 255, 255, 0.50);
+.pagination .page-link.prev,
+.pagination .page-link.next {
+    color: rgba(255, 255, 255, 0.70) !important;
     font-family: Poppins;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     background-color: transparent;
+    padding: 6px 12px;
+}
+
+.pagination .page-link.prev:hover,
+.pagination .page-link.next:hover {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.top-tab-list {
+    background: linear-gradient(135deg, #1a4d68 0%, #126E97 100%);
+    padding: 20px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.top-tab-list h2 {
+    color: #fff;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 1px;
 }
 
 .macaroni-top i {
@@ -2151,51 +2179,154 @@ span.number {
 }
 
 .option {
-    padding: 10px;
-    margin: 5px 0;
+    padding: 15px 20px;
+    margin: 8px 0;
     cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
-    color: rgba(0, 0, 0, 0.60);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    color: rgba(0, 0, 0, 0.75);
     font-family: Poppins;
     font-size: 16px;
     font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    border-radius: 5px;
-    border: 1px solid rgba(0, 0, 0, 0.50);
+    font-weight: 500;
+    line-height: 1.5;
+    border: 2px solid rgba(0, 0, 0, 0.15);
     background: #FFF;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.option:hover {
+    border-color: #126E97;
+    background: rgba(18, 110, 151, 0.03);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(18, 110, 151, 0.15);
 }
 
 .option.selected {
-    border-radius: 5px;
-    border: 1px solid #126E97;
+    border-radius: 10px;
+    border: 2px solid #126E97;
     background: rgba(18, 110, 151, 0.10);
     color: #126E97;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(18, 110, 151, 0.20);
 }
 
 .option.correct {
-    border-radius: 5px;
-    color: rgb(104, 238, 104);
-    background: rgba(161, 243, 161, 0.178);
+    border-radius: 10px;
+    border: 2px solid #22c55e;
+    color: #15803d;
+    background: rgba(34, 197, 94, 0.15);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.20);
+}
+
+.option.correct i {
+    color: #22c55e;
+    font-size: 20px;
 }
 
 .option.incorrect {
-    border-radius: 5px;
-    color: red;
-    background: rgba(255, 0, 0, 0.100);
+    border-radius: 10px;
+    border: 2px solid #ef4444;
+    color: #dc2626;
+    background: rgba(239, 68, 68, 0.15);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.20);
+}
+
+.option.incorrect i {
+    color: #ef4444;
+    font-size: 20px;
 }
 
 .checkBtn {
-    border-radius: 5px;
-    background: #126E97 !important;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #126E97 0%, #0e5a7a 100%) !important;
     color: #FFF !important;
     font-family: Poppins;
     font-size: 16px;
     font-weight: 600;
-    padding: 10px 20px;
+    padding: 12px 28px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(18, 110, 151, 0.25);
+    transition: all 0.3s ease;
+}
+
+.checkBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(18, 110, 151, 0.35);
+    background: linear-gradient(135deg, #0e5a7a 0%, #126E97 100%) !important;
+}
+
+/* Improved icon styling */
+.icon {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 24px;
+}
+
+.icon:hover {
+    color: #126E97;
+    transform: scale(1.1);
+}
+
+.icon.bookmark-active {
+    color: #126E97;
+    animation: bookmarkBounce 0.5s ease;
+}
+
+@keyframes bookmarkBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.option {
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+.option:nth-child(1) { animation-delay: 0.05s; }
+.option:nth-child(2) { animation-delay: 0.10s; }
+.option:nth-child(3) { animation-delay: 0.15s; }
+.option:nth-child(4) { animation-delay: 0.20s; }
+
+.explanation {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Improve image styling */
+.macaroni-sign-wrap .image img {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+    transition: transform 0.3s ease;
+}
+
+.macaroni-sign-wrap .image img:hover {
+    transform: scale(1.02);
+}
+
+/* Quiz wrapper improvements */
+.Quiz-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    padding-bottom: 40px;
 }
 
 @media(max-width:991px) {
@@ -2494,7 +2625,54 @@ span.number {
 
 .quiz-explainaton-heading {
     color: #000;
-    margin: 2rem 0 1rem 0 ;
+    margin: 2.5rem 0 1.5rem 0;
+    font-size: 20px;
+    font-weight: 700;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #126E97;
+    display: inline-block;
+}
+
+.explanation {
+    background: linear-gradient(135deg, rgba(18, 110, 151, 0.05) 0%, rgba(18, 110, 151, 0.02) 100%);
+    border-left: 4px solid #126E97;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.explanation h6 {
+    color: #126E97;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.explanation p {
+    color: rgba(0, 0, 0, 0.70);
+    line-height: 1.6;
+}
+
+.macaroni-sign-wrap {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background: #fff;
+}
+
+.macaroni-sign-wrap h5 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.5;
+}
+
+.questions {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: rgba(0, 0, 0, 0.60);
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .ocse-btnQuiz-button {
