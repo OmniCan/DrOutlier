@@ -96,7 +96,15 @@ function TheoryNotesChapters() {
                                     <div className="list-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                                         {chapters && chapters.length > 0 ? (
                                             chapters?.map((chapter, index) => (
-                                                <Link href={`/theory-notes/category?id=${chapter.id}&parentId=${categoryId}`} key={chapter.id} style={{ textDecoration: 'none' }}>
+                                                <Link 
+                                                    href={
+                                                        chapter.first_item_id 
+                                                            ? `/theory-notes/view?id=${chapter.id}&itemId=${chapter.first_item_id}&parentId=${categoryId}#page1`
+                                                            : `/theory-notes/category?id=${chapter.id}&parentId=${categoryId}`
+                                                    } 
+                                                    key={chapter.id} 
+                                                    style={{ textDecoration: 'none' }}
+                                                >
                                                     <div className="list-item" style={{ 
                                                         display: 'flex', 
                                                         alignItems: 'center', 
@@ -200,7 +208,15 @@ function TheoryNotesChapters() {
                                 <div className="list-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                     {chapters && chapters.length > 0 ? (
                                         chapters?.map((chapter, index) => (
-                                            <Link href={`/theory-notes/category?id=${chapter.id}`} key={chapter.id} style={{ textDecoration: 'none' }}>
+                                            <Link 
+                                                href={
+                                                    chapter.first_item_id 
+                                                        ? `/theory-notes/view?id=${chapter.id}&itemId=${chapter.first_item_id}&parentId=${categoryId}#page1`
+                                                        : `/theory-notes/category?id=${chapter.id}&parentId=${categoryId}`
+                                                } 
+                                                key={chapter.id} 
+                                                style={{ textDecoration: 'none' }}
+                                            >
                                                 <div className="list-item" style={{ 
                                                     display: 'flex', 
                                                     alignItems: 'center', 

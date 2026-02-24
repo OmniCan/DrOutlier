@@ -55,6 +55,16 @@ class NewOsceApiController extends Controller
                 ->orderBy('name', 'ASC')
                 ->get();
 
+            // Add first item ID for each chapter for direct navigation
+            $chapters = $chapters->map(function ($chapter) {
+                $firstItem = NewOsce::where('category', $chapter->id)
+                    ->orderBy('sort_order', 'ASC')
+                    ->first();
+                
+                $chapter->first_item_id = $firstItem ? $firstItem->id : null;
+                return $chapter;
+            });
+
             return response()->json([
                 'status' => 'success',
                 'data' => [
