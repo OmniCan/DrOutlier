@@ -31,6 +31,8 @@ const Page = () => {
   const [showAnswer, setShowAnswer] = useState(false);
   const [firstRendered, setFirstRendered] = useState(false)
   const [open, setOpen] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [quizResults, setQuizResults] = useState({ correct: 0, incorrect: 0, total: 0, percentage: 0 });
 
   useEffect(() => {
     const IsUserExist = Cookies.get('user-token')
@@ -186,6 +188,26 @@ const Page = () => {
 
     try {
       if (selectedQuestionIndex + 1 === allQuestions.length) {
+        // Calculate quiz results
+        let correct = 0;
+        let incorrect = 0;
+        let total = allQuestions.length;
+
+        allAns.forEach((answer) => {
+          const question = allQuestions.find(q => q.id === answer.question_id);
+          if (question) {
+            const correctAnswer = question.answers.find(a => a.is_correct === 1);
+            if (correctAnswer && correctAnswer.id === answer.selected_answer_id) {
+              correct++;
+            } else {
+              incorrect++;
+            }
+          }
+        });
+
+        const percentage = Math.round((correct / total) * 100);
+        setQuizResults({ correct, incorrect, total, percentage });
+
         axios.post(`${baseUrl}/api/quiz/submit-response`,
           { quiz_id: question.quiz_id, user_id: user_id, responses: allAns, },
           { headers: { 'Authorization': `Bearer ${cookies}` } }
@@ -194,8 +216,8 @@ const Page = () => {
             { status: 'completed', quiz_id: question.quiz_id, user_id: user_id }, {
             headers: { 'Authorization': `Bearer ${cookies}` }
           }).then((response) => {
-            toast.success('Congratulations! quiz completed.');
-            router.push('/quizora')
+            toast.success('Congratulations! Quiz completed.');
+            setShowResults(true);
           })
         })
       } else {
@@ -254,6 +276,10 @@ const Page = () => {
                     <div className="row">
                       <div className="col-lg-4">
                         <h2>QUIZORA</h2>
+                      </div>
+
+                      <div className="col-lg-4" style={{ lineHeight: '24px' }}>
+                        
                       </div>
                       <div className="col-lg-8">
                         <div className="swiper-pagination">
@@ -487,15 +513,13 @@ const Page = () => {
               </div>
             </div>
           )}
+          {/* Quit Confirmation Dialog */}
           <Dialog
             open={open}
             onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            {/* <DialogTitle id="alert-dialog-title">
-              {"Use Google's location service?"}
-            </DialogTitle> */}
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 Do you want to quit and go back?
@@ -507,6 +531,92 @@ const Page = () => {
                 quitQuizFunc()
               }} autoFocus style={{ background: 'red', color: '#fff' }}>
                 Yes
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* Quiz Results Dialog */}
+          <Dialog
+            open={showResults}
+            onClose={() => setShowResults(false)}
+            aria-labelledby="results-dialog-title"
+            maxWidth="sm"
+            fullWidth
+            PaperProps={{
+              style: {
+                borderRadius: '16px',
+                padding: '20px'
+              }
+            }}
+          >
+            <DialogTitle id="results-dialog-title" style={{ textAlign: 'center', fontSize: '24px', fontWeight: '700', color: '#126E97' }}>
+              🎉 Quiz Completed!
+            </DialogTitle>
+            <DialogContent>
+              <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <div style={{ 
+                  fontSize: '72px', 
+                  fontWeight: '700', 
+                  color: quizResults.percentage >= 70 ? '#22c55e' : quizResults.percentage >= 50 ? '#f59e0b' : '#ef4444',
+                  marginBottom: '10px'
+                }}>
+                  {quizResults.percentage}%
+                </div>
+                <div style={{ fontSize: '18px', color: 'rgba(0,0,0,0.6)', marginBottom: '30px' }}>
+                  Your Score
+                </div>
+                <div style={{
+                  background: 'linear-gradient(135deg, rgba(18, 110, 151, 0.05) 0%, rgba(18, 110, 151, 0.02) 100%)',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  textAlign: 'left'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
+                    <span style={{ fontSize: '16px', fontWeight: '500' }}>Total Questions:</span>
+                    <span style={{ fontSize: '16px', fontWeight: '600', color: '#126E97' }}>{quizResults.total}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid rgba(0,0,0,0.1)' }}>
+                    <span style={{ fontSize: '16px', fontWeight: '500' }}>Correct Answers:</span>
+                    <span style={{ fontSize: '16px', fontWeight: '600', color: '#22c55e' }}>{quizResults.correct}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0' }}>
+                    <span style={{ fontSize: '16px', fontWeight: '500' }}>Incorrect Answers:</span>
+                    <span style={{ fontSize: '16px', fontWeight: '600', color: '#ef4444' }}>{quizResults.incorrect}</span>
+                  </div>
+                </div>
+                {quizResults.percentage >= 70 && (
+                  <div style={{ marginTop: '20px', fontSize: '16px', color: '#15803d', fontWeight: '500' }}>
+                    ✨ Excellent Performance!
+                  </div>
+                )}
+                {quizResults.percentage >= 50 && quizResults.percentage < 70 && (
+                  <div style={{ marginTop: '20px', fontSize: '16px', color: '#d97706', fontWeight: '500' }}>
+                    👍 Good Job! Keep Practicing!
+                  </div>
+                )}
+                {quizResults.percentage < 50 && (
+                  <div style={{ marginTop: '20px', fontSize: '16px', color: '#dc2626', fontWeight: '500' }}>
+                    💪 Keep Learning! You'll Do Better Next Time!
+                  </div>
+                )}
+              </div>
+            </DialogContent>
+            <DialogActions style={{ justifyContent: 'center', padding: '20px' }}>
+              <Button 
+                onClick={() => router.push('/quizora')} 
+                variant="contained"
+                style={{ 
+                  background: 'linear-gradient(135deg, #126E97 0%, #0e5a7a 100%)',
+                  color: '#fff',
+                  padding: '12px 40px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  boxShadow: '0 4px 12px rgba(18, 110, 151, 0.25)'
+                }}
+              >
+                Go Back to Quizora
               </Button>
             </DialogActions>
           </Dialog>
