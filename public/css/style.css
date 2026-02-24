@@ -3129,6 +3129,11 @@ span.number {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     animation: fadeInUp 0.5s ease forwards;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.explanation * {
+    color: rgba(0, 0, 0, 0.85);
 }
 
 .explanation h6 {
@@ -3138,7 +3143,7 @@ span.number {
 }
 
 .explanation p {
-    color: rgba(0, 0, 0, 0.70);
+    color: rgba(0, 0, 0, 0.85);
     line-height: 1.6;
 }
 
