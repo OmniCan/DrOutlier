@@ -217,9 +217,9 @@ class QuizController extends Controller
     }
      protected function quiz($scope = null){
         if ($scope) {
-            $categories = QuizaroQuiz::$scope();
+            $categories = QuizaroQuiz::$scope()->with('category');
         }else{
-            $categories = QuizaroQuiz::query();
+            $categories = QuizaroQuiz::with('category');
         }
 
         //search

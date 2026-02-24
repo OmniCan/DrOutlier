@@ -19,6 +19,7 @@
                             <tr> 
                                 <th>@lang('Image')</th>
                                 <th>@lang('Quiz Name')</th>
+                                <th>@lang('Category')</th>
                                 <th>@lang('Action')</th>
                             </tr>
                         </thead>
@@ -30,13 +31,20 @@
                                     </td>
                                     <td>{{ $category->name }}</td>
                                     <td>
+                                        @if($category->category)
+                                            <span class="badge badge--primary">{{ $category->category->name }}</span>
+                                        @else
+                                            <span class="badge badge--secondary">@lang('No Category')</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         <a title="@lang('Edit')" href="{{ route('admin.quiz.quiz.edit', $category->id)}}" class="btn btn-sm btn--primary"><i class="la la-pen"></i></a>
                                         <button class="btn btn-outline--danger btn-sm confirmationBtn" data-question="@lang('Are you sure that you want to delete?')" data-action="{{ route('admin.quiz.quiz.delete', $category->id)}}" title="Delete"><i class="las la-trash"></i></button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center">No Categories Found!</td>
+                                    <td colspan="5" class="text-center">No Categories Found!</td>
                                 </tr>
                             @endif
                         </tbody>
