@@ -21,7 +21,7 @@ class QuizController extends Controller
     }
    public function index(){
         $pageTitle = 'Quiz List';
-          $qustionList = $this->questionData();
+        $qustionList = $this->questionData();
         return view('admin.quiz.index',compact('pageTitle','qustionList'));
     }
 
