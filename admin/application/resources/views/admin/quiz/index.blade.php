@@ -17,6 +17,7 @@
                     <table class="table table--light style--two ">
                         <thead>
                             <tr> 
+                                <th>@lang('Category')</th>
                                 <th>@lang('Quiz')</th>
                                 <th>@lang('Image')</th>
                                 <th>@lang('Question')</th> 
@@ -28,6 +29,7 @@
                         <tbody class="bg-white"> 
                             @forelse($qustionList as $question) 
                                 <tr>
+                                    <td>{{ $question->quiz->category->name ?? 'No Category' }}</td>
                                     <td>{{ $question->quiz->name ?? 'No Quiz' }}</td>
                                     <td>
                                         <img src="{{getImage(getFilePath('QuestionsImage').'/'.@$question->image)}}" height="50" width="50"/>
@@ -50,9 +52,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center">No Record Found !</td>
+                                    <td colspan="7" class="text-center">No Record Found !</td>
                                 </tr>
-                            @endif
+                            @endforelse
                         </tbody>
                     </table><!-- table end -->
                 </div>

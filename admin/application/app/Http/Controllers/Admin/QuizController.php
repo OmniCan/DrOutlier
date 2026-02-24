@@ -30,7 +30,7 @@ class QuizController extends Controller
 
         $query = ($scope)
             ? Question::$scope()
-            : Question::with(['quiz']);
+            : Question::with(['quiz.category']);
 
         $request = request();
         if ($request->search) {
@@ -453,42 +453,90 @@ class QuizController extends Controller
             }
 
             $quizId = $uploadData['quiz_id'];
-            $questions = $request->questions ?? $uploadData['questions'];
+            // Get questions from JSON request or session
+            $questions = $request->input('questions', $uploadData['questions']);
 
             $insertedCount = 0;
             $errorCount = 0;
+            $errors = [];
 
-            foreach ($questions as $questionData) {
+            foreach ($questions as $index => $questionData) {
+                // Convert to array if it's an object
+                $questionData = is_array($questionData) ? $questionData : (array) $questionData;
+                
                 // Skip questions with errors
-                if (!empty($questionData['errors'])) {
+                if (isset($questionData['errors']) && !empty($questionData['errors']) && count($questionData['errors']) > 0) {
                     $errorCount++;
                     continue;
                 }
 
+                // Use database transaction for each question
+                \DB::beginTransaction();
+                
                 try {
                     // Insert question
                     $question = new Question();
                     $question->quiz_id = $quizId;
                     $question->question_text = $questionData['question_text'];
-                    $question->content = $questionData['explanation'] ?? '';
-                    $question->image = $questionData['question_image'];
+                    $question->explanation = $questionData['explanation'] ?? '';
+                    $question->image = $questionData['question_image'] ?? null;
                     $question->sort_order = $questionData['sort_order'] ?? 0;
                     $question->status = 1;
                     $question->save();
 
+                    $validOptionsCount = 0;
+                    
                     // Insert options/answers
-                    foreach ($questionData['options'] as $option) {
-                        $answer = new Answer();
-                        $answer->question_id = $question->id;
-                        $answer->option_text = $option['option_text'];
-                        $answer->explanation = $questionData['explanation'] ?? '';
-                        $answer->is_correct = $option['is_correct'];
-                        $answer->save();
+                    if (isset($questionData['options']) && is_array($questionData['options'])) {
+                        foreach ($questionData['options'] as $optIndex => $option) {
+                            $option = is_array($option) ? $option : (array) $option;
+                            
+                            // Get option text
+                            $optionText = isset($option['option_text']) ? trim($option['option_text']) : '';
+                            
+                            // Skip completely empty options
+                            if (empty($optionText)) {
+                                continue;
+                            }
+                            
+                            $answer = new Answer();
+                            $answer->question_id = $question->id;
+                            $answer->option_text = $optionText;
+                            $answer->is_correct = !empty($option['is_correct']) ? 1 : 0;
+                            
+                            try {
+                                $answer->save();
+                                $validOptionsCount++;
+                            } catch (\Exception $answerEx) {
+                                $errorMsg = "Question " . ($index + 1) . " Option " . ($optIndex + 1) . ": " . $answerEx->getMessage();
+                                error_log($errorMsg);
+                                $errors[] = $errorMsg;
+                                throw $answerEx; // Re-throw to rollback transaction
+                            }
+                        }
+                    }
+                    
+                    // Validate that at least 2 options were saved
+                    if ($validOptionsCount < 2) {
+                        $errorMsg = "Question " . ($index + 1) . ": Insufficient valid options (need at least 2, got $validOptionsCount)";
+                        error_log($errorMsg);
+                        $errors[] = $errorMsg;
+                        \DB::rollBack();
+                        $errorCount++;
+                        continue;
                     }
 
+                    // Commit transaction if everything succeeded
+                    \DB::commit();
                     $insertedCount++;
+                    
                 } catch (\Exception $e) {
-                    error_log("Failed to insert question: " . $e->getMessage());
+                    // Rollback transaction on any error
+                    \DB::rollBack();
+                    
+                    $errorMsg = "Question " . ($index + 1) . ": " . $e->getMessage();
+                    error_log($errorMsg);
+                    $errors[] = $errorMsg;
                     $errorCount++;
                 }
             }
@@ -496,18 +544,29 @@ class QuizController extends Controller
             // Clear session data
             session()->forget('bulk_upload_data');
 
+            // Log the final results
+            error_log("Bulk upload completed: $insertedCount inserted, $errorCount failed");
+            if (!empty($errors)) {
+                error_log("Errors: " . json_encode($errors));
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => "$insertedCount questions uploaded successfully",
                 'data' => [
                     'inserted' => $insertedCount,
-                    'errors' => $errorCount
+                    'errors' => $errorCount,
+                    'error_messages' => $errors
                 ]
             ]);
         } catch (\Exception $e) {
+            error_log("Bulk upload fatal error: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
+                'message' => 'Error: ' . $e->getMessage(),
+                'details' => $e->getTraceAsString()
             ], 500);
         }
     }

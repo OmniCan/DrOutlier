@@ -401,7 +401,19 @@ class BulkQuestionUpload {
             },
             success: (response) => {
                 if (response.success) {
-                    $('#successMessage').text(response.message);
+                    const inserted = response.data?.inserted || 0;
+                    const errors = response.data?.errors || 0;
+                    let message = `${inserted} question${inserted !== 1 ? 's' : ''} uploaded successfully`;
+                    if (errors > 0) {
+                        message += ` (${errors} failed)`;
+                    }
+                    $('#successMessage').text(message);
+                    
+                    // Log error details if any
+                    if (response.data?.error_messages && response.data.error_messages.length > 0) {
+                        console.error('Upload errors:', response.data.error_messages);
+                    }
+                    
                     this.showStep(4);
                 } else {
                     this.showError(response.message);

@@ -379,28 +379,15 @@ const Page = () => {
                                     {showAnswer && (
                                       <>
                                         <div className="result" id="result" />
-                                        {allQuestions?.[selectedQuestionIndex]?.answers?.map((ans, i) => (
-                                          <>
-                                            {ans?.explanation ? (
-                                              <div key={ans?.id} className="explanation mb-4" id="explanation-A">
-                                                <div className="row">
-                                                  <div className="col-lg-12">
-                                                    <span onClick={() => console.log(ans)} className="option-text">Option {i + 1}.</span>
-                                                    <h6>{ans?.option_text}</h6>
-                                                    <div dangerouslySetInnerHTML={{ __html: ans?.explanation }} />
-                                                  </div>
-                                                  {/* <div className="col-lg-4">
-                                            <img
-                                              src="/images/Macaroni-Sign.webp"
-                                              className="img-fluid w-100%"
-                                              alt=""
-                                            />
-                                          </div> */}
-                                                </div>
+                                        {allQuestions?.[selectedQuestionIndex]?.explanation && (
+                                          <div className="explanation mb-4" id="explanation-section">
+                                            <div className="row">
+                                              <div className="col-lg-12">
+                                                <div dangerouslySetInnerHTML={{ __html: allQuestions?.[selectedQuestionIndex]?.explanation }} />
                                               </div>
-                                            ) : null}
-                                          </>
-                                        ))}
+                                            </div>
+                                          </div>
+                                        )}
                                         <div className="check-button d-flex justify-content-end my-4">
                                           <button onClick={() => nextAnswerFunc()} className="btn checkBtn">
                                             {selectedQuestionIndex + 1 === allQuestions.length ? 'Complete' : 'Next'}
@@ -470,28 +457,15 @@ const Page = () => {
                                       <>
                                         <h4 className='quiz-explainaton-heading'>Explanation:</h4>
                                         <div className="result" id="result" />
-                                        {allQuestions?.[selectedQuestionIndex]?.answers?.map((ans, i) => (
-                                          <>
-                                            {ans?.is_correct ? (
-                                              <div key={ans?.id} className="explanation mb-4" id="explanation-A">
-                                                <div className="row">
-                                                  <div className="col-lg-12">
-                                                    <span onClick={() => console.log(ans)} className="option-text">Option {i + 1}.</span>
-                                                    <h6>{ans?.option_text}</h6>
-                                                    <div dangerouslySetInnerHTML={{ __html: ans?.explanation }} />
-                                                  </div>
-                                                  {/* <div className="col-lg-4">
-                                            <img
-                                              src="/images/Macaroni-Sign.webp"
-                                              className="img-fluid w-100%"
-                                              alt=""
-                                            />
-                                          </div> */}
-                                                </div>
+                                        {allQuestions?.[selectedQuestionIndex]?.explanation && (
+                                          <div className="explanation mb-4" id="explanation-section">
+                                            <div className="row">
+                                              <div className="col-lg-12">
+                                                <div dangerouslySetInnerHTML={{ __html: allQuestions?.[selectedQuestionIndex]?.explanation }} />
                                               </div>
-                                            ) : null}
-                                          </>
-                                        ))}
+                                            </div>
+                                          </div>
+                                        )}
                                         <div className="check-button d-flex justify-content-end my-4">
                                           <button onClick={() => nextAnswerFunc()} className="btn checkBtn">
                                             {selectedQuestionIndex + 1 === allQuestions.length ? 'Complete' : 'Next'}
