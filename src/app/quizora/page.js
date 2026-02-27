@@ -70,6 +70,7 @@ const Page = () => {
           'Authorization': `Bearer ${cookies}`
         }
       }).then((response) => {
+        console.log('API Response for status:', status, response.data.data);
         setAllData(response.data.data);
         setLoading(false);
       })
@@ -447,17 +448,21 @@ const Page = () => {
                                               <h3 className="quiz-category-title">
                                                 {category?.name}
                                               </h3>
-                                              {category?.quizzes?.map((quiz, i) => (
+                                              {category?.quizzes?.map((quiz, i) => {
+                                                // Try multiple possible image sources
+                                                const imageUrl = quiz?.image_url || quiz?.quiz?.image_url || category?.image_url || "/images/quiz.webp";
+                                                return (
                                                 <div key={quiz?.id} className="modern-quiz-card">
                                                   <span className="quiz-number-badge">{i + 1}</span>
                                                   <div className="row align-items-center" style={{ paddingLeft: '70px' }}>
                                                     <div className="col-lg-2 col-md-3 col-sm-12 mb-3 mb-md-0">
                                                       <div className="quiz-image-container">
                                                         <img
-                                                          src={quiz?.image_url ? quiz?.image_url : "/images/quiz.webp"}
+                                                          src={imageUrl}
                                                           className="img-fluid"
                                                           alt={quiz?.name}
                                                           style={{ width: '100%', height: 'auto', display: 'block' }}
+                                                          onError={(e) => { e.target.src = '/images/quiz.webp' }}
                                                         />
                                                       </div>
                                                     </div>
@@ -512,7 +517,7 @@ const Page = () => {
                                                     </div>
                                                   </div>
                                                 </div>
-                                              ))}
+                                              )})})
                                             </div>
                                           )}
                                         </Fragment>
@@ -521,7 +526,10 @@ const Page = () => {
 
                                   ) : (
                                     <>
-                                      {savedAllData?.map((quiz, i) => (
+                                      {savedAllData?.map((quiz, i) => {
+                                        // Try multiple possible image sources for saved quizzes
+                                        const imageUrl = quiz?.quiz?.image_url || quiz?.image_url || "/images/quiz.webp";
+                                        return (
                                         <Fragment key={quiz?.id}>
                                           <div className="modern-quiz-card">
                                             <span className="quiz-number-badge">{i + 1}</span>
@@ -529,10 +537,11 @@ const Page = () => {
                                               <div className="col-lg-2 col-md-3 col-sm-12 mb-3 mb-md-0">
                                                 <div className="quiz-image-container">
                                                   <img
-                                                    src={quiz?.quiz?.image_url ? quiz?.quiz?.image_url : "/images/quiz.webp"}
+                                                    src={imageUrl}
                                                     className="img-fluid"
                                                     alt={quiz?.quiz?.name}
                                                     style={{ width: '100%', height: 'auto', display: 'block' }}
+                                                    onError={(e) => { e.target.src = '/images/quiz.webp' }}
                                                   />
                                                 </div>
                                               </div>
@@ -588,7 +597,7 @@ const Page = () => {
                                             </div>
                                           </div>
                                         </Fragment>
-                                      ))}
+                                      )})})
                                     </>
                                   )}
 
