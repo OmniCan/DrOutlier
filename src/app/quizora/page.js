@@ -22,7 +22,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [allData, setAllData] = useState([])
   const [savedAllData, setSavedAllData] = useState([])
-  const [status, setStatus] = useState('') // Default to empty string for "All" tab
+  const [status, setStatus] = useState(null) // Initialize as null so setting to '' triggers useEffect
   const [result, setResult] = useState()
   const [resultQuiz, setResultQuiz] = useState()
   const [quizType, setQuizType] = useState('status')
@@ -37,13 +37,15 @@ const Page = () => {
       return router.push('/')
     } else {
       let saved = sessionStorage.getItem('is_saved')
+      console.log('Initial load - is_saved from sessionStorage:', saved);
+      
       if (saved) {
+        console.log('Setting status to saved');
         setStatus('saved')
         setQuizType('saved')
-        setTimeout(() => {
-          sessionStorage.removeItem('is_saved')
-        }, 1000);
+        sessionStorage.removeItem('is_saved') // Remove immediately instead of timeout
       } else {
+        console.log('Setting status to empty string (All tab)');
         // Load All quizzes by default - explicitly set status and quizType
         setStatus('')
         setQuizType('status')
@@ -52,6 +54,10 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
+    // Skip on initial render when status is null
+    if (status === null) return;
+    
+    console.log('Status changed to:', status);
     setLoading(true);
     if (status === 'saved') {
       setQuizType('saved')
@@ -369,9 +375,9 @@ const Page = () => {
                     <ul className="nav nav-tabs" id="myTab" role="tablist">
                       <li className="nav-item" role="presentation">
                         <a
-                          className={`nav-link ${status === '' ? 'active' : ''}`}
+                          className={`nav-link ${status === '' || status === null ? 'active' : ''}`}
                           aria-controls="all"
-                          aria-selected={status === ''}
+                          aria-selected={status === '' || status === null}
                           onClick={() => setStatus('')}
                         >
                           <i className="fa-solid fa-list-ul" style={{ marginRight: '8px' }} />
