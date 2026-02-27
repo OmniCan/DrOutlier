@@ -39,11 +39,14 @@ const Page = () => {
       let saved = sessionStorage.getItem('is_saved')
       console.log('Initial load - is_saved from sessionStorage:', saved);
       
-      if (saved) {
+      // Remove the flag immediately after reading
+      sessionStorage.removeItem('is_saved');
+      
+      // Only go to saved tab if explicitly set to 'true' string
+      if (saved === 'true') {
         console.log('Setting status to saved');
         setStatus('saved')
         setQuizType('saved')
-        sessionStorage.removeItem('is_saved') // Remove immediately instead of timeout
       } else {
         console.log('Setting status to empty string (All tab)');
         // Load All quizzes by default - explicitly set status and quizType
