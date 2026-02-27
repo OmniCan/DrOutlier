@@ -44,8 +44,9 @@ const Page = () => {
           sessionStorage.removeItem('is_saved')
         }, 1000);
       } else {
-        // Load All quizzes by default
-        getData()
+        // Load All quizzes by default - explicitly set status and quizType
+        setStatus('')
+        setQuizType('status')
       }
     }
   }, []);
@@ -528,7 +529,7 @@ const Page = () => {
                                               <div className="col-lg-2 col-md-3 col-sm-12 mb-3 mb-md-0">
                                                 <div className="quiz-image-container">
                                                   <img
-                                                    src={quiz?.image_url ? quiz?.image_url : "/images/quiz.webp"}
+                                                    src={quiz?.quiz?.image_url ? quiz?.quiz?.image_url : "/images/quiz.webp"}
                                                     className="img-fluid"
                                                     alt={quiz?.quiz?.name}
                                                     style={{ width: '100%', height: 'auto', display: 'block' }}
