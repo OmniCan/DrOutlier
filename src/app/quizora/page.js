@@ -71,7 +71,29 @@ const Page = () => {
         }
       }).then((response) => {
         console.log('API Response for status:', status, response.data.data);
-        setAllData(response.data.data);
+        
+        // Client-side filtering since backend returns all quizzes
+        let filteredData = response.data.data;
+        
+        if (status !== '' && status !== 'free') {
+          // Map status strings to quiz_status values
+          const statusMap = {
+            'paused': 2,
+            'completed': 1,
+            'unattempted': 0
+          };
+          
+          const targetStatus = statusMap[status];
+          
+          // Filter categories and their quizzes
+          filteredData = response.data.data.map(category => ({
+            ...category,
+            quizzes: category.quizzes?.filter(quiz => quiz.quiz_status === targetStatus) || []
+          })).filter(category => category.quizzes.length > 0); // Remove empty categories
+        }
+        
+        console.log('Filtered data:', filteredData);
+        setAllData(filteredData);
         setLoading(false);
       })
     } catch (error) {
