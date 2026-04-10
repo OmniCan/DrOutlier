@@ -345,7 +345,7 @@ function loadPDF() {
         return;
     }
 
-    const pdfUrl = '/admin/assets/admin/images/new_osce_pdf/' + currentItem.pdf_file;
+    const pdfUrl = '/pdf-proxy.php?module=new_osce_pdf&file=' + encodeURIComponent(currentItem.pdf_file);
     document.getElementById('loader').style.display = 'flex';
     
     pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
@@ -417,7 +417,7 @@ function toggleBookmark() {
     
     const formData = new FormData();
     formData.append('user_id', userId);
-    formData.append('osce_id', currentItem.id);
+    formData.append('item_id', currentItem.id);
     
     fetch('/admin/api/new-osce/toggle-bookmark', {
         method: 'POST',

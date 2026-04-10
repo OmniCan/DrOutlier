@@ -356,7 +356,7 @@ function loadPDF() {
         return;
     }
 
-    const pdfUrl = '/admin/assets/admin/images/new_spotters_pdf/' + currentItem.pdf_file;
+    const pdfUrl = '/pdf-proxy.php?module=new_spotters_pdf&file=' + encodeURIComponent(currentItem.pdf_file);
     
     document.getElementById('loader').style.display = 'flex';
     
@@ -465,7 +465,7 @@ function toggleBookmark() {
     
     const formData = new FormData();
     formData.append('user_id', userId);
-    formData.append('spotter_id', currentItem.id);
+    formData.append('item_id', currentItem.id);
     
     fetch('/admin/api/new-spotters/toggle-bookmark', {
         method: 'POST',

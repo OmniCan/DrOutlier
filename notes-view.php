@@ -356,7 +356,7 @@ function loadPDF() {
         return;
     }
 
-    const pdfUrl = '/admin/assets/theory_notes_pdf/' + currentItem.pdf_file;
+    const pdfUrl = '/pdf-proxy.php?module=theory_notes_pdf&file=' + encodeURIComponent(currentItem.pdf_file);
     
     document.getElementById('loader').style.display = 'flex';
     

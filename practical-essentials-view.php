@@ -172,7 +172,7 @@ function loadPDF() {
         document.getElementById('pdfContainer').innerHTML = '<p style="color: white; text-align: center;">No PDF available</p>';
         return;
     }
-    const pdfUrl = '/admin/assets/new_table_viva_pdf/' + currentItem.pdf_file;
+    const pdfUrl = '/pdf-proxy.php?module=new_table_viva_pdf&file=' + encodeURIComponent(currentItem.pdf_file);
     document.getElementById('loader').style.display = 'flex';
     pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
         pdfDoc = pdf;
@@ -228,7 +228,7 @@ function toggleBookmark() {
     if (!currentItem) return;
     const formData = new FormData();
     formData.append('user_id', userId);
-    formData.append('table_viva_id', currentItem.id);
+    formData.append('item_id', currentItem.id);
     fetch('/admin/api/new-table-viva/toggle-bookmark', {
         method: 'POST',
         headers: { 'Authorization': 'Bearer <?php echo $token; ?>' },
