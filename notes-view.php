@@ -356,7 +356,7 @@ function loadPDF() {
         return;
     }
 
-    const pdfUrl = 'https://admin.droutlier.com/assets/theory_notes_pdf/' + currentItem.pdf_file;
+    const pdfUrl = '/admin/assets/theory_notes_pdf/' + currentItem.pdf_file;
     
     document.getElementById('loader').style.display = 'flex';
     

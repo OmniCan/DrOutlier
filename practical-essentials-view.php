@@ -172,7 +172,7 @@ function loadPDF() {
         document.getElementById('pdfContainer').innerHTML = '<p style="color: white; text-align: center;">No PDF available</p>';
         return;
     }
-    const pdfUrl = 'https://admin.droutlier.com/assets/new_table_viva_pdf/' + currentItem.pdf_file;
+    const pdfUrl = '/admin/assets/new_table_viva_pdf/' + currentItem.pdf_file;
     document.getElementById('loader').style.display = 'flex';
     pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
         pdfDoc = pdf;

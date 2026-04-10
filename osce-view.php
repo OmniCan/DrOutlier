@@ -345,7 +345,7 @@ function loadPDF() {
         return;
     }
 
-    const pdfUrl = 'https://admin.droutlier.com/assets/admin/images/new_osce_pdf/' + currentItem.pdf_file;
+    const pdfUrl = '/admin/assets/admin/images/new_osce_pdf/' + currentItem.pdf_file;
     document.getElementById('loader').style.display = 'flex';
     
     pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
