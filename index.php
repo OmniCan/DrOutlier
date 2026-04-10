@@ -93,8 +93,23 @@ include __DIR__ . '/includes/header.php';
                                             </div>
                                         </a>
                                     </div>
+
+                                    <!-- QUIZORA -->
+                                    <div class="col-lg-4 col-6">
+                                        <a href="/quizora.php">
+                                            <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                                                <div id="lottie-quizora" style="width: 174px; height: 182px; filter: hue-rotate(223deg);"></div>
+                                                <h6>QUIZORA</h6>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="image">
+                            <img src="/public/images/Dr-Outlier-Radiology.webp" class="img-fluid w-100" alt="Dr Outlier Radiology" />
                         </div>
                     </div>
                 </div>
@@ -114,6 +129,7 @@ $additionalJS = '
         new DotLottie({container: document.getElementById("lottie-airad"), src: "/public/animantion/green.json", loop: true, autoplay: true});
         new DotLottie({container: document.getElementById("lottie-practical"), src: "/public/animantion/green.json", loop: true, autoplay: true});
         new DotLottie({container: document.getElementById("lottie-watch"), src: "/public/animantion/Grey circle.json", loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById("lottie-quizora"), src: "/public/animantion/Blue circle 2.json", loop: true, autoplay: true});
     }
     </script>
 ';
