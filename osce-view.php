@@ -419,9 +419,8 @@ function toggleBookmark() {
     formData.append('user_id', userId);
     formData.append('item_id', currentItem.id);
     
-    fetch('/admin/api/new-osce/toggle-bookmark', {
+    fetch('/bookmark-proxy.php?module=osce', {
         method: 'POST',
-        headers: { 'Authorization': 'Bearer <?php echo $token; ?>' },
         body: formData
     })
     .then(response => response.json())

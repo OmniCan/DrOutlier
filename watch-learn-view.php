@@ -297,11 +297,8 @@ function toggleBookmark() {
     formData.append('user_id', userId);
     formData.append('watch_learn_id', currentItem.id);
     
-    fetch('/admin/api/watch-and-learn-category/toggle-bookmark', {
+    fetch('/bookmark-proxy.php?module=watch-learn', {
         method: 'POST',
-        headers: {
-            'Authorization': 'Bearer <?php echo $token; ?>'
-        },
         body: formData
     })
     .then(response => response.json())
