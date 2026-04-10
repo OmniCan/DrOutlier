@@ -13,7 +13,7 @@ $parentId = $_GET['parentId'] ?? null;
 
 if (!$categoryId) die('Category ID required');
 
-$apiResponse = apiRequest('/api/new-table-viva/chapters', 'POST', ['category_id' => $categoryId], getToken());
+$apiResponse = apiRequest('/new-table-viva/chapters', 'POST', ['category_id' => $categoryId], getToken());
 $chapters = $apiResponse['data']['chapters'] ?? [];
 $categoryName = $apiResponse['data']['category_name'] ?? 'Chapters';
 

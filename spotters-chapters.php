@@ -18,7 +18,7 @@ if (!$categoryId) {
     die('Category ID required');
 }
 
-$apiResponse = apiRequest('/api/new-spotters/chapters', 'POST', [
+$apiResponse = apiRequest('/new-spotters/chapters', 'POST', [
     'category_id' => $categoryId
 ], getToken());
 

@@ -21,7 +21,7 @@ if (!$categoryId) {
 }
 
 // Fetch chapters from API
-$apiResponse = apiRequest('/api/theory-notes/chapters', 'POST', [
+$apiResponse = apiRequest('/theory-notes/chapters', 'POST', [
     'category_id' => $categoryId
 ], getToken());
 

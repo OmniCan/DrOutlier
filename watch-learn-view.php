@@ -22,7 +22,7 @@ $categoryName = '';
 $error = null;
 
 if ($chapterId) {
-    $response = apiRequest('/api/watch-and-learn-category/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
+    $response = apiRequest('/watch-and-learn-category/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
     
     if (isset($response['error'])) {
         $error = $response['error'];

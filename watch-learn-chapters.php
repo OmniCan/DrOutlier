@@ -13,7 +13,7 @@ $parentId = $_GET['parentId'] ?? null;
 
 if (!$categoryId) die('Category ID required');
 
-$apiResponse = apiRequest('/api/watch-and-learn-category/chapters', 'POST', ['category_id' => $categoryId], getToken());
+$apiResponse = apiRequest('/watch-and-learn-category/chapters', 'POST', ['category_id' => $categoryId], getToken());
 $chapters = $apiResponse['data']['chapters'] ?? [];
 $categoryName = $apiResponse['data']['category_name'] ?? 'Chapters';
 

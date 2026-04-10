@@ -22,7 +22,7 @@ $categoryName = '';
 $error = null;
 
 if ($chapterId) {
-    $response = apiRequest('/api/new-exam-cases/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
+    $response = apiRequest('/new-exam-cases/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
     
     if (isset($response['error'])) {
         $error = $response['error'];

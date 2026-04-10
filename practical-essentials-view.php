@@ -22,7 +22,7 @@ $categoryName = '';
 $error = null;
 
 if ($chapterId) {
-    $response = apiRequest('/api/new-table-viva/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
+    $response = apiRequest('/new-table-viva/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
     
     if (isset($response['error'])) {
         $error = $response['error'];

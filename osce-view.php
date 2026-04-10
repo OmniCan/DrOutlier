@@ -28,7 +28,7 @@ $categoryName = '';
 $error = null;
 
 if ($chapterId) {
-    $response = apiRequest('/api/new-osce/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
+    $response = apiRequest('/new-osce/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
     
     if (isset($response['error'])) {
         $error = $response['error'];

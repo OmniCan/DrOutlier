@@ -28,7 +28,7 @@ $categoryName = '';
 $error = null;
 
 if ($chapterId) {
-    $response = apiRequest('/api/theory-notes/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
+    $response = apiRequest('/theory-notes/items-by-chapter', 'POST', ['chapter_id' => $chapterId], $token);
     
     if (isset($response['error'])) {
         $error = $response['error'];
