@@ -3,6 +3,10 @@
 
 echo "=== DrOutlier Deployment Started ==="
 
+# Install Frontend (Root level PHP) dependencies
+echo "Installing Frontend dependencies..."
+composer install --no-dev --optimize-autoloader --no-interaction
+
 # Install Admin (Laravel) dependencies
 echo "Installing Admin Panel dependencies..."
 cd admin/application
@@ -12,16 +16,10 @@ php artisan route:cache
 php artisan view:cache
 cd ../..
 
-# Install PHP Frontend dependencies  
-echo "Installing Frontend dependencies..."
-cd frontend
-composer install --no-dev --optimize-autoloader --no-interaction
-cd ..
-
 # Set proper permissions
 echo "Setting permissions..."
 chmod -R 755 admin/application/storage
 chmod -R 755 admin/application/bootstrap/cache
-chmod -R 755 frontend/storage
+chmod -R 755 storage/cache
 
 echo "=== Deployment Complete ==="

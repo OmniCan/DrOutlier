@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /vendor
+/composer.lock
 
 #Admin
 admin/.vendor
@@ -13,9 +14,13 @@ admin/application/vendor
 admin/application/storage/logs/*.log
 admin/application/bootstrap/cache/*.php
 
-# Frontend
+# Frontend (legacy folder - can be removed later)
 frontend/vendor
 frontend/storage/cache/*
+
+# PHP Frontend (root level)
+/storage/cache/*
+!/storage/cache/.gitkeep
 
 # testing
 /coverage
