@@ -204,6 +204,8 @@ Route::namespace('Api')->name('api.')->group(function(){
                 Route::post('/chapters', 'getChapters')->name('chapters');
                 Route::post('/items-by-chapter', 'getItemsByChapter')->name('items-by-chapter');
                 Route::post('/item', 'getItem')->name('item');
+                Route::post('/change-bookmark', 'changeBookmark')->name('change-bookmark');
+                Route::post('/get-bookmarks', 'getBookmarks')->name('get-bookmarks');
             });
 
             // New OSCE API Routes
@@ -212,6 +214,8 @@ Route::namespace('Api')->name('api.')->group(function(){
                 Route::post('/chapters', 'getChapters')->name('chapters');
                 Route::post('/items-by-chapter', 'getItemsByChapter')->name('items-by-chapter');
                 Route::post('/item', 'getItem')->name('item');
+                Route::post('/change-bookmark', 'changeBookmark')->name('change-bookmark');
+                Route::post('/get-bookmarks', 'getBookmarks')->name('get-bookmarks');
             });
 
             // New Exam Cases API Routes

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\NewSpottersCategory;
 use App\Models\NewSpotter;
+use App\Models\SpotterBookmark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -162,6 +163,86 @@ class NewSpottersApiController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to fetch item',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Toggle bookmark for New Spotter item
+    public function changeBookmark(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'item_id' => 'required|integer'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $bookmark = SpotterBookmark::where('user_id', $request->user_id)
+                ->where('spotter_id', $request->item_id)
+                ->first();
+
+            if ($bookmark) {
+                $bookmark->delete();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'UnSaved successfully !!',
+                ], 200);
+            }
+
+            $newBookmark = SpotterBookmark::create([
+                'user_id' => $request->user_id,
+                'spotter_id' => $request->item_id,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Saved successfully !!',
+                'data' => ['list' => $newBookmark]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update bookmark',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get bookmarks for New Spotters (reads from shared bookmark table)
+    public function getBookmarks(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $ids = SpotterBookmark::where('user_id', $request->user_id)->pluck('spotter_id');
+            $items = NewSpotter::whereIn('id', $ids)->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => ['list' => $items]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch bookmarks',
                 'error' => $e->getMessage()
             ], 500);
         }

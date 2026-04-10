@@ -21,12 +21,14 @@ $watchLearnId = $_POST['watch_learn_id'] ?? '';
 
 $moduleMap = [
     'spotters' => [
+        ['endpoint' => '/new-spotters/change-bookmark', 'idKey' => 'item_id'],
         ['endpoint' => '/spotters/change-bookmark-status', 'idKey' => 'spotter_id'],
     ],
     'notes' => [
         ['endpoint' => '/theory-notes/change-bookmark', 'idKey' => 'item_id'],
     ],
     'osce' => [
+        ['endpoint' => '/new-osce/change-bookmark', 'idKey' => 'item_id'],
         ['endpoint' => '/osce/change-osce-bookmark', 'idKey' => 'osce_id'],
     ],
     'ai-rad' => [
