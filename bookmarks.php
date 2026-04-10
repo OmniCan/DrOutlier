@@ -15,7 +15,7 @@ requireAuth();
 $pageTitle = 'My Bookmarks - Dr. Outlier';
 $user = getUser();
 $token = getToken();
-$userId = $_SESSION['user_id'] ?? '';
+$userId = $_SESSION['user']['id'] ?? ($_SESSION['user_id'] ?? '');
 
 // Fetch all bookmarks
 $loading = true;
@@ -29,24 +29,24 @@ $bookmarks = [
     'watchAndLearn' => []
 ];
 
-// Fetch Notes bookmarks
-$notesResponse = apiRequest('/note/get-note-bookmark', 'POST', ['user_id' => $userId], $token);
+// Fetch Notes bookmarks (new theory notes)
+$notesResponse = apiRequest('/theory-notes/get-bookmarks', 'POST', ['user_id' => $userId], $token);
 if (isset($notesResponse['data']['list']['data'])) {
     $bookmarks['notes'] = $notesResponse['data']['list']['data'];
 } elseif (isset($notesResponse['data']['list']) && is_array($notesResponse['data']['list'])) {
     $bookmarks['notes'] = $notesResponse['data']['list'];
 }
 
-// Fetch Spotters bookmarks
-$spottersResponse = apiRequest('/spotters/get-bookmark', 'POST', ['user_id' => $userId], $token);
+// Fetch Spotters bookmarks (new spotters)
+$spottersResponse = apiRequest('/new-spotters/get-bookmarks', 'POST', ['user_id' => $userId], $token);
 if (isset($spottersResponse['data']['list']['data'])) {
     $bookmarks['spotters'] = $spottersResponse['data']['list']['data'];
 } elseif (isset($spottersResponse['data']['list']) && is_array($spottersResponse['data']['list'])) {
     $bookmarks['spotters'] = $spottersResponse['data']['list'];
 }
 
-// Fetch OSCE bookmarks
-$osceResponse = apiRequest('/osce/get-osce-bookmark', 'POST', ['user_id' => $userId], $token);
+// Fetch OSCE bookmarks (new osce)
+$osceResponse = apiRequest('/new-osce/get-bookmarks', 'POST', ['user_id' => $userId], $token);
 if (isset($osceResponse['data']['list']['data'])) {
     $bookmarks['osce'] = $osceResponse['data']['list']['data'];
 } elseif (isset($osceResponse['data']['list']) && is_array($osceResponse['data']['list'])) {
@@ -61,16 +61,16 @@ if (isset($quizoraResponse['data']['list']['data'])) {
     $bookmarks['quizora'] = $quizoraResponse['data'];
 }
 
-// Fetch AI-Rad bookmarks
-$aiRadResponse = apiRequest('/category-munchie/get-munchie-bookmark', 'POST', ['user_id' => $userId], $token);
+// Fetch AI-Rad bookmarks (new exam cases)
+$aiRadResponse = apiRequest('/new-exam-cases/get-bookmarks', 'POST', ['user_id' => $userId], $token);
 if (isset($aiRadResponse['data']['list']['data'])) {
     $bookmarks['aiRad'] = $aiRadResponse['data']['list']['data'];
 } elseif (isset($aiRadResponse['data']['list']) && is_array($aiRadResponse['data']['list'])) {
     $bookmarks['aiRad'] = $aiRadResponse['data']['list'];
 }
 
-// Fetch Practical Essentials bookmarks
-$practicalResponse = apiRequest('/basic-category/get-basic-bookmark', 'POST', ['user_id' => $userId], $token);
+// Fetch Practical Essentials bookmarks (new table viva)
+$practicalResponse = apiRequest('/new-table-viva/get-bookmarks', 'POST', ['user_id' => $userId], $token);
 if (isset($practicalResponse['data']['list']['data'])) {
     $bookmarks['practicalEssentials'] = $practicalResponse['data']['list']['data'];
 } elseif (isset($practicalResponse['data']['list']) && is_array($practicalResponse['data']['list'])) {
@@ -248,7 +248,7 @@ include __DIR__ . '/includes/header.php';
                                         <?php echo htmlspecialchars($item['category_name'] ?? 'Notes'); ?>
                                     </p>
                                 </div>
-                                <a href="/notes-view.php?id=<?php echo urlencode($item['id']); ?>" class="btn btn-sm btn-outline-light">
+                                <a href="/notes-view.php?id=<?php echo urlencode($item['category'] ?? ''); ?>&itemId=<?php echo urlencode($item['id'] ?? ''); ?>&parentId=0" class="btn btn-sm btn-outline-light">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                             </div>
@@ -274,7 +274,7 @@ include __DIR__ . '/includes/header.php';
                                         <?php echo htmlspecialchars($item['category_name'] ?? 'Spotters'); ?>
                                     </p>
                                 </div>
-                                <a href="/spotters-view.php?id=<?php echo urlencode($item['id']); ?>" class="btn btn-sm btn-outline-light">
+                                <a href="/spotters-view.php?id=<?php echo urlencode($item['category'] ?? ''); ?>&itemId=<?php echo urlencode($item['id'] ?? ''); ?>&parentId=0" class="btn btn-sm btn-outline-light">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                             </div>
@@ -300,7 +300,7 @@ include __DIR__ . '/includes/header.php';
                                         <?php echo htmlspecialchars($item['category_name'] ?? 'OSCE'); ?>
                                     </p>
                                 </div>
-                                <a href="/osce-view.php?id=<?php echo urlencode($item['id']); ?>" class="btn btn-sm btn-outline-light">
+                                <a href="/osce-view.php?id=<?php echo urlencode($item['category'] ?? ''); ?>&itemId=<?php echo urlencode($item['id'] ?? ''); ?>&parentId=0" class="btn btn-sm btn-outline-light">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                             </div>
@@ -352,7 +352,7 @@ include __DIR__ . '/includes/header.php';
                                         <?php echo htmlspecialchars($item['category_name'] ?? 'AI-Rad'); ?>
                                     </p>
                                 </div>
-                                <a href="/ai-rad-view.php?id=<?php echo urlencode($item['id']); ?>" class="btn btn-sm btn-outline-light">
+                                <a href="/ai-rad-view.php?id=<?php echo urlencode($item['category'] ?? ''); ?>&itemId=<?php echo urlencode($item['id'] ?? ''); ?>&parentId=0" class="btn btn-sm btn-outline-light">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                             </div>
@@ -378,7 +378,7 @@ include __DIR__ . '/includes/header.php';
                                         <?php echo htmlspecialchars($item['category_name'] ?? 'Practical Essentials'); ?>
                                     </p>
                                 </div>
-                                <a href="/practical-essentials-view.php?id=<?php echo urlencode($item['id']); ?>" class="btn btn-sm btn-outline-light">
+                                <a href="/practical-essentials-view.php?id=<?php echo urlencode($item['category'] ?? ''); ?>&itemId=<?php echo urlencode($item['id'] ?? ''); ?>&parentId=0" class="btn btn-sm btn-outline-light">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                             </div>
@@ -404,7 +404,7 @@ include __DIR__ . '/includes/header.php';
                                         <?php echo htmlspecialchars($item['category_name'] ?? 'Watch & Learn'); ?>
                                     </p>
                                 </div>
-                                <a href="/watch-learn-view.php?id=<?php echo urlencode($item['id']); ?>" class="btn btn-sm btn-outline-light">
+                                <a href="/watch-learn-view.php?id=<?php echo urlencode($item['category'] ?? ''); ?>&itemId=<?php echo urlencode($item['id'] ?? ''); ?>&parentId=0" class="btn btn-sm btn-outline-light">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                             </div>
