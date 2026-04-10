@@ -2,8 +2,8 @@
 // PDF Proxy - Serves PDFs same-origin to avoid CORS issues
 session_start();
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_token'])) {
+// Check if user is logged in (same rule as requireAuth)
+if (!isset($_SESSION['user_token'])) {
     http_response_code(401);
     exit('Unauthorized');
 }
@@ -28,11 +28,45 @@ if (empty($file) || !preg_match('/\.pdf$/i', $file)) {
     exit('Invalid file');
 }
 
-// Construct file path
-$filePath = __DIR__ . '/admin/assets/admin/images/' . $module . '/' . $file;
+// Resolve file path with module-specific fallbacks
+$modulePaths = [
+    'new_spotters_pdf' => [
+        '/admin/assets/admin/images/new_spotters_pdf/' . $file,
+    ],
+    'new_osce_pdf' => [
+        '/admin/assets/admin/images/new_osce_pdf/' . $file,
+    ],
+    'theory_notes_pdf' => [
+        '/admin/assets/theory_notes_pdf/' . $file,
+        '/admin/assets/admin/images/theory_notes_pdf/' . $file,
+    ],
+    'new_exam_cases_pdf' => [
+        '/admin/assets/new_exam_cases_pdf/' . $file,
+        '/admin/assets/admin/images/ai_rads_pdf/' . $file,
+        '/admin/assets/admin/images/new_exam_cases_pdf/' . $file,
+    ],
+    'new_table_viva_pdf' => [
+        '/admin/assets/new_table_viva_pdf/' . $file,
+        '/admin/assets/admin/images/practical_essentials_pdf/' . $file,
+        '/admin/assets/admin/images/new_table_viva_pdf/' . $file,
+    ],
+    'watch_and_learn_pdf' => [
+        '/admin/assets/watch_and_learn_pdf/' . $file,
+        '/admin/assets/admin/images/watch_and_learn_pdf/' . $file,
+    ],
+];
 
-// Check if file exists
-if (!file_exists($filePath)) {
+$filePath = null;
+$candidates = $modulePaths[$module] ?? [];
+foreach ($candidates as $candidate) {
+    $fullPath = __DIR__ . $candidate;
+    if (file_exists($fullPath)) {
+        $filePath = $fullPath;
+        break;
+    }
+}
+
+if ($filePath === null) {
     http_response_code(404);
     exit('File not found');
 }
