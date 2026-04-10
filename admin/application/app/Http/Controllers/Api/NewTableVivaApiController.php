@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\NewTableVivaCategory;
 use App\Models\NewTableViva;
+use App\Models\NewTableVivaBookmark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -162,6 +163,86 @@ class NewTableVivaApiController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to fetch item',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Toggle bookmark for New Table Viva item
+    public function changeBookmark(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required',
+                'item_id' => 'required|integer'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $bookmark = NewTableVivaBookmark::where('user_id', $request->user_id)
+                ->where('item_id', $request->item_id)
+                ->first();
+
+            if ($bookmark) {
+                $bookmark->delete();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'UnSaved successfully !!',
+                ], 200);
+            }
+
+            $newBookmark = NewTableVivaBookmark::create([
+                'user_id' => $request->user_id,
+                'item_id' => $request->item_id,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Saved successfully !!',
+                'data' => ['list' => $newBookmark]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update bookmark',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get bookmarks for New Table Viva
+    public function getBookmarks(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $ids = NewTableVivaBookmark::where('user_id', $request->user_id)->pluck('item_id');
+            $items = NewTableViva::whereIn('id', $ids)->get();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => ['list' => $items]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch bookmarks',
                 'error' => $e->getMessage()
             ], 500);
         }
