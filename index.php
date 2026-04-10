@@ -98,7 +98,7 @@ session_start();
                                 <div class="row">
                                     <!-- SPOTTERS -->
                                     <div class="col-lg-4 col-6">
-                                        <a href="/new-spotters">
+                                        <a href="/spotters.php">
                                             <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
                                                 <div id="lottie-spotters" style="width: 174px; height: 182px;"></div>
                                                 <h6 style="margin-top: 10px;">SPOTTERS</h6>
@@ -108,7 +108,7 @@ session_start();
 
                                     <!-- NOTES -->
                                     <div class="col-lg-4 col-6">
-                                        <a href="/theory-notes">
+                                        <a href="/theory-notes.php">
                                             <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
                                                 <div id="lottie-notes" style="width: 174px; height: 182px;"></div>
                                                 <h6>NOTES</h6>
@@ -118,7 +118,7 @@ session_start();
 
                                     <!-- OSCE -->
                                     <div class="col-lg-4 col-6">
-                                        <a href="/new-osce">
+                                        <a href="/osce.php">
                                             <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
                                                 <div id="lottie-osce" style="width: 174px; height: 182px; filter: hue-rotate(180deg);"></div>
                                                 <h6>OSCE</h6>
@@ -128,7 +128,7 @@ session_start();
 
                                     <!-- AI-RAD -->
                                     <div class="col-lg-4 col-6">
-                                        <a href="/new-exam-cases">
+                                        <a href="/ai-rad.php">
                                             <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
                                                 <div id="lottie-airad" style="width: 174px; height: 182px; filter: hue-rotate(180deg);"></div>
                                                 <h6>AI-Rad</h6>
@@ -138,7 +138,7 @@ session_start();
 
                                     <!-- PRACTICAL ESSENTIALS -->
                                     <div class="col-lg-4 col-6">
-                                        <a href="/new-table-viva">
+                                        <a href="/practical-essentials.php">
                                             <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
                                                 <div id="lottie-practical" style="width: 174px; height: 182px;"></div>
                                                 <h6>Practical <br> Essentials</h6>
@@ -148,7 +148,7 @@ session_start();
 
                                     <!-- WATCH & LEARN -->
                                     <div class="col-lg-4 col-6">
-                                        <a href="/watch-and-learn">
+                                        <a href="/watch-learn.php">
                                             <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
                                                 <div id="lottie-watch" style="width: 174px; height: 182px;"></div>
                                                 <h6>WATCH &amp; <br> LEARN</h6>
