@@ -20,9 +20,6 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
-    <!-- Lottie -->
-    <script src="https://unpkg.com/@lottiefiles/dotlottie-web@latest/dist/dotlottie-web.js"></script>
-    
     <?php if (isset($additionalCSS)) echo $additionalCSS; ?>
 </head>
 <body>
