@@ -1,66 +1,147 @@
 {% extends 'layouts/base.twig' %}
 
+{% block title %}Home - Dr. Outlier Radiology{% endblock %}
+
+{% block styles %}
+<script src="https://unpkg.com/@lottiefiles/dotlottie-web@latest/dist/dotlottie-web.js"></script>
+{% endblock %}
+
 {% block content %}
-<div class="hero-section text-center py-5 bg-light rounded">
-    <h1 class="display-4">Welcome to {{ app_name }}</h1>
-    <p class="lead">Master radiology with AI-powered learning tools</p>
-    {% if not auth %}
-        <a href="{{ url('/register') }}" class="btn btn-primary btn-lg">Get Started</a>
-    {% endif %}
-</div>
+<div class="main-wrapper">
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="content">
+                        <h1 class="text-white">Welcome to Dr. Outlier Radiology</h1>
+                        <p>
+                            Struggling with MD, DNB, or DMRD exams? Dr. Outlier is built to make preparation simpler and more effective. 
+                            It breaks down complex theory into clear, usable concepts and helps you perform confidently in practical exams. 
+                            Think of it as a reliable study partner that helps you remember better, answer smarter, and stay calm during exams. 
+                            With focused content and exam-oriented guidance, Dr. Outlier makes passing feel achievable rather than overwhelming.
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-10 m-auto">
+                            <div class="row">
+                                {# SPOTTERS #}
+                                <div class="col-lg-4 col-6">
+                                    <a href="{{ url('/new-spotters') }}">
+                                        <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                                            <div id="lottie-spotters" style="width: 174px; height: 182px;"></div>
+                                            <h6 style="margin-top: 10px;">SPOTTERS</h6>
+                                        </div>
+                                    </a>
+                                </div>
 
-<div class="row mt-5">
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3 class="display-6">{{ stats.total_notes ?? 0 }}</h3>
-                <p class="text-muted">Theory Notes</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3 class="display-6">{{ stats.total_spotters ?? 0 }}</h3>
-                <p class="text-muted">Spotters</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3 class="display-6">{{ stats.total_osce ?? 0 }}</h3>
-                <p class="text-muted">OSCE Cases</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h3 class="display-6">{{ stats.total_users ?? 0 }}</h3>
-                <p class="text-muted">Active Learners</p>
-            </div>
-        </div>
-    </div>
-</div>
+                                {# NOTES #}
+                                <div class="col-lg-4 col-6">
+                                    <a href="{{ url('/notes') }}">
+                                        <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                                            <div id="lottie-notes" style="width: 174px; height: 182px;"></div>
+                                            <h6>NOTES</h6>
+                                        </div>
+                                    </a>
+                                </div>
 
-<div class="mt-5">
-    <h2>Featured Content</h2>
-    <div class="row">
-        {% for item in featured %}
-            <div class="col-md-4 mb-3">
-                <div class="card">
-                    {% if item.image %}
-                        <img src="{{ item.image }}" class="card-img-top" alt="{{ item.title }}">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ item.title }}</h5>
-                        <p class="card-text">{{ item.description }}</p>
-                        <a href="{{ url(item.link) }}" class="btn btn-primary">Learn More</a>
+                                {# OSCE #}
+                                <div class="col-lg-4 col-6">
+                                    <a href="{{ url('/new-osce') }}">
+                                        <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                                            <div id="lottie-osce" style="width: 174px; height: 182px; filter: hue-rotate(180deg);"></div>
+                                            <h6>OSCE</h6>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                {# AI-RAD #}
+                                <div class="col-lg-4 col-6">
+                                    <a href="{{ url('/new-exam-cases') }}">
+                                        <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                                            <div id="lottie-airad" style="width: 174px; height: 182px; filter: hue-rotate(180deg);"></div>
+                                            <h6>AI-Rad</h6>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                {# PRACTICAL ESSENTIALS #}
+                                <div class="col-lg-4 col-6">
+                                    <a href="{{ url('/new-table-viva') }}">
+                                        <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                                            <div id="lottie-practical" style="width: 174px; height: 182px;"></div>
+                                            <h6>Practical <br> Essentials</h6>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                {# WATCH & LEARN #}
+                                <div class="col-lg-4 col-6">
+                                    <a href="{{ url('/watch-and-learn') }}">
+                                        <div class="box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                                            <div id="lottie-watch" style="width: 174px; height: 182px;"></div>
+                                            <h6>WATCH &amp; <br> LEARN</h6>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+        </div>
+    </section>
 </div>
+
+<script>
+// Initialize Lottie animations
+if (typeof DotLottie !== 'undefined') {
+    // Spotters - Blue Circle 2
+    new DotLottie({
+        container: document.getElementById('lottie-spotters'),
+        src: '/animantion/Blue circle 2.json',
+        loop: true,
+        autoplay: true
+    });
+
+    // Notes - Green Circle
+    new DotLottie({
+        container: document.getElementById('lottie-notes'),
+        src: '/animantion/Green circle.json',
+        loop: true,
+        autoplay: true
+    });
+
+    // OSCE - Blue Circle 2 (with hue-rotate filter)
+    new DotLottie({
+        container: document.getElementById('lottie-osce'),
+        src: '/animantion/Blue circle 2.json',
+        loop: true,
+        autoplay: true
+    });
+
+    // AI-Rad - Green (with hue-rotate filter)
+    new DotLottie({
+        container: document.getElementById('lottie-airad'),
+        src: '/animantion/green.json',
+        loop: true,
+        autoplay: true
+    });
+
+    // Practical - Green
+    new DotLottie({
+        container: document.getElementById('lottie-practical'),
+        src: '/animantion/green.json',
+        loop: true,
+        autoplay: true
+    });
+
+    // Watch & Learn - Grey Circle
+    new DotLottie({
+        container: document.getElementById('lottie-watch'),
+        src: '/animantion/Grey circle.json',
+        loop: true,
+        autoplay: true
+    });
+}
+</script>
 {% endblock %}
