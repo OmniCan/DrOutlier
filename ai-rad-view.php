@@ -172,7 +172,7 @@ function loadPDF() {
         document.getElementById('pdfContainer').innerHTML = '<p style="color: white; text-align: center;">No PDF available</p>';
         return;
     }
-    const pdfUrl = 'https://admin.droutlier.com/assets/exam_case_pdf/' + currentItem.pdf_file;
+    const pdfUrl = 'https://admin.droutlier.com/assets/new_exam_cases_pdf/' + currentItem.pdf_file;
     document.getElementById('loader').style.display = 'flex';
     pdfjsLib.getDocument(pdfUrl).promise.then(function(pdf) {
         pdfDoc = pdf;
