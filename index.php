@@ -47,7 +47,7 @@ session_start();
                     </div>
 
                     <div class="col-lg-4 col-2 d-flex justify-content-end">
-                        <button class="btn btn-link loginBtn d-lg-block d-none">
+                        <button class="btn btn-link loginBtn d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#loginModal">
                             <i class="fa-solid fa-user"></i> Login
                         </button>
                         <button class="btn btn-link searchBtn d-lg-none d-block">
@@ -222,5 +222,12 @@ session_start();
         new DotLottie({container: document.getElementById('lottie-watch'), src: '/public/animantion/Grey circle.json', loop: true, autoplay: true});
     }
     </script>
+    
+    <?php
+    // Include login modals if user is not authenticated
+    if (!isset($_SESSION['user_token'])) {
+        include __DIR__ . '/includes/login-modals.php';
+    }
+    ?>
 </body>
 </html>

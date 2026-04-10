@@ -90,9 +90,9 @@
                                 </ul>
                             </div>
                         <?php else: ?>
-                            <a href="/login.php" class="btn btn-link loginBtn d-lg-block d-none">
+                            <button class="btn btn-link loginBtn d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#loginModal">
                                 <i class="fa-solid fa-user"></i> Login
-                            </a>
+                            </button>
                         <?php endif; ?>
 
                         <button class="btn btn-link searchBtn d-lg-none d-block">

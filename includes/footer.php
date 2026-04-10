@@ -67,3 +67,10 @@
     <?php if (isset($additionalJS)) echo $additionalJS; ?>
 </body>
 </html>
+
+<?php
+// Include login modals if user is not authenticated
+if (!isset($_SESSION['user_token'])) {
+    include __DIR__ . '/login-modals.php';
+}
+?>
