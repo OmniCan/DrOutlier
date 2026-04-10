@@ -1,0 +1,20 @@
+{
+    "name": "droutlier/main",
+    "description": "DrOutlier Main Project",
+    "type": "project",
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"echo 'Installing admin dependencies...';\"",
+            "cd admin/application && composer install --no-dev --optimize-autoloader",
+            "@php -r \"echo 'Installing frontend dependencies...';\"",
+            "cd frontend && composer install --no-dev --optimize-autoloader"
+        ],
+        "post-update-cmd": [
+            "cd admin/application && composer update --no-dev",
+            "cd frontend && composer update --no-dev"
+        ]
+    },
+    "require": {
+        "php": "^8.1"
+    }
+}

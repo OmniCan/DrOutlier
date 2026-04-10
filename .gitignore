@@ -4,10 +4,19 @@
 /node_modules
 /.pnp
 .pnp.js
+/vendor
 
 #Admin
 admin/.vendor
 admin/vendor
+admin/application/vendor
+admin/application/storage/logs/*.log
+admin/application/bootstrap/cache/*.php
+
+# Frontend
+frontend/vendor
+frontend/storage/cache/*
+
 # testing
 /coverage
 
@@ -16,6 +25,7 @@ admin/vendor
 /out
 
 # environment variables
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -27,3 +37,4 @@ admin/vendor
 
 /rough.js
 *.zip
+composer.lock
