@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-lg-4">
                     <div class="footer-logo">
-                        <a href="/"><img src="/public/images/Footer-Logo.webp" class="img-fluid" alt="Dr Outlier" /></a>
+                        <a href="/"><img src="/public/images/logo.png" alt="Dr Outlier" style="max-height: 60px; width: auto; object-fit: contain;" /></a>
                     </div>
                 </div>
                 <div class="col-lg-8">
