@@ -1,0 +1,66 @@
+{% extends 'layouts/base.twig' %}
+
+{% block content %}
+<div class="hero-section text-center py-5 bg-light rounded">
+    <h1 class="display-4">Welcome to {{ app_name }}</h1>
+    <p class="lead">Master radiology with AI-powered learning tools</p>
+    {% if not auth %}
+        <a href="{{ url('/register') }}" class="btn btn-primary btn-lg">Get Started</a>
+    {% endif %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="display-6">{{ stats.total_notes ?? 0 }}</h3>
+                <p class="text-muted">Theory Notes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="display-6">{{ stats.total_spotters ?? 0 }}</h3>
+                <p class="text-muted">Spotters</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="display-6">{{ stats.total_osce ?? 0 }}</h3>
+                <p class="text-muted">OSCE Cases</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3 class="display-6">{{ stats.total_users ?? 0 }}</h3>
+                <p class="text-muted">Active Learners</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-5">
+    <h2>Featured Content</h2>
+    <div class="row">
+        {% for item in featured %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    {% if item.image %}
+                        <img src="{{ item.image }}" class="card-img-top" alt="{{ item.title }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.title }}</h5>
+                        <p class="card-text">{{ item.description }}</p>
+                        <a href="{{ url(item.link) }}" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'layouts/base.twig' %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div class="row">
+    {# Sidebar with categories #}
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Categories</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="{{ url('/notes') }}" class="list-group-item list-group-item-action">
+                    All Notes
+                </a>
+                {% for category in categories %}
+                    <a href="{{ url('/notes?category=' ~ category.id) }}" 
+                       class="list-group-item list-group-item-action">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# Main content #}
+    <div class="col-md-9">
+        {% if notes is empty %}
+            <div class="alert alert-info">
+                No notes found. Check back later!
+            </div>
+        {% else %}
+            <div class="row">
+                {% for note in notes %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ note.title }}</h5>
+                                <p class="card-text text-muted">{{ note.category }}</p>
+                                <p class="card-text">{{ note.excerpt }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ url('/notes/' ~ note.id) }}" class="btn btn-primary">
+                                    Read More
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

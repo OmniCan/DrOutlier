@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url('/') }}">{{ app_name }}</a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/notes') }}">Theory Notes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/spotters') }}">Spotters</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/osce') }}">OSCE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/quiz') }}">Quiz</a>
+                </li>
+            </ul>
+            
+            <ul class="navbar-nav">
+                {% if auth %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                           data-bs-toggle="dropdown">
+                            {{ user.name }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url('/profile') }}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url('/subscription') }}">Subscription</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url('/logout') }}">Logout</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-light text-primary" href="{{ url('/register') }}">
+                            Sign Up
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
