@@ -19,8 +19,8 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="/public/css/bootstrap.min.css">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -36,13 +36,13 @@ session_start();
                 <div class="container">
                     <div class="col-lg-4 col-2">
                         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar">
-                            <img src="/images/Toggle.svg" class="img-fluid" alt="Toggle" />
+                            <img src="/public/images/Toggle.svg" class="img-fluid" alt="Toggle" />
                         </button>
                     </div>
                     
                     <div class="col-lg-4 col-7 text-center">
                         <a class="navbar-brand col-md-2" href="/">
-                            <img src="/images/Header-Logo.webp" class="img-fluid" alt="Dr Outlier Radiology" />
+                            <img src="/public/images/Header-Logo.webp" class="img-fluid" alt="Dr Outlier Radiology" />
                         </a>
                     </div>
 
@@ -170,16 +170,16 @@ session_start();
             <div class="row">
                 <div class="col-lg-4">
                     <div class="footer-logo">
-                        <a href="/"><img src="/images/Footer-Logo.webp" class="img-fluid" alt="Dr Outlier" /></a>
+                        <a href="/"><img src="/public/images/Footer-Logo.webp" class="img-fluid" alt="Dr Outlier" /></a>
                     </div>
                 </div>
                 <div class="col-lg-8">
                     <div class="social-media-wrapper">
                         <div class="social-media">
                             <ul>
-                                <li><a target="_blank" href="https://api.whatsapp.com/send?phone=918554872707"><img src="/images/whatsapp-icon.webp" alt="WhatsApp" /></a></li>
-                                <li><a href="https://www.youtube.com/@droutlier" target="_blank"><img src="/images/youtube-icon.svg" alt="YouTube" /></a></li>
-                                <li><a href="https://www.instagram.com/dr.outlier/" target="_blank"><img src="/images/instagram-icon.webp" alt="Instagram" /></a></li>
+                                <li><a target="_blank" href="https://api.whatsapp.com/send?phone=918554872707"><img src="/public/images/whatsapp-icon.webp" alt="WhatsApp" /></a></li>
+                                <li><a href="https://www.youtube.com/@droutlier" target="_blank"><img src="/public/images/youtube-icon.svg" alt="YouTube" /></a></li>
+                                <li><a href="https://www.instagram.com/dr.outlier/" target="_blank"><img src="/public/images/instagram-icon.webp" alt="Instagram" /></a></li>
                             </ul>
                         </div>
                     </div>
@@ -209,17 +209,17 @@ session_start();
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/public/js/bootstrap.bundle.min.js"></script>
 
     <!-- Lottie Animations -->
     <script>
     if (typeof DotLottie !== 'undefined') {
-        new DotLottie({container: document.getElementById('lottie-spotters'), src: '/animantion/Blue circle 2.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-notes'), src: '/animantion/Green circle.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-osce'), src: '/animantion/Blue circle 2.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-airad'), src: '/animantion/green.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-practical'), src: '/animantion/green.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-watch'), src: '/animantion/Grey circle.json', loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById('lottie-spotters'), src: '/public/animantion/Blue circle 2.json', loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById('lottie-notes'), src: '/public/animantion/Green circle.json', loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById('lottie-osce'), src: '/public/animantion/Blue circle 2.json', loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById('lottie-airad'), src: '/public/animantion/green.json', loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById('lottie-practical'), src: '/public/animantion/green.json', loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById('lottie-watch'), src: '/public/animantion/Grey circle.json', loop: true, autoplay: true});
     }
     </script>
 </body>
