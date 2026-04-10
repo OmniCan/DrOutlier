@@ -474,7 +474,8 @@ function toggleBookmark() {
     .then(response => response.json())
     .then(data => {
         document.getElementById('bookmarkBtn').classList.toggle('active');
-        alert(data.message || 'Bookmark updated');
+        const message = typeof data.message === 'string' ? data.message : 'Bookmark updated';
+        alert(message);
     })
     .catch(error => {
         console.error('Error:', error);

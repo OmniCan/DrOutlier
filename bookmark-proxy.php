@@ -21,30 +21,21 @@ $watchLearnId = $_POST['watch_learn_id'] ?? '';
 
 $moduleMap = [
     'spotters' => [
-        ['endpoint' => '/new-spotters/toggle-bookmark', 'idKey' => 'item_id'],
         ['endpoint' => '/spotters/change-bookmark-status', 'idKey' => 'spotter_id'],
     ],
     'notes' => [
-        ['endpoint' => '/theory-notes/toggle-bookmark', 'idKey' => 'item_id'],
         ['endpoint' => '/theory-notes/change-bookmark', 'idKey' => 'item_id'],
-        ['endpoint' => '/note/change-note-bookmark-status', 'idKey' => 'blog_id'],
     ],
     'osce' => [
-        ['endpoint' => '/new-osce/toggle-bookmark', 'idKey' => 'item_id'],
         ['endpoint' => '/osce/change-osce-bookmark', 'idKey' => 'osce_id'],
     ],
     'ai-rad' => [
-        ['endpoint' => '/new-exam-cases/toggle-bookmark', 'idKey' => 'item_id'],
         ['endpoint' => '/new-exam-cases/change-bookmark', 'idKey' => 'item_id'],
-        ['endpoint' => '/category-munchie/change-munchie-bookmark-status', 'idKey' => 'munchie_id'],
     ],
     'practical-essentials' => [
-        ['endpoint' => '/new-table-viva/toggle-bookmark', 'idKey' => 'item_id'],
         ['endpoint' => '/new-table-viva/change-bookmark', 'idKey' => 'item_id'],
-        ['endpoint' => '/basic-category/change-basic-bookmark-status', 'idKey' => 'basic_id'],
     ],
     'watch-learn' => [
-        ['endpoint' => '/watch-and-learn-category/toggle-bookmark', 'idKey' => 'watch_learn_id'],
         ['endpoint' => '/watch-and-learn-category/change-watch-bookmark-status', 'idKey' => 'watch_id'],
     ],
 ];
@@ -68,6 +59,7 @@ $lastFailure = [
     'status' => 'error',
     'message' => 'No bookmark endpoint succeeded',
     'detail' => null,
+    'http_code' => 500,
 ];
 
 foreach ($candidates as $candidate) {
@@ -105,6 +97,7 @@ foreach ($candidates as $candidate) {
             'status' => 'error',
             'message' => 'Proxy request failed',
             'detail' => $curlError,
+            'http_code' => 500,
         ];
         continue;
     }
@@ -117,6 +110,7 @@ foreach ($candidates as $candidate) {
                 'status' => 'error',
                 'message' => 'Endpoint not found',
                 'detail' => $candidate['endpoint'],
+                'http_code' => 404,
             ];
             continue;
         }
@@ -125,6 +119,7 @@ foreach ($candidates as $candidate) {
             'status' => 'error',
             'message' => 'Upstream returned non-JSON response',
             'detail' => $raw,
+            'http_code' => $httpCode > 0 ? $httpCode : 500,
         ];
         continue;
     }
@@ -145,5 +140,5 @@ foreach ($candidates as $candidate) {
     ];
 }
 
-http_response_code(404);
+http_response_code($lastFailure['http_code'] ?? 500);
 echo json_encode($lastFailure);
