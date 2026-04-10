@@ -297,7 +297,7 @@ function toggleBookmark() {
     formData.append('user_id', userId);
     formData.append('watch_learn_id', currentItem.id);
     
-    fetch('https://admin.droutlier.com/api/watch-and-learn-category/toggle-bookmark', {
+    fetch('/admin/api/watch-and-learn-category/toggle-bookmark', {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer <?php echo $token; ?>'

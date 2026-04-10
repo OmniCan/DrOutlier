@@ -467,7 +467,7 @@ function toggleBookmark() {
     formData.append('user_id', userId);
     formData.append('spotter_id', currentItem.id);
     
-    fetch('https://admin.droutlier.com/api/new-spotters/toggle-bookmark', {
+    fetch('/admin/api/new-spotters/toggle-bookmark', {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer <?php echo $token; ?>'

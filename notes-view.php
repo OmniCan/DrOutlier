@@ -467,7 +467,7 @@ function toggleBookmark() {
     formData.append('user_id', userId);
     formData.append('item_id', currentItem.id);
     
-    fetch('https://admin.droutlier.com/api/theory-notes/toggle-bookmark', {
+    fetch('/admin/api/theory-notes/toggle-bookmark', {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer <?php echo $token; ?>'

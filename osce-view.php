@@ -419,7 +419,7 @@ function toggleBookmark() {
     formData.append('user_id', userId);
     formData.append('osce_id', currentItem.id);
     
-    fetch('https://admin.droutlier.com/api/new-osce/toggle-bookmark', {
+    fetch('/admin/api/new-osce/toggle-bookmark', {
         method: 'POST',
         headers: { 'Authorization': 'Bearer <?php echo $token; ?>' },
         body: formData

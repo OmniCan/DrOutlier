@@ -229,7 +229,7 @@ function toggleBookmark() {
     const formData = new FormData();
     formData.append('user_id', userId);
     formData.append('table_viva_id', currentItem.id);
-    fetch('https://admin.droutlier.com/api/new-table-viva/toggle-bookmark', {
+    fetch('/admin/api/new-table-viva/toggle-bookmark', {
         method: 'POST',
         headers: { 'Authorization': 'Bearer <?php echo $token; ?>' },
         body: formData
