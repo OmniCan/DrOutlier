@@ -7,76 +7,14 @@
 // Start session
 session_start();
 
+$pageTitle = 'Dr. Outlier Radiology';
+
+// Additional head scripts for Lottie
+$additionalCSS = '<script src="https://unpkg.com/@lottiefiles/dotlottie-web@latest/dist/dotlottie-web.js"></script>';
+
+// Include header
+include __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dr. Outlier Radiology</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="/public/css/style.css">
-    <link rel="stylesheet" href="/public/css/bootstrap.min.css">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    
-    <!-- Lottie -->
-    <script src="https://unpkg.com/@lottiefiles/dotlottie-web@latest/dist/dotlottie-web.js"></script>
-</head>
-<body>
-    <!-- Header -->
-    <header class="header-wrapper">
-        <div class="header-inner">
-            <nav class="navbar navbar-dark">
-                <div class="container">
-                    <div class="col-lg-4 col-2">
-                        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar">
-                            <img src="/public/images/Toggle.svg" class="img-fluid" alt="Toggle" />
-                        </button>
-                    </div>
-                    
-                    <div class="col-lg-4 col-7 text-center">
-                        <a class="navbar-brand col-md-2" href="/">
-                            <img src="/public/images/Header-Logo.webp" class="img-fluid" alt="Dr Outlier Radiology" />
-                        </a>
-                    </div>
-
-                    <div class="col-lg-4 col-2 d-flex justify-content-end">
-                        <button class="btn btn-link loginBtn d-lg-block d-none" data-bs-toggle="modal" data-bs-target="#loginModal">
-                            <i class="fa-solid fa-user"></i> Login
-                        </button>
-                        <button class="btn btn-link searchBtn d-lg-none d-block">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </div>
-
-                    <!-- Offcanvas Menu -->
-                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasDarkNavbar">
-                        <div class="offcanvas-header">
-                            <h5 class="offcanvas-title">
-                                <span>Welcome to <strong>Dr. Outlier</strong></span>
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                        </div>
-                        <div class="offcanvas-body">
-                            <ul class="navbar-nav">
-                                <li class="nav-item"><a class="nav-link" href="/">Home <i class="fa-solid fa-chevron-right"></i></a></li>
-                                <li class="nav-item"><a class="nav-link" href="/theory-notes">Theory Notes <i class="fa-solid fa-chevron-right"></i></a></li>
-                                <li class="nav-item"><a class="nav-link" href="/new-spotters">Spotters <i class="fa-solid fa-chevron-right"></i></a></li>
-                                <li class="nav-item"><a class="nav-link" href="/new-osce">OSCE <i class="fa-solid fa-chevron-right"></i></a></li>
-                                <li class="nav-item"><a class="nav-link" href="/new-exam-cases">AI-Rad <i class="fa-solid fa-chevron-right"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
 
     <!-- Main Content -->
     <div class="main-wrapper">
@@ -164,70 +102,22 @@ session_start();
         </section>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer-wrapper">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="footer-logo">
-                        <a href="/"><img src="/public/images/Footer-Logo.webp" class="img-fluid" alt="Dr Outlier" /></a>
-                    </div>
-                </div>
-                <div class="col-lg-8">
-                    <div class="social-media-wrapper">
-                        <div class="social-media">
-                            <ul>
-                                <li><a target="_blank" href="https://api.whatsapp.com/send?phone=918554872707"><img src="/public/images/whatsapp-icon.webp" alt="WhatsApp" /></a></li>
-                                <li><a href="https://www.youtube.com/@droutlier" target="_blank"><img src="/public/images/youtube-icon.svg" alt="YouTube" /></a></li>
-                                <li><a href="https://www.instagram.com/dr.outlier/" target="_blank"><img src="/public/images/instagram-icon.webp" alt="Instagram" /></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="footer-menu">
-                        <ul>
-                            <li><a href="/new-spotters">Spotters</a></li>
-                            <li><a href="/theory-notes">Notes</a></li>
-                            <li><a href="/new-osce">OSCE</a></li>
-                            <li><a href="/new-exam-cases">AI-Rad</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="copyRight">
-                <div class="row">
-                    <div class="col-lg-6">
-                        <ul>
-                            <li><a href="tel:+918554872707"><i class="fa-solid fa-phone"></i> +91-8554872707</a></li>
-                            <li><a href="mailto:droutlierradiology@gmail.com"><i class="fa-solid fa-envelope"></i> droutlierradiology@gmail.com</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-6"><p>© 2025&nbsp;Dr Outlier</p></div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/js/bootstrap.bundle.min.js"></script>
-
+<?php
+// Additional JS for Lottie animations
+$additionalJS = '
     <!-- Lottie Animations -->
     <script>
-    if (typeof DotLottie !== 'undefined') {
-        new DotLottie({container: document.getElementById('lottie-spotters'), src: '/public/animantion/Blue circle 2.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-notes'), src: '/public/animantion/Green circle.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-osce'), src: '/public/animantion/Blue circle 2.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-airad'), src: '/public/animantion/green.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-practical'), src: '/public/animantion/green.json', loop: true, autoplay: true});
-        new DotLottie({container: document.getElementById('lottie-watch'), src: '/public/animantion/Grey circle.json', loop: true, autoplay: true});
+    if (typeof DotLottie !== "undefined") {
+        new DotLottie({container: document.getElementById("lottie-spotters"), src: "/public/animantion/Blue circle 2.json", loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById("lottie-notes"), src: "/public/animantion/Green circle.json", loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById("lottie-osce"), src: "/public/animantion/Blue circle 2.json", loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById("lottie-airad"), src: "/public/animantion/green.json", loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById("lottie-practical"), src: "/public/animantion/green.json", loop: true, autoplay: true});
+        new DotLottie({container: document.getElementById("lottie-watch"), src: "/public/animantion/Grey circle.json", loop: true, autoplay: true});
     }
     </script>
-    
-    <?php
-    // Include login modals if user is not authenticated
-    if (!isset($_SESSION['user_token'])) {
-        include __DIR__ . '/includes/login-modals.php';
-    }
-    ?>
-</body>
-</html>
+';
+
+// Include footer
+include __DIR__ . '/includes/footer.php';
+?>
