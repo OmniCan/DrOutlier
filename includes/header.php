@@ -36,7 +36,7 @@
                     
                     <div class="col-lg-4 col-7 text-center">
                         <a class="navbar-brand col-md-2" href="/">
-                            <img src="/public/images/logo.png" class="img-fluid" alt="Dr Outlier Radiology" />
+                            <img src="/public/images/logo.png" alt="Dr Outlier Radiology" style="max-height: 50px; width: auto; object-fit: contain;" />
                         </a>
                     </div>
 
