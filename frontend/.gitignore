@@ -1,5 +1,0 @@
-/vendor/
-/storage/cache/*
-!storage/cache/.gitkeep
-.env
-composer.lock
