@@ -17,6 +17,8 @@ RewriteRule . /index.php [L]
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
     
+    # Skip www redirect for assets (to avoid CORS)
+    RewriteCond %{REQUEST_URI} !^/assets/
     RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
     RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 
