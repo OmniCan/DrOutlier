@@ -43,7 +43,7 @@
                     <div class="col-lg-4 col-2 d-flex justify-content-end">
                         <?php if (isset($_SESSION['user'])): ?>
                             <div class="btn-group">
-                                <div data-bs-toggle="dropdown" class="dropDown-wrap" style="cursor: pointer;">
+                                <div data-bs-toggle="dropdown" class="dropDown-wrap" style="cursor: pointer;" role="button" aria-expanded="false">
                                     <!-- For phone view - Avatar -->
                                     <div class="d-lg-none">
                                         <img src="/public/images/avatar.png" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%;" />
