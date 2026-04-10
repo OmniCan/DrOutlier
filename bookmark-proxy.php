@@ -15,30 +15,66 @@ if (!isset($_SESSION['user_token'])) {
 }
 
 $module = $_GET['module'] ?? '';
+$action = $_GET['action'] ?? 'toggle';
 $userId = $_POST['user_id'] ?? ($_SESSION['user']['id'] ?? '');
 $itemId = $_POST['item_id'] ?? '';
 $watchLearnId = $_POST['watch_learn_id'] ?? '';
 
 $moduleMap = [
     'spotters' => [
-        ['endpoint' => '/new-spotters/change-bookmark', 'idKey' => 'item_id'],
-        ['endpoint' => '/spotters/change-bookmark-status', 'idKey' => 'spotter_id'],
+        'toggle' => [
+            ['endpoint' => '/new-spotters/change-bookmark', 'idKey' => 'item_id'],
+            ['endpoint' => '/spotters/change-bookmark-status', 'idKey' => 'spotter_id'],
+        ],
+        'list' => [
+            '/new-spotters/get-bookmarks',
+            '/spotters/get-bookmark',
+        ],
     ],
     'notes' => [
-        ['endpoint' => '/theory-notes/change-bookmark', 'idKey' => 'item_id'],
+        'toggle' => [
+            ['endpoint' => '/theory-notes/change-bookmark', 'idKey' => 'item_id'],
+        ],
+        'list' => [
+            '/theory-notes/get-bookmarks',
+            '/note/get-note-bookmark',
+        ],
     ],
     'osce' => [
-        ['endpoint' => '/new-osce/change-bookmark', 'idKey' => 'item_id'],
-        ['endpoint' => '/osce/change-osce-bookmark', 'idKey' => 'osce_id'],
+        'toggle' => [
+            ['endpoint' => '/new-osce/change-bookmark', 'idKey' => 'item_id'],
+            ['endpoint' => '/osce/change-osce-bookmark', 'idKey' => 'osce_id'],
+        ],
+        'list' => [
+            '/new-osce/get-bookmarks',
+            '/osce/get-osce-bookmark',
+        ],
     ],
     'ai-rad' => [
-        ['endpoint' => '/new-exam-cases/change-bookmark', 'idKey' => 'item_id'],
+        'toggle' => [
+            ['endpoint' => '/new-exam-cases/change-bookmark', 'idKey' => 'item_id'],
+        ],
+        'list' => [
+            '/new-exam-cases/get-bookmarks',
+            '/category-munchie/get-munchie-bookmark',
+        ],
     ],
     'practical-essentials' => [
-        ['endpoint' => '/new-table-viva/change-bookmark', 'idKey' => 'item_id'],
+        'toggle' => [
+            ['endpoint' => '/new-table-viva/change-bookmark', 'idKey' => 'item_id'],
+        ],
+        'list' => [
+            '/new-table-viva/get-bookmarks',
+            '/basic-category/get-basic-bookmark',
+        ],
     ],
     'watch-learn' => [
-        ['endpoint' => '/watch-and-learn-category/change-watch-bookmark-status', 'idKey' => 'watch_id'],
+        'toggle' => [
+            ['endpoint' => '/watch-and-learn-category/change-watch-bookmark-status', 'idKey' => 'watch_id'],
+        ],
+        'list' => [
+            '/watch-and-learn-category/get-watch-bookmark',
+        ],
     ],
 ];
 
@@ -55,28 +91,10 @@ if (empty($userId)) {
 }
 
 $token = getToken();
-$candidates = $moduleMap[$module];
 
-$lastFailure = [
-    'status' => 'error',
-    'message' => 'No bookmark endpoint succeeded',
-    'detail' => null,
-    'http_code' => 500,
-];
-
-foreach ($candidates as $candidate) {
-    $idKey = $candidate['idKey'];
-    $idValue = $idKey === 'watch_learn_id' || $idKey === 'watch_id' ? $watchLearnId : $itemId;
-
-    if (empty($idValue)) {
-        continue;
-    }
-
-    $url = API_BASE_URL . $candidate['endpoint'];
-    $postData = [
-        'user_id' => $userId,
-        $idKey => $idValue,
-    ];
+function callApiEndpoint($token, $endpoint, $postData)
+{
+    $url = API_BASE_URL . $endpoint;
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -93,6 +111,85 @@ foreach ($candidates as $candidate) {
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
     curl_close($ch);
+
+    return [$response, $httpCode, $curlError];
+}
+
+if ($action === 'status') {
+    $targetId = $watchLearnId !== '' ? (string)$watchLearnId : (string)$itemId;
+    if ($targetId === '') {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'message' => 'Missing item id']);
+        exit;
+    }
+
+    foreach ($moduleMap[$module]['list'] as $listEndpoint) {
+        [$response, $httpCode, $curlError] = callApiEndpoint($token, $listEndpoint, ['user_id' => $userId]);
+        if ($curlError || $httpCode < 200 || $httpCode >= 300) {
+            continue;
+        }
+
+        $decoded = json_decode((string)$response, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            continue;
+        }
+
+        $list = $decoded['data']['list']['data']
+            ?? $decoded['data']['list']
+            ?? $decoded['data']
+            ?? [];
+
+        if (!is_array($list)) {
+            $list = [];
+        }
+
+        $isBookmarked = false;
+        foreach ($list as $row) {
+            if ((string)($row['id'] ?? '') === $targetId) {
+                $isBookmarked = true;
+                break;
+            }
+        }
+
+        http_response_code(200);
+        echo json_encode([
+            'status' => 'success',
+            'bookmarked' => $isBookmarked,
+        ]);
+        exit;
+    }
+
+    http_response_code(200);
+    echo json_encode([
+        'status' => 'success',
+        'bookmarked' => false,
+    ]);
+    exit;
+}
+
+$candidates = $moduleMap[$module]['toggle'];
+
+$lastFailure = [
+    'status' => 'error',
+    'message' => 'No bookmark endpoint succeeded',
+    'detail' => null,
+    'http_code' => 500,
+];
+
+foreach ($candidates as $candidate) {
+    $idKey = $candidate['idKey'];
+    $idValue = $idKey === 'watch_learn_id' || $idKey === 'watch_id' ? $watchLearnId : $itemId;
+
+    if (empty($idValue)) {
+        continue;
+    }
+
+    $postData = [
+        'user_id' => $userId,
+        $idKey => $idValue,
+    ];
+
+    [$response, $httpCode, $curlError] = callApiEndpoint($token, $candidate['endpoint'], $postData);
 
     if ($curlError) {
         $lastFailure = [

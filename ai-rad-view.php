@@ -235,14 +235,39 @@ function toggleBookmark() {
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('bookmarkBtn').classList.toggle('active');
-        const message = typeof data.message === 'string' ? data.message : 'Bookmark updated';
-        alert(message);
+        const msg = typeof data.message === 'string' ? data.message : '';
+        if (msg.toLowerCase().includes('unsaved')) {
+            document.getElementById('bookmarkBtn').classList.remove('active');
+        } else {
+            document.getElementById('bookmarkBtn').classList.add('active');
+        }
+        alert(msg || 'Bookmark updated');
     })
     .catch(error => { console.error('Error:', error); alert('Failed to update bookmark'); });
 }
 
-if (items.length > 0) { loadPDF(); }
+function refreshBookmarkState() {
+    const currentItem = items[currentIndex];
+    if (!currentItem) return;
+
+    const formData = new FormData();
+    formData.append('user_id', userId);
+    formData.append('item_id', currentItem.id);
+
+    fetch('/bookmark-proxy.php?module=ai-rad&action=status', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.status === 'success') {
+            document.getElementById('bookmarkBtn').classList.toggle('active', !!data.bookmarked);
+        }
+    })
+    .catch(() => {});
+}
+
+if (items.length > 0) { loadPDF(); refreshBookmarkState(); }
 </script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
